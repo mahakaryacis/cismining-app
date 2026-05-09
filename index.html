@@ -1,0 +1,2408 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv='Cache-Control' content='no-cache, no-store, must-revalidate'/>
+  <meta http-equiv='Pragma' content='no-cache'/>
+  <meta http-equiv='Expires' content='0'/>
+  <meta charset="UTF-8">
+  <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'/>
+  <meta content='#0b0f19' name='theme-color'/>
+  <title>CIS Cloud Mining | Global Portal</title>
+  
+  <meta content='yes' name='mobile-web-app-capable'/>
+  <meta content='yes' name='apple-mobile-web-app-capable'/>
+  <meta content='black-translucent' name='apple-mobile-web-app-status-bar-style'/>
+  
+  <link href='https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;600;700;900&family=Share+Tech+Mono&display=swap' rel='stylesheet'/>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
+  
+  <style>
+    body { margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; background-image: radial-gradient(circle at top center, #1e293b, #0b0f19); color: #e2e8f0; min-height: 100vh; overflow-x: hidden; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none;}
+    * { box-sizing: border-box; outline: none; }
+    
+    .app-container { max-width: 500px; width: 100%; margin: 0 auto; background: #0f172a; min-height: 100vh; position: relative; overflow-x: hidden; border-left: 1px solid #1e293b; border-right: 1px solid #1e293b; box-shadow: 0 0 40px rgba(0,0,0,0.5); display: flex; flex-direction: column;}
+    .app-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #f1c40f, #f39c12, #f1c40f); z-index: 99;}
+
+    .app-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0f19; z-index: 1000; display: none; flex-direction: column; overflow-x: hidden; animation: slideIn 0.3s forwards;}
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    
+    .screen-header { background: #162032; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; font-family: 'Orbitron', sans-serif; font-size: 1rem; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid #00f2fe; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
+    .header-left { display: flex; align-items: center; gap: 15px; }
+    .screen-content { padding: 20px; overflow-y: auto; flex: 1; max-width: 500px; margin: 0 auto; width: 100%;}
+    .panel-box { background: #162032; border-radius: 15px; padding: clamp(15px, 4vw, 20px); border: 1px solid #1e293b; margin-bottom: 20px;}
+    
+    .wallet-btn { cursor: pointer; text-align: center; transition: 0.2s; }
+    .wallet-btn:hover { transform: scale(0.98); box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+    .wallet-btn:active { transform: scale(0.95); }
+
+    #toastBox { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#f39c12; color:#fff; padding:12px 25px; border-radius:30px; font-size:0.85rem; font-weight:bold; z-index:999999; opacity:0; visibility:hidden; transition:0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align:center; box-shadow:0 10px 20px rgba(0,0,0,0.5); width: 80%; max-width: 350px;}
+    #toastBox.show { opacity:1; visibility:visible; top:50px; }
+
+    .input-group { position: relative; margin-bottom: 15px; }
+    .input-group i.left-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #64748b;}
+    .input-group i.right-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #64748b; cursor: pointer; padding: 5px;}
+    .input-group i.right-icon:hover { color: #f1c40f; }
+    .input-dark { width: 100%; background: #0b0f19; border: 1px solid #1e293b; padding: 15px; padding-left: 45px; border-radius: 8px; color: #fff; font-family: inherit; font-size: clamp(0.8rem, 4vw, 0.9rem); transition: 0.3s; }
+    .input-dark.no-icon { padding-left: 15px; }
+    .input-dark:focus { border-color: #f1c40f; }
+    
+    .btn-cyan { width: 100%; background: #00f2fe; color: #000; border: none; padding: 15px; border-radius: 8px; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(0.9rem, 4vw, 1rem); cursor: pointer; transition: 0.3s; text-transform: uppercase;}
+    .btn-gold { background: #f1c40f; color: #0b0f19; }
+    .btn-back { font-size: 1.2rem; cursor: pointer; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0, 242, 254, 0.1); color: #00f2fe; transition: 0.2s;}
+    .btn-back:active { background: rgba(0, 242, 254, 0.3); }
+    .btn-home { font-size: 1.3rem; cursor: pointer; color: #f39c12; transition: 0.2s;}
+    .btn-home:active { transform: scale(0.9); }
+    .btn-disabled { background: #7f8c8d !important; cursor: not-allowed !important; opacity: 0.6; }
+
+    .switch-link { text-align: center; font-size: 0.8rem; color: #f1c40f; cursor: pointer; font-weight: 600; margin-top: 15px;}
+    .sys-msg { margin-top: 10px; font-size: 0.8rem; font-weight: bold; padding: 10px; border-radius: 8px; display: none; text-align: center;}
+    .msg-err { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; }
+    .msg-ok { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid #22c55e; }
+
+    .token-card-list { display: flex; flex-direction: column; gap: 12px; max-height: 350px; overflow-y: auto; margin-bottom: 20px; padding-right: 5px; }
+    .token-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 12px; padding: 15px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; }
+    .token-card:hover { border-color: #00f2fe; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.15); transform: translateY(-2px); }
+    .token-card.selected { border-color: #f1c40f; box-shadow: 0 5px 20px rgba(241, 196, 15, 0.2); background: linear-gradient(145deg, #1e293b, #162032); }
+    .token-card.selected::before { background: #f1c40f; box-shadow: 0 0 10px #f1c40f; }
+    .token-card.selected .token-card-code { color: #f1c40f; text-shadow: 0 0 8px rgba(241,196,15,0.4); }
+    .token-card.selected .token-card-radio { border-color: #f1c40f; }
+    .token-card.selected .token-card-radio::after { content: ''; width: 12px; height: 12px; background: #f1c40f; border-radius: 50%; box-shadow: 0 0 5px #f1c40f;}
+    .token-card.selected-burn { border-color: #2ecc71; background: rgba(46, 204, 113, 0.2) !important; box-shadow: 0 0 15px rgba(46, 204, 113, 0.4); }
+    .token-card.selected-burn::before { background: #2ecc71; box-shadow: 0 0 10px #2ecc71; }
+    .token-card.selected-burn .token-card-code { color: #2ecc71; text-shadow: 0 0 8px rgba(46,204,113,0.4); }
+    .token-card.selected-burn .token-card-radio { border-color: #2ecc71; }
+    .token-card.selected-burn .token-card-radio::after { content: ''; width: 12px; height: 12px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 5px #2ecc71;}
+    .token-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; background: #334155; transition: 0.3s; }
+    .token-card-info { flex: 1; margin-left: 10px; font-size: 0.8rem; }
+    .token-card-code { font-family: 'Orbitron'; font-size: 0.9rem; color: #fff; font-weight: 700; letter-spacing: 1px; margin-bottom: 5px; }
+    .token-card-amount { font-size: 0.85rem; color: #22c55e; font-weight: 900; }
+    .token-card-source { font-size: 0.65rem; color: #94a3b8; margin-top: 3px; display: inline-block; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px; border: 1px solid #334155; }
+    .token-card-radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #64748b; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+
+    .cyber-orb-wrapper { position: relative; width: 100%; height: 160px; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
+    .cyber-orb { width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, rgba(0, 242, 254, 0.4), rgba(11, 15, 25, 0.9)); border: 2px solid rgba(0, 242, 254, 0.5); box-shadow: 0 0 30px rgba(0, 242, 254, 0.3), inset 0 0 20px rgba(0, 242, 254, 0.2); animation: floatOrb 4s ease-in-out infinite; display: flex; align-items: center; justify-content: center; position: relative;}
+    .cyber-orb i { font-size: 3rem; color: #00f2fe; text-shadow: 0 0 15px #00f2fe; z-index: 2; animation: pulseIcon 2s infinite alternate;}
+    .orb-ring { position: absolute; width: 150px; height: 150px; border-radius: 50%; border: 1px dashed rgba(241,196,15,0.6); animation: spin 8s linear infinite; z-index: 1;}
+    .orb-ring-2 { position: absolute; width: 170px; height: 170px; border-radius: 50%; border: 1px solid rgba(46,204,113,0.3); border-top: 3px solid #2ecc71; animation: spin reverse 6s linear infinite; z-index: 1;}
+    @keyframes floatOrb { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+    @keyframes pulseIcon { 0% { transform: scale(0.9); opacity: 0.8; } 100% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 25px #fff; } }
+
+    #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0f19; z-index: 99999; display: flex; align-items: center; justify-content: center; transition: 0.6s; }
+    .loader-wrap { position: relative; width: 120px; height: 120px; margin: 0 auto 20px auto; display:flex; align-items:center; justify-content:center;}
+    .outer-ring { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 3px dashed #f1c40f; animation: rotateCW 5s linear infinite; }
+    .splash-logo { height: 60px; z-index: 3; border-radius: 50%; background: white; padding: 2px;}
+    @keyframes rotateCW { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+	@keyframes pulseLogo { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 20px rgba(241,196,15,0.8)); } }
+    .hide-splash { opacity: 0; visibility: hidden; }
+
+    #auth-screen { display: flex; flex-direction: column; padding: 30px 20px; min-height: 100vh; }
+    .auth-card { background: #162032; border: 1px solid #1e293b; border-radius: 20px; padding: 25px 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+    .auth-footer { padding: 20px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto;}
+    .auth-footer p { margin: 5px 0; font-size: 0.65rem; color: #64748b;}
+
+    .global-stats-container { display: flex; justify-content: space-around; align-items: center; margin: 15px 0; padding: 12px 5px; background: rgba(11, 15, 25, 0.6); border: 1px solid #1e293b; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); backdrop-filter: blur(5px); }
+    .stat-box { text-align: center; flex: 1; border-right: 1px dashed #334155; padding: 0 2px; }
+    .stat-box:last-child { border-right: none; }
+    .stat-icon { font-size: 0.9rem; color: #f1c40f; margin-bottom: 5px; filter: drop-shadow(0 0 5px rgba(241,196,15,0.4)); }
+    .stat-val { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; font-weight: 900; color: #fff; margin-bottom: 3px; text-shadow: 0 0 5px rgba(255,255,255,0.2); }
+    .stat-label { font-size: 0.5rem; color: #94a3b8; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1.2; }
+    .blink-dot { display: inline-block; width: 5px; height: 5px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 8px #2ecc71; animation: blinker 1s linear infinite; margin-left: 3px; vertical-align: middle;}
+    
+    .grid-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px; margin-bottom: 15px;}
+    .menu-box { background: rgba(30, 41, 59, 0.7); border-radius: 12px; padding: 15px 10px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: pointer; transition: 0.2s; border-bottom: 3px solid #334155; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);}
+    .menu-box:active { transform: scale(0.95); box-shadow: 0 2px 8px rgba(0,0,0,0.2); border-bottom-width: 1px;}
+    .menu-box i { font-size: 1.8rem; margin-bottom: 8px; }
+    .menu-box span { font-size: 0.7rem; font-weight: 800; color: #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px;}
+
+    .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid #334155;}
+    table { width: 100%; border-collapse: collapse; min-width: 350px; text-align: left; background: #0f172a;}
+    th { background: #1e293b; color: #94a3b8; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; padding: 8px 5px;}
+    td { padding: 8px 5px; border-bottom: 1px solid #334155; color: #e2e8f0; font-size: 0.75rem; font-weight: 600; }
+    
+    .mining-visual-container { position: relative; background: radial-gradient(circle, #1a2536, #0b0f19); border: 2px solid #334155; border-radius: 15px; padding: 20px; text-align: center; overflow: hidden; margin: 15px 0; transition: 0.3s; }
+    .mining-visual-container.active { border-color: #f39c12; box-shadow: 0 0 20px rgba(243, 156, 18, 0.1); }
+    .cpu-core { width: 110px; height: 110px; border: 3px dashed #475569; border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+    .mining-visual-container.active .cpu-core { border-color: #3498db; animation: spin 5s linear infinite; }
+    .cpu-core-inner { width: 70px; height: 70px; background: #1e293b; border: 3px solid #475569; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+    .mining-visual-container.active .cpu-core-inner { background: rgba(46, 204, 113, 0.1); border-color: #2ecc71; animation: pulse 1s infinite alternate; }
+    .cpu-icon { color: #475569; font-size: 1.5rem; transition: 0.3s;}
+    .mining-visual-container.active .cpu-icon { color: #2ecc71; animation: spin 5s linear infinite reverse; }
+    .terminal-log { background: rgba(0,0,0,0.6); padding: 10px; border-radius: 5px; font-family: 'Courier New', Courier, monospace; color: #64748b; font-size: 0.75rem; text-align: left; height: 75px; overflow: hidden; margin-top: 15px; border-left: 3px solid #475569; transition: 0.3s; }
+    .mining-visual-container.active .terminal-log { color: #2ecc71; border-left-color: #f39c12; }
+    .log-line { margin: 3px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 2px; }
+    
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    @keyframes pulse { 0% { transform: scale(0.9); box-shadow: 0 0 10px #2ecc71; } 100% { transform: scale(1.1); box-shadow: 0 0 25px #2ecc71; } }
+
+    .mining-controls { display: flex; gap: 15px; margin-bottom: 15px;}
+    .btn-control { flex: 1; border: none; padding: clamp(10px, 3vw, 15px); border-radius: 8px; font-family: 'Orbitron'; font-weight: 900; font-size: clamp(0.9rem, 4vw, 1.1rem); cursor: pointer; transition: 0.3s; color: white;}
+    .btn-start { background: linear-gradient(180deg, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449;}
+    .btn-start:active { transform: translateY(4px); box-shadow: 0 0 0 #1e8449;}
+    .btn-stop { background: linear-gradient(180deg, #e74c3c, #c0392b); box-shadow: 0 4px 0 #922b21; opacity: 0.5;}
+    .btn-stop:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0 0 #922b21;}
+
+    .btn-claim-pro { background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); border: none; border-radius: 12px; color: #0b0f19; font-family: 'Orbitron'; font-weight: 900; font-size: 1rem; padding: 18px; width: 100%; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3); text-transform: uppercase; transition: all 0.3s ease; position: relative; overflow: hidden; margin-bottom: 20px; display: block; }
+    .btn-claim-pro:active { transform: translateY(4px); box-shadow: 0 5px 10px rgba(0, 242, 254, 0.2); }
+    .btn-claim-pro::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent); transform: skewX(-25deg); animation: shine 3s infinite; }
+    @keyframes shine { 100% { left: 200%; } }
+    
+    .timer-container { display:none; background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 20px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); flex-direction: column; justify-content: center;}
+
+    .top-nav { width: 100%; box-sizing: border-box; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00f2fe; background: #0f172a; position: sticky; top:0; z-index: 50;}
+    .nav-actions { display: flex; gap: 15px; align-items: center; width: 100%; justify-content: flex-end;}
+    .nav-btn { background: none; border: none; color: #00f2fe; font-size: clamp(1.4rem, 6vw, 1.8rem); cursor: pointer; transition: 0.2s; position: relative; padding: 0;}
+    .nav-btn:hover { color: #fff; }
+    .notif-badge { position: absolute; top: -2px; right: -8px; background: #ef4444; color: white; font-size: 0.6rem; font-weight: bold; padding: 2px 5px; border-radius: 10px; display: none; z-index: 2;}
+    .lang-select { background: #162032; border: 1px solid #334155; color: #00f2fe; padding: 4px 8px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; margin-right: auto;}
+    
+    .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 99; display: none; opacity: 0; transition: 0.3s;}
+    .sidebar-menu { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: #162032; z-index: 100; transition: right 0.3s ease; box-shadow: -10px 0 30px rgba(0,0,0,0.8); display: flex; flex-direction: column;}
+    .sidebar-menu.open { right: 0; }
+    .sidebar-header { padding: 20px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; font-family: 'Orbitron'; color: #fff;}
+    .menu-list { padding: 15px 0; list-style: none; margin: 0; flex: 1; overflow-y: auto;}
+    .menu-list li { padding: 15px 25px; color: #94a3b8; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; border-left: 3px solid transparent;}
+    .menu-list li:hover, .menu-list li.active { background: #1e293b; color: #00f2fe; border-left-color: #00f2fe; }
+
+    .notif-panel { position: absolute; top: 60px; right: 20px; width: calc(100% - 40px); max-width: 300px; background: #162032; border: 1px solid #334155; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 98; display: none; overflow: hidden;}
+    .notif-header { padding: 15px; background: #1e293b; font-weight: bold; font-size: 0.9rem; display: flex; justify-content: space-between;}
+    .notif-body { max-height: 300px; overflow-y: auto; }
+    .notif-item { padding: 12px 15px; border-bottom: 1px solid #1e293b; font-size: 0.8rem; color: #94a3b8;}
+    
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px);}
+    .modal-card { background: #0b0f19; border: 1px solid #1e293b; border-radius: 15px; width: 95%; max-width: 400px; padding: 20px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+    .modal-card select, .modal-card input { font-size: 0.8rem; padding: 10px; }
+    
+    .center-logo-area { text-align: center; margin-bottom: 20px; margin-top: 5px;}
+    .center-logo-area img { max-width: 130px; width: 30vw; filter: drop-shadow(0 0 15px rgba(241, 196, 15, 0.3)); border-radius: 50%;}
+    .brand-text { color: #f1c40f; font-family: 'Orbitron'; font-size: clamp(0.8rem, 4vw, 1.1rem); margin-top: 10px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(241,196,15,0.4);}
+    .miner-id-text { font-size: clamp(0.75rem, 3.5vw, 0.9rem); color: #94a3b8; margin-top: 5px; word-break: break-all; padding: 0 10px;}
+    
+    .top-stats-area { text-align: center; margin-bottom: 20px; background: transparent; padding: 10px 0; margin-top: 15px;}
+    .doge-balance { font-family: 'Orbitron'; font-size: clamp(1.2rem, 6vw, 1.6rem); font-weight: 900; color: #f39c12; text-shadow: 0 0 20px rgba(243, 156, 18, 0.5); margin: 0; letter-spacing: 1px; word-break: break-all;}
+    .doge-label { font-family: 'Orbitron'; font-size: clamp(0.9rem, 3.5vw, 1rem); color: #f1c40f; margin-bottom: 10px; font-weight: bold;}
+    .idr-estimate { font-size: clamp(0.8rem, 4vw, 1rem); color: #22c55e; font-weight: 800; margin-bottom: 5px;}
+    .live-price { font-size: clamp(0.7rem, 3.5vw, 0.8rem); color: #94a3b8; padding: 5px 0; display: inline-block; border-bottom: 1px dashed #334155;}
+    .mining-info { display: flex; justify-content: space-between; font-size: clamp(0.75rem, 3.5vw, 0.85rem); font-weight: bold; padding: 0 5px 10px 5px;}
+    
+    .mutasi-list { max-height: 300px; overflow-y: auto; }
+    .mutasi-item { padding: 15px 10px; border-bottom: 1px dashed #334155; display: flex; justify-content: space-between; font-size: 0.8rem; transition: 0.2s;}
+    .mutasi-item:hover { background: rgba(255,255,255,0.02); }
+    .prof-label { font-size: 0.75rem; color: #94a3b8; font-weight: bold; margin-bottom: 5px; display: block;}
+    .token-blurred { filter: blur(4px); opacity: 0.6; user-select: none; text-decoration: line-through; display: inline-block; background: #000; color: #fff; padding: 2px 5px; border-radius: 5px;}
+    
+    .pin-input-area { display: flex; gap: 10px; justify-content: center; margin: 20px 0;}
+    .pin-box { width: 40px; height: 45px; background: #0b0f19; border: 2px solid #334155; border-radius: 8px; text-align: center; font-size: 1.2rem; color: #00f2fe; font-family: 'Orbitron'; outline: none; transition: 0.3s;}
+    .pin-box:focus { border-color: #f1c40f; box-shadow: 0 0 10px rgba(241,196,15,0.3);}
+
+    .leaderboard-item { display: flex; align-items: center; gap: 15px; padding: 12px; background: #1e293b; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid #f1c40f;}
+    .rank-num { font-family: 'Orbitron'; font-weight: 900; color: #94a3b8; width: 25px; text-align: center;}
+    .rank-1 { border-left-color: #f1c40f; background: rgba(241, 196, 15, 0.1); } .rank-1 .rank-num { color: #f1c40f; }
+    .rank-2 { border-left-color: #bdc3c7; background: rgba(189, 195, 199, 0.1); } .rank-2 .rank-num { color: #bdc3c7; }
+    .rank-3 { border-left-color: #cd7f32; background: rgba(205, 127, 50, 0.1); } .rank-3 .rank-num { color: #cd7f32; }
+
+    .sponsor-info-box { background: rgba(52, 152, 219, 0.1); border: 1px dashed #3498db; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    .sponsor-amt { font-family: 'Orbitron'; font-size: 1.4rem; color: #3498db; font-weight: 900; margin: 5px 0; text-shadow: 0 0 10px rgba(52, 152, 219, 0.4); }
+    .tree-wrapper { padding: 5px 0; max-height: 350px; overflow-y: auto; overflow-x: hidden; }
+    .tree-node { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; position: relative; transition: 0.2s;}
+    .tree-node:hover { border-color: #00f2fe; background: #162032; }
+    .tree-node.level-1 { border-left: 4px solid #f1c40f; }
+    .tree-icon { background: #0b0f19; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #00f2fe; border: 1px solid #334155; }
+    .tree-info { flex: 1; }
+    .tree-name { font-weight: bold; color: #e2e8f0; font-size: 0.9rem; }
+    .tree-detail { font-size: 0.75rem; color: #94a3b8; margin-top: 3px; }
+    
+    html { font-size: 13px; }
+    @media screen and (min-width: 360px) { html { font-size: 14px; } }
+    @media screen and (min-width: 414px) { html { font-size: 15px; } }
+    @media screen and (min-width: 500px) { html { font-size: 16.5px; } }
+
+    /* ========================================== */
+    /* DESAIN PROMO LANDING PAGE (ALA SULTAN)     */
+    /* ========================================== */
+    .promo-section { margin-top: 30px; padding: 20px 0; border-top: 1px dashed #334155; }
+    .promo-title { text-align: center; color: #f1c40f; font-family: 'Orbitron'; margin-bottom: 20px; font-size: 1.1rem; letter-spacing: 1px; text-shadow: 0 0 10px rgba(241,196,15,0.4); }
+    .promo-list { list-style: none; padding: 0; margin: 0 0 20px 0; }
+    .promo-list li { background: rgba(0,0,0,0.3); border: 1px solid #1e293b; margin-bottom: 8px; padding: 12px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: #e2e8f0; font-weight: bold; }
+    .promo-list li i { color: #2ecc71; font-size: 1.2rem; filter: drop-shadow(0 0 5px rgba(46,204,113,0.5)); }
+    .promo-list li span { color: #f1c40f; } 
+    
+    .feature-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
+    @media(min-width: 400px) { .feature-grid { grid-template-columns: 1fr 1fr; } }
+    .feature-card { background: #162032; padding: 15px; border-radius: 12px; border: 1px solid #1e293b; text-align: center; transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .feature-card:hover { border-color: #f1c40f; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(241,196,15,0.1); }
+    .feature-card i { font-size: 2.2rem; color: #f1c40f; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(241,196,15,0.4)); background: #0b0f19; width: 60px; height: 60px; line-height: 60px; border-radius: 50%; border: 1px dashed #f39c12; }
+    .feature-card h4 { color: #fff; margin: 0 0 8px 0; font-size: 0.75rem; font-family: 'Orbitron'; text-transform: uppercase; letter-spacing: 0.5px; }
+    .feature-card p { color: #94a3b8; font-size: 0.65rem; margin: 0; line-height: 1.5; }
+
+    /* ========================================== */
+    /* DESAIN BADGE BETA (MELAYANG)               */
+    /* ========================================== */
+    .beta-badge { position: absolute; top: 15px; left: 15px; background: rgba(0, 0, 0, 0.4); border: 1px dashed #f39c12; padding: 6px 10px; border-radius: 8px; font-family: 'Orbitron', sans-serif; display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 20; backdrop-filter: blur(5px); transition: 0.3s; }
+    .beta-badge:hover { border-style: solid; box-shadow: 0 0 15px rgba(243, 156, 18, 0.4); transform: scale(1.05); }
+    .beta-badge i { color: #f1c40f; animation: pulseBetaIcon 1.5s infinite alternate; }
+    @keyframes pulseBetaIcon { 0% { opacity: 0.5; } 100% { opacity: 1; text-shadow: 0 0 10px #f1c40f; } }
+    
+  </style>
+</head>
+<body>
+<div id='status-overlay' style='display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:radial-gradient(circle at center, #1e293b, #020617); z-index:9999999; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:20px;'>
+      
+      <!-- LOGO CIS & KEPANJANGAN -->
+      <div style="margin-bottom: 30px; animation: pulseLogo 2s infinite alternate;">
+          <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgjsWDBQtB22Em_aRXK1HeIp9_t9QiB_dLrz4H0GDVYzb1LGOJJxEeZjjxFY9cpXD4-n-DEd2ycC4Voqixqhvei_SVGeceVpoxT6oSUJZ9XfRFPkQdlCDHcl6p4rykNNZDcNdJ7FaPzqcHi-2j00jcM7Y_zn76nLR0BOLQ3yd0kRUupPc4f9c5uZqRN5FGP/w400-h400/CIS%20logo.png" style="width: 100px; border-radius: 50%; box-shadow: 0 0 20px rgba(241, 196, 15, 0.6); border: 2px solid #f1c40f; background: white; padding: 2px;">
+          <h2 style="color: #f1c40f; font-family: 'Orbitron', sans-serif; margin: 15px 0 5px 0; font-size: 1.2rem; letter-spacing: 2px; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);">CIS PROTOCOL</h2>
+          <div style="color: #94a3b8; font-size: 0.85rem; font-weight: bold; letter-spacing: 1px;">CHARITY INTEGRATION SYSTEM</div>
+      </div>
+
+      <!-- ANIMASI MAINTENANCE -->
+      <div id='anim-maintenance' style='display:none;'>
+          <i class='fa-solid fa-gear fa-spin' style='font-size: 4rem; color: #38bdf8; margin-bottom: 15px; filter: drop-shadow(0 0 15px rgba(56,189,248,0.5));'></i>
+          <h1 style='color:#fff; font-family:Orbitron; letter-spacing:2px; margin-bottom:5px; font-size: 1.3rem;'>SYSTEM UPGRADE</h1>
+          <p style='color:#94a3b8; font-size:0.85rem; line-height:1.6;'>Kapal sedang berlabuh di galangan untuk peningkatan sistem.<br/>Mohon tunggu, kami akan segera kembali mengudara.</p>
+      </div>
+
+      <!-- ANIMASI LAUNCHING & TIMER -->
+      <div id='anim-countdown' style='display:none;'>
+          <i class='fa-solid fa-rocket fa-bounce' style='font-size: 4rem; color: #fbbf24; margin-bottom: 10px; filter: drop-shadow(0 0 20px rgba(251,191,36,0.6));'></i>
+          <h2 style='color:#e2e8f0; font-family:Orbitron; letter-spacing:1px; font-size:1rem; margin-bottom:20px;'>PREPARING FOR LAUNCH</h2>
+          
+          <div style='background:rgba(0,0,0,0.5); border:1px solid #334155; padding:15px 25px; border-radius:15px; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); margin-bottom: 15px;'>
+              <div id='launch-timer' style='font-size: clamp(2rem, 8vw, 3.5rem); font-family:Orbitron; color:#4ade80; font-weight:900; letter-spacing:4px; text-shadow:0 0 20px rgba(74, 222, 128, 0.4); margin:0;'>00:00:00</div>
+          </div>
+          <p style='color:#94a3b8; font-size:0.85rem; margin:0;'>Menghitung mundur peluncuran Charity Integration System</p>
+      </div>
+
+  </div>
+  <div id='toastBox'><i class='fa-solid fa-circle-exclamation'></i> <span id='toastMsg'>System Warning</span></div>
+
+  <div id='install-gateway' style='display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#0b0f19; z-index:999999; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px;'>
+      <h2 style='color:#f1c40f; font-family:Orbitron;'>CIS CLOUD MINING</h2>
+      <p style='color:#94a3b8; line-height:1.6;'>Install App required for Mobile.<br/><br/><b>Open via Chrome/Safari and select "Add to Home Screen".</b></p>
+  </div>
+
+  <div id='splash-screen'>
+    <div class='loader-wrap'>
+      <div class='outer-ring'></div><img alt='CIS' class='splash-logo' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgjsWDBQtB22Em_aRXK1HeIp9_t9QiB_dLrz4H0GDVYzb1LGOJJxEeZjjxFY9cpXD4-n-DEd2ycC4Voqixqhvei_SVGeceVpoxT6oSUJZ9XfRFPkQdlCDHcl6p4rykNNZDcNdJ7FaPzqcHi-2j00jcM7Y_zn76nLR0BOLQ3yd0kRUupPc4f9c5uZqRN5FGP/w400-h400/CIS%20logo.png'/>
+    </div>
+  </div>
+
+  <div class='app-container' id='mainAppContainer' style='display: none;'>
+    <div id='auth-screen' style='position: relative;'>
+      
+      <div class='beta-badge' onclick='window.showToast("Sistem masih dalam tahap Uji Coba / Trial & Error.")' style='cursor:pointer;' title='Versi Uji Coba'>
+          <div style='display:flex; align-items:center; gap:8px;'>
+              <i class='fa-solid fa-flask-vial' style='font-size:1.2rem;'></i>
+              <div style='text-align:left; line-height:1.1;'>
+                  <div style='font-size:0.75rem; color:#fff; font-weight:bold;'>BETA VERSION</div>
+                  <div style='font-size:0.5rem; color:#f39c12; letter-spacing:1px;'>SYSTEM TESTING</div>
+              </div>
+          </div>
+      </div>
+
+      <div style='flex: 1; display: flex; flex-direction: column; justify-content: center;'>
+          <div style='text-align:center; margin-bottom:15px;'>
+            <img alt='CIS' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgjsWDBQtB22Em_aRXK1HeIp9_t9QiB_dLrz4H0GDVYzb1LGOJJxEeZjjxFY9cpXD4-n-DEd2ycC4Voqixqhvei_SVGeceVpoxT6oSUJZ9XfRFPkQdlCDHcl6p4rykNNZDcNdJ7FaPzqcHi-2j00jcM7Y_zn76nLR0BOLQ3yd0kRUupPc4f9c5uZqRN5FGP/w400-h400/CIS%20logo.png' style='width:75px; border-radius:50%; box-shadow:0 0 15px rgba(241,196,15,0.4); margin-bottom:10px;'/>
+            <h1 style='font-family:Orbitron; color:#fff; margin:0; font-size:1.6rem; letter-spacing:1px; text-shadow: 0 0 10px rgba(241,196,15,0.5);'>CIS MINING</h1>
+          </div>
+
+          <div class='cyber-orb-wrapper'>
+              <div class='orb-ring'></div>
+              <div class='orb-ring-2'></div>
+              <div class='cyber-orb'><i class='fa-brands fa-hive'></i></div>
+          </div>
+
+          <p data-i18n='authDesc' style='color:#94a3b8; font-size:0.85rem; text-align:center; margin:0 20px 15px 20px; line-height:1.5;'>Secure connection protocol initiated.</p>
+          
+          <div class='auth-card' id='formLogin'>
+            <div class='input-group'><i class='fa-solid fa-envelope left-icon'></i><input class='input-dark' id='logEmail' placeholder='Account Email (@gmail.com)' type='email'/></div>
+            <div class='input-group'><i class='fa-solid fa-lock left-icon'></i><input class='input-dark' id='logPass' placeholder='Password' type='password'/><i class='fa-solid fa-eye right-icon' onclick='window.togglePass("logPass", this)'></i></div>
+            <button class='btn-cyan btn-gold' data-i18n='btnLogin' id='btnLogin'>LOGIN</button>
+            <div class='switch-link' data-i18n='lnkNoAcc' onclick='window.toggleAuthForm("reg")'>New? Register Here</div>
+            <div class='switch-link' data-i18n='lnkForgot' onclick='window.toggleAuthForm("forgot")' style='color:#64748b; margin-top:10px;'>Forgot Password? Reset</div>
+            <div class='sys-msg msg-err' id='msgLogin'></div>
+            <div style='text-align:center; margin-top:20px;'>
+                <select class='lang-select' id='langSelectorLogin' onchange='window.syncLang(this.value)' style='background:#0b0f19;'>
+                    <option value='en'>EN - English</option>
+                    <option value='id'>ID - B.Indonesia</option>
+                </select>
+            </div>
+          </div>
+
+          <div class='auth-card' id='formReg' style='display:none;'>
+            <div class='input-group'><i class='fa-solid fa-user left-icon'></i><input class='input-dark' id='regUser' placeholder='Your Username' type='text' oninput='this.value = this.value.toUpperCase().replace(/\s/g, "")'/></div>
+            <div class='input-group'><i class='fa-brands fa-whatsapp left-icon'></i><input class='input-dark' id='regWA' placeholder='WhatsApp Number' type='number'/></div>
+            <div class='input-group'><i class='fa-solid fa-envelope left-icon'></i><input class='input-dark' id='regEmail' placeholder='Account Email (Required @gmail.com)' type='email'/></div>
+            <div class='input-group'><i class='fa-solid fa-lock left-icon'></i><input class='input-dark' id='regPass' placeholder='Password' type='password'/><i class='fa-solid fa-eye right-icon' onclick='window.togglePass("regPass", this)'></i></div>
+            <div class='input-group'><i class='fa-solid fa-users left-icon' style='color:#3498db;'></i><input class='input-dark' id='regReferral' placeholder='Sponsor Username (Required)' style='border-color:#3498db;' type='text' oninput='this.value = this.value.toUpperCase().replace(/\s/g, "")'/></div>
+            <button class='btn-cyan btn-gold' data-i18n='btnReg' id='btnRegister'>REGISTER NOW</button>
+            <div class='switch-link' data-i18n='lnkHasAcc' onclick='window.toggleAuthForm("log")'>Have Account? Login</div>
+            <div class='sys-msg msg-err' id='msgReg'></div>
+          </div>
+
+          <div class='auth-card' id='formForgot' style='display:none;'>
+            <p data-i18n='txtForgotDesc' style='font-size:0.8rem; color:#94a3b8; text-align:center; margin-bottom:15px;'>Enter Account Email for reset code.</p>
+            <div class='input-group'><i class='fa-solid fa-envelope left-icon'></i><input class='input-dark' id='forEmail' placeholder='Registered Email' type='email'/></div>
+            <button class='btn-cyan btn-gold' data-i18n='btnReqReset' id='btnRequestReset'>REQUEST RESET CODE</button>
+            <div id='resetStep2' style='display:none; margin-top:15px; border-top:1px dashed #334155; padding-top:15px;'>
+              <div class='input-group'><i class='fa-solid fa-shield left-icon'></i><input class='input-dark' id='resCode' placeholder='6-Digit Reset Code' type='number'/></div>
+              <div class='input-group'><i class='fa-solid fa-lock left-icon'></i><input class='input-dark' id='resNewPass' placeholder='New Password' type='password'/><i class='fa-solid fa-eye right-icon' onclick='window.togglePass("resNewPass", this)'></i></div>
+              <button class='btn-cyan' data-i18n='btnConfirmReset' id='btnConfirmReset' style='background:#f39c12; color:#fff;'>CONFIRM RESET</button>
+            </div>
+            <div class='switch-link' data-i18n='lnkBackLog' onclick='window.toggleAuthForm("log")'>Back to Login</div>
+            <div class='sys-msg' id='msgForgot'></div>
+          </div>
+
+          <div class='global-stats-container'>
+             <div class='stat-box'><i class='fa-solid fa-server stat-icon'></i><div class='stat-val' id='statOnline'>0 <span class='blink-dot'></span></div><div class='stat-label'>ACTIVE MINER</div></div>
+             <div class='stat-box'><i class='fa-solid fa-users stat-icon'></i><div class='stat-val' id='statReg'>0</div><div class='stat-label'>TOTAL USERS</div></div>
+             <div class='stat-box'><i class='fa-brands fa-digital-ocean stat-icon'></i><div class='stat-val' id='statWd'>0 VRSC</div><div class='stat-label'>TOTAL WD</div></div>
+          </div>
+
+          <div class='promo-section'>
+              <h3 class='promo-title'>THE FIRST INTEGRATED CHARITY CLOUD MINING</h3>
+              
+              <ul class='promo-list'>
+                  <li><i class='fa-solid fa-circle-check'></i> <div>Klaim Koin <span>VRSC Gratis</span> Setiap Jam</div></li>
+                  <li><i class='fa-solid fa-circle-check'></i> <div>Sewa <span>Mesin Cloud Mining</span> Tanpa Hardware</div></li>
+                  <li><i class='fa-solid fa-circle-check'></i> <div>Sistem <span>Marketplace P2P</span> yang Adil & Bebas</div></li>
+                  <li><i class='fa-solid fa-circle-check'></i> <div>Terintegrasi dengan <span>Program Charity Integration System</span></div></li>
+                  <li><i class='fa-solid fa-circle-check'></i> <div>Dapatkan <span>Bonus Jaringan</span> Seumur Hidup</div></li>
+              </ul>
+
+              <button class='btn-cyan btn-gold' onclick='window.toggleAuthForm("reg")' style='margin-bottom: 10px; font-size:1.1rem; padding: 18px; box-shadow: 0 10px 20px rgba(241,196,15,0.2);'>
+                  <i class='fa-solid fa-rocket'></i> MULAI SEKARANG JUGA!
+              </button>
+
+              <div class='feature-grid'>
+                  <div class='feature-card'>
+                      <i class='fa-solid fa-gem'></i>
+                      <h4>Free Claim 1 Jam</h4>
+                      <p>Putar waktu Anda menjadi aset. Klaim koin kripto gratis setiap 60 menit langsung ke dompet Anda.</p>
+                  </div>
+                  <div class='feature-card'>
+                      <i class='fa-solid fa-handshake-angle'></i>
+                      <h4>P2P Marketplace</h4>
+                      <p>Jual beli token aktivasi & mesin langsung dengan member lain. Bebas monopoli, 100% transparan.</p>
+                  </div>
+                  <div class='feature-card'>
+                      <i class='fa-solid fa-microchip'></i>
+                      <h4>Cloud Engine</h4>
+                      <p>Tingkatkan kecepatan Hash Anda. Biarkan server kami yang menambang koin untuk Anda 24/7.</p>
+                  </div>
+                  <div class='feature-card'>
+                      <i class='fa-solid fa-hand-holding-heart'></i>
+                      <h4>Social Charity</h4>
+                      <p>Bukan sekadar profit. Sebagian sirkulasi ekosistem dialokasikan untuk kegiatan sosial nyata.</p>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+      
+      <div style='text-align:center; padding-top: 10px; margin-bottom: 25px;'>
+          <button onclick='window.openWalletModal("modalLegal")' style='background:rgba(0, 242, 254, 0.1); border:1px solid #00f2fe; color:#00f2fe; padding:8px 15px; border-radius:20px; font-size:0.75rem; cursor:pointer; font-weight:bold; transition:0.3s;'>
+              <i class='fa-solid fa-scale-balanced'></i> Lihat Syarat & Ketentuan Layanan
+          </button>
+      </div>
+
+      <div class='auth-footer' style='border-top: 1px dashed #334155; padding-top: 15px; padding-bottom: 15px;'>
+          <p data-i18n='footerTxt1' style='margin-bottom: 5px;'>&#169; 2026 CIS Protocol. All Rights Reserved.</p>
+          <p data-i18n='footerTxt2' style='color:#f1c40f; font-weight:bold; margin-top: 5px;'><i class='fa-solid fa-shield-halved'></i> Security System Active</p>
+      </div>
+    </div>
+    
+    <nav class='top-nav' id='topNav' style='display:none;'>
+      <div style='display:flex; align-items:center; gap:10px;'>
+         <button class='nav-btn' onclick='window.closeScreen()' style='color:#f1c40f;'><i class='fa-solid fa-house'></i></button>
+         <select class='lang-select' id='langSelector' onchange='window.syncLang(this.value)'>
+             <option value='en'>EN</option><option value='id'>ID</option>
+         </select>
+      </div>
+      <div class='nav-actions'>
+        <button class='nav-btn' onclick='window.openChatModal()'><i class='fa-solid fa-headset'></i></button>
+        <button class='nav-btn' onclick='window.toggleNotif()'><i class='fa-solid fa-bell'></i><span class='notif-badge' id='notifBadge'>!</span></button>
+        <button class='nav-btn' onclick='window.toggleSidebar()' style='font-size: clamp(1.8rem, 8vw, 2.2rem); margin-left: 10px;'>&#9776;</button>
+      </div>
+      <div class='notif-panel' id='notifPanel'>
+        <div class='notif-header'><span data-i18n='notifTitle'>System Messages</span> <i class='fa-solid fa-check-double' onclick='window.toggleNotif()' style='color:#00f2fe; cursor:pointer;'></i></div>
+        <div class='notif-body' id='notifList'><div data-i18n='notifEmpty' style='padding:20px; text-align:center; color:#64748b; font-size:0.8rem;'>No messages.</div></div>
+      </div>
+    </nav>
+
+    <div class='sidebar-overlay' id='sidebarOverlay' onclick='window.toggleSidebar()'></div>
+    <div class='sidebar-menu' id='sidebarMenu'>
+      <div class='sidebar-header'><div data-i18n='menuTitle'>MAIN MENU</div><i class='fa-solid fa-xmark' onclick='window.toggleSidebar()' style='cursor:pointer; color:#ef4444; font-size:1.5rem;'></i></div>
+      <ul class='menu-list'>
+        <li class='active' onclick='window.openScreen("screen-home", this)'><i class='fa-solid fa-house'></i> <span data-i18n='menuHome'>Home</span></li>
+        <li onclick='window.openScreen("screen-topup", this)'><i class='fa-solid fa-shield-cat'></i> <span data-i18n='menuTopup'>Account Activation</span></li>
+        <li onclick='window.openScreen("screen-wallet", this)'><i class='fa-solid fa-wallet'></i> <span data-i18n='menuWallet'>Wallet &amp; Miner</span></li>
+        <li onclick='window.openScreen("screen-mutasi", this)'><i class='fa-solid fa-receipt'></i> <span data-i18n='menuHistory'>Transaction History</span></li>
+        <li onclick='window.openScreen("screen-profile", this)'><i class='fa-solid fa-user-shield'></i> <span data-i18n='menuProfile'>My Profile</span></li>
+        <li onclick='window.logoutUser()' style='color:#ef4444; border-top:1px solid #1e293b; margin-top:10px;'><i class='fa-solid fa-power-off'></i> <span data-i18n='menuLogout'>Logout</span></li>
+      </ul>
+    </div>
+
+    <div id='screen-home' style='display: none;'>
+      <div style='padding: 20px 15px; position: relative;'>
+          
+          <div class='beta-badge' onclick='window.showToast("Sistem masih dalam tahap Uji Coba / Trial & Error.")' style='cursor:pointer;' title='Versi Uji Coba'>
+              <div style='display:flex; align-items:center; gap:8px;'>
+                  <i class='fa-solid fa-flask-vial' style='font-size:1.2rem;'></i>
+                  <div style='text-align:left; line-height:1.1;'>
+                      <div style='font-size:0.75rem; color:#fff; font-weight:bold;'>BETA VERSION</div>
+                      <div style='font-size:0.5rem; color:#f39c12; letter-spacing:1px;'>SYSTEM TESTING</div>
+                  </div>
+              </div>
+          </div>
+
+          <div class='center-logo-area'>
+            <img alt='CIS' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgjsWDBQtB22Em_aRXK1HeIp9_t9QiB_dLrz4H0GDVYzb1LGOJJxEeZjjxFY9cpXD4-n-DEd2ycC4Voqixqhvei_SVGeceVpoxT6oSUJZ9XfRFPkQdlCDHcl6p4rykNNZDcNdJ7FaPzqcHi-2j00jcM7Y_zn76nLR0BOLQ3yd0kRUupPc4f9c5uZqRN5FGP/w400-h400/CIS%20logo.png'/>
+            <div class='brand-text'>CHARITY INTEGRATION SYSTEM</div>
+            <div class='miner-id-text'>USERNAME: <span id='displayUser' style='color:#00f2fe; font-weight:bold;'></span></div>
+          </div>
+          
+          <div id='claimArea'>
+              <button class='btn-claim-pro' id='btnClaimGame' onclick='window.claimPermainan()'>
+                  <i class='fa-solid fa-gem' style='color:#fff;'></i> <span data-i18n='btnClaim'>CLAIM COINS (1 HR)</span>
+              </button>
+              <div class='timer-container' id='claimTimerContainer'>
+                  <div style='font-size: 0.7rem; color: #94a3b8; font-weight: bold; letter-spacing:1px; margin-bottom: 5px;'><i class='fa-solid fa-clock'></i> CLAIM WAITING TIME</div>
+                  <div id='claimTimerText' style='font-family: Orbitron; font-size: 2rem; font-weight: 900; color: #00f2fe; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,242,254,0.5);'>00 : 00</div>
+              </div>
+          </div>
+
+          <div class='top-stats-area'>
+            <div class='doge-balance' id='displayDoge'>0.00000000</div>
+            <div class='doge-label'>VRSC (VerusCoin)</div>
+            <div class='idr-estimate'><span data-i18n='idrEst'>IDR Est: </span><span id='displayRupiah'>Rp 0</span></div>
+            <div class='live-price'><i class='fa-solid fa-chart-line' style='color:#f39c12;'></i> 1 VRSC = <span id='displayLivePrice'>Rp 0</span></div>
+          </div>
+          
+          <div class='mining-info'>
+            <div><span data-i18n='lblPower'>Speed</span>: <span id='displaySpeed' style='color:#00f2fe;'>0</span> D/s</div>
+            <div><span data-i18n='lblActive'>Active Time Left</span>: <span id='displaySisaHari' style='color:#f39c12;'>0 Days</span></div>
+          </div>
+          
+          <div class='mining-visual-container' id='miningVisualDash'>
+              <div style='font-family: &apos;Orbitron&apos;, sans-serif; color: #f1c40f; font-size: 0.9rem; letter-spacing: 2px; font-weight:bold;'>
+                  <i class='fa-solid fa-microchip'></i> SCRYPT MINING ENGINE
+              </div>
+              <div class='cpu-core'><div class='cpu-core-inner'><i class='fa-solid fa-bolt cpu-icon'></i></div></div>
+              <div style='display:flex; justify-content: space-between; font-size: 0.7rem; font-weight: bold; padding: 0 10px;'>
+                  <span style='color:#bdc3c7;'>TEMP: <span id='visualTemp' style='color:#94a3b8;'>30&#176;C</span></span>
+                  <span id='visualHashrate' style='color:#3498db;'>0.00 D/s</span>
+                  <span style='color:#bdc3c7;'>NET: <span id='visualNet' style='color:#94a3b8;'>OFF</span></span>
+                  <span style='color:#bdc3c7;'>PING: <span id='visualPing' style='color:#94a3b8;'>--</span></span>
+              </div>
+              <div class='terminal-log' id='terminalLog'>
+                  <div class='log-line'>&gt; System idle... Ready to start.</div>
+              </div>
+          </div>
+          
+          <div class='mining-controls'>
+            <button class='btn-control btn-start' id='btnStart'><i class='fa-solid fa-play'></i> START</button>
+            <button class='btn-control btn-stop' disabled='true' id='btnStop'><i class='fa-solid fa-stop'></i> STOP</button>
+          </div>
+
+          <div class='grid-menu'>
+            <div class='menu-box' onclick='window.openScreen("screen-topup")' style='border-color:#00f2fe;'><i class='fa-solid fa-shield-cat' style='color:#00f2fe;'></i><span data-i18n='menuTopup'>Account Activation</span></div>
+            <div class='menu-box' onclick='window.openWalletModal("modalBeliDaya")' style='border-color:#2ecc71;'><i class='fa-solid fa-bolt' style='color:#2ecc71;'></i><span data-i18n='menuUpgrade'>Upgrade Speed</span></div>
+            <div class='menu-box' onclick='window.openScreen("screen-wallet")' style='border-color:#f39c12;'><i class='fa-solid fa-wallet' style='color:#f39c12;'></i><span data-i18n='menuWallet'>Wallet &amp; Miner</span></div>
+            <div class='menu-box' onclick='window.openScreen("screen-p2p")' style='border-color:#e84393;'><i class='fa-solid fa-cart-shopping' style='color:#e84393;'></i><span data-i18n='menuP2P'>Beli Token P2P</span></div>
+	    <div class='menu-box' onclick='window.openLeaderboard()' style='border-color:#f1c40f;'><i class='fa-solid fa-trophy' style='color:#f1c40f;'></i><span data-i18n='menuTopSultan'>Top 10 Sultan</span></div>
+            <div class='menu-box' onclick='window.openNetworkModal()' style='border-color:#3498db;'><i class='fa-solid fa-sitemap' style='color:#3498db;'></i><span data-i18n='menuNetwork'>Network Tree</span></div>
+            <div class='menu-box' onclick='window.openHargaPasar()' style='border-color:#e67e22;'><i class='fa-solid fa-tags' style='color:#e67e22;'></i><span data-i18n='menuHarga'>Harga Pasar</span></div>
+            <div class='menu-box' onclick='window.openScreen("screen-profile")' style='border-color:#9b59b6;'><i class='fa-solid fa-user-shield' style='color:#9b59b6;'></i><span data-i18n='menuProfile'>My Profile</span></div>
+	    
+          </div>
+
+          <div class='global-stats-container'>
+             <div class='stat-box'><i class='fa-solid fa-server stat-icon'></i><div class='stat-val' id='statOnlineDash'>0 <span class='blink-dot'></span></div><div class='stat-label'>ACTIVE MINER</div></div>
+             <div class='stat-box'><i class='fa-solid fa-users stat-icon'></i><div class='stat-val' id='statRegDash'>0</div><div class='stat-label'>TOTAL USERS</div></div>
+             <div class='stat-box'><i class='fa-brands fa-digital-ocean stat-icon'></i><div class='stat-val' id='statWdDash'>0 VRSC</div><div class='stat-label'>TOTAL WD</div></div>
+          </div>
+          
+          <div class='auth-footer' style='margin-top: 30px; border-top: 1px dashed #334155; padding-top: 15px;'>
+              <p data-i18n='footerTxt1'>&#169; 2026 CIS Protocol. All Rights Reserved.</p>
+              <p data-i18n='footerTxt2' style='color:#f1c40f; font-weight:bold;'><i class='fa-solid fa-shield-halved'></i> Security System Active</p>
+          </div>
+      </div>
+    </div>
+
+    <div class='app-screen' id='screen-topup'>
+      <div class='screen-header'>
+         <div class='header-left'><div class='btn-back' onclick='window.closeScreen()'><i class='fa-solid fa-reply'></i></div><span data-i18n='menuTopup'>ACCOUNT ACTIVATION</span></div><i class='fa-solid fa-house btn-home' onclick='window.closeScreen()'></i>
+      </div>
+      <div class='screen-content'>
+        <div class='panel-box'>
+          <h3 style='color:#00f2fe; margin-top:0;'><i class='fa-solid fa-shield-cat'></i> <span data-i18n='topupTitle'>ACTIVATE &amp; EXTEND</span></h3>
+          <p data-i18n='topupDesc' style='font-size:0.8rem; color:#94a3b8; margin-bottom:15px;'>Use <b style='color:#f1c40f;'>Activation Token</b> to activate new account or extend miner duration. <br/><br/><span style='color:#ef4444;'><i class='fa-solid fa-triangle-exclamation'></i> Do not accept fake tokens.</span></p>
+          <div class='token-card-list' id='listTopUpTokens'><div style='text-align:center; padding:15px; color:#64748b; font-size:0.85rem;'>Searching Activation Tokens in Wallet...</div></div>
+          <input id='selectedTokenCode' type='hidden' value=''/>
+          <button class='btn-cyan' data-i18n='btnUseToken' id='btnTopUp' style='margin-top: 15px;'>USE THIS TOKEN</button>
+          <div class='sys-msg' id='msgTopUp'></div>
+        </div>
+      </div>
+    </div>
+
+    <div class='app-screen' id='screen-wallet'>
+      <div class='screen-header'>
+         <div class='header-left'><div class='btn-back' onclick='window.closeScreen()'><i class='fa-solid fa-reply'></i></div><span data-i18n='menuWallet'>WALLET &amp; MINER</span></div><i class='fa-solid fa-house btn-home' onclick='window.closeScreen()'></i>
+      </div>
+      <div class='screen-content'>
+        <div class='sponsor-info-box'>
+           <div style='font-size:0.75rem; color:#94a3b8; font-weight:bold; letter-spacing:1px;'><i class='fa-solid fa-gift' style='color:#3498db;'></i> <span data-i18n='bonusDownline'>BONUS FROM DOWNLINE</span></div>
+           <div class='sponsor-amt' id='displayBonusSponsor'>0.00000 VRSC</div>
+           <div data-i18n='bonusDesc' style='font-size:0.7rem; color:#3498db;'>Automatically added to main VRSC Balance.</div>
+        </div>
+        <div class='panel-box wallet-btn' onclick='window.openWalletModal("modalSaldo")' style='border-color:#00f2fe;'><h3 style='margin:0; color:#00f2fe;'><i class='fa-solid fa-wallet'></i> <span data-i18n='idrBalance'>IDR BALANCE</span></h3><p data-i18n='idrDesc' style='font-size:0.75rem; color:#94a3b8; margin:5px 0 0 0;'>Exchange VRSC Coins to IDR</p></div>
+        <div class='panel-box wallet-btn' onclick='window.openWalletModal("modalBeliDaya")' style='border-color:#2ecc71;'><h3 style='margin:0; color:#2ecc71;'><i class='fa-solid fa-bolt'></i> <span data-i18n='menuUpgrade'>UPGRADE SPEED</span></h3><p data-i18n='upgradeDesc' style='font-size:0.75rem; color:#94a3b8; margin:5px 0 0 0;'>Upgrade Mining Engine</p></div>
+        <div class='panel-box wallet-btn' onclick='window.openWalletModal("modalWithdraw")' style='border-color:#f39c12;'><h3 style='margin:0; color:#f39c12;'><i class='fa-solid fa-print'></i> <span data-i18n='menuWd'>WITHDRAW BALANCE</span></h3><p data-i18n='wdDesc' style='font-size:0.75rem; color:#94a3b8; margin:5px 0 0 0;'>Convert Balance to Crypto Token</p></div>
+        <div class='panel-box wallet-btn' onclick='window.openWalletModal("modalStokToken")' style='border-color:#9b59b6;'><h3 style='margin:0; color:#9b59b6;'><i class='fa-solid fa-box-open'></i> <span data-i18n='menuStock'>MY TOKEN STOCK</span></h3><p data-i18n='stockDesc' style='font-size:0.75rem; color:#94a3b8; margin:5px 0 0 0;'>View &amp; Send Tokens to Friends</p></div>
+      </div>
+    </div>
+
+    <div class='app-screen' id='screen-mutasi'>
+      <div class='screen-header'>
+         <div class='header-left'><div class='btn-back' onclick='window.closeScreen()'><i class='fa-solid fa-reply'></i></div><span data-i18n='titleHist'>TRANSACTION HISTORY</span></div><i class='fa-solid fa-house btn-home' onclick='window.closeScreen()'></i>
+      </div>
+      <div class='screen-content'>
+        <div class='panel-box' style='padding:0;'>
+          <div style='padding: 10px 15px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center;'>
+              <span data-i18n='histList' style='font-size: 0.8rem; font-weight: bold; color: #94a3b8;'>History List</span>
+              <span data-i18n='histClear' onclick='window.deleteAllMutasi()' style='font-size: 0.7rem; color: #ef4444; cursor: pointer;'><i class='fa-solid fa-trash'></i> Clear History</span>
+          </div>
+          <div class='mutasi-list' id='mutasiListFull'>
+            <div data-i18n='histEmpty' style='padding:20px; text-align:center; font-size:0.8rem; color:#64748b;'>No transactions yet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class='app-screen' id='screen-profile'>
+      <div class='screen-header'>
+         <div class='header-left'><div class='btn-back' onclick='window.closeScreen()'><i class='fa-solid fa-reply'></i></div><span data-i18n='titleProf'>MY PROFILE</span></div><i class='fa-solid fa-house btn-home' onclick='window.closeScreen()'></i>
+      </div>
+      <div class='screen-content'>
+        <div class='panel-box'>
+          <label class='prof-label' data-i18n='lblYourUser'>Your Username</label>
+          <div class='input-group'>
+              <i class='fa-solid fa-lock left-icon' style='color:#ef4444;'></i>
+              <input class='input-dark' id='profUser' readonly='true' style='color:#94a3b8; cursor:not-allowed; border-color:#1e293b; background:rgba(0,0,0,0.5);' type='text'/>
+          </div>
+          <label class='prof-label'>Email</label><div class='input-group'><i class='fa-solid fa-envelope left-icon'></i><input class='input-dark' id='profEmail' readonly='true' type='email'/></div>
+          <label class='prof-label' data-i18n='lblSponsorCode'>Your Sponsor Code / Referral Link</label>
+          <div class='input-group' style='margin-bottom: 5px;'>
+              <i class='fa-solid fa-share-nodes left-icon' style='color:#3498db;'></i>
+              <input class='input-dark' id='profRefCode' readonly='true' style='color:#3498db; font-weight:bold; border-color:#3498db;' type='text'/>
+          </div>
+          <div style='display:flex; gap:10px; margin-bottom:15px;'>
+              <button class='btn-cyan' onclick='window.copyRefLink()' style='padding:10px; font-size:0.75rem; background:#3498db; color:#fff; flex:1;'><i class='fa-solid fa-copy'></i> COPY LINK</button>
+              <button class='btn-cyan' onclick='window.shareWaRef()' style='padding:10px; font-size:0.75rem; background:#2ecc71; color:#fff; flex:1;'><i class='fa-brands fa-whatsapp'></i> SHARE WA</button>
+          </div>
+	  <hr style='border:1px dashed #334155; margin: 20px 0;'/>
+       <h4 style='color:#38bdf8; margin-top:0;'><i class='fa-solid fa-building-columns'></i> DATA REKENING P2P</h4>
+       <p style='font-size:0.7rem; color:#94a3b8; margin:0 0 10px 0;'>Isi minimal 1 rekening agar Anda bisa muncul di Daftar Top Sultan.</p>
+       <div class='input-group'><i class='fa-solid fa-building-columns left-icon'></i><input class='input-dark' id='profBank' placeholder='Bank & No Rek (Cth: BCA 123 - Budi)' type='text'/></div>
+       <div class='input-group'><i class='fa-solid fa-wallet left-icon'></i><input class='input-dark' id='profEwallet' placeholder='DANA/GoPay/OVO (Cth: DANA 0812...)' type='text'/></div>
+       <div class='input-group'><i class='fa-brands fa-bitcoin left-icon'></i><input class='input-dark' id='profCrypto' placeholder='Alamat Wallet Crypto (Opsional)' type='text'/></div>
+          <hr style='border:1px dashed #334155; margin: 20px 0;'/>
+          <h4 style='color:#38bdf8; margin-top:0;'><i class='fa-solid fa-building-columns'></i> DATA REKENING P2P</h4>
+          <p style='font-size:0.7rem; color:#94a3b8; margin:0 0 10px 0;'>Isi rekening agar Anda bisa bertransaksi P2P di Daftar Top Sultan.</p>
+          <div class='input-group'><i class='fa-solid fa-building-columns left-icon'></i><input class='input-dark' id='profBank' placeholder='Bank & No Rek (Cth: BCA 123 - Budi)' type='text'/></div>
+          <div class='input-group'><i class='fa-solid fa-wallet left-icon'></i><input class='input-dark' id='profEwallet' placeholder='DANA/GoPay/OVO (Cth: DANA 0812...)' type='text'/></div>
+          <div class='input-group'><i class='fa-brands fa-bitcoin left-icon'></i><input class='input-dark' id='profCrypto' placeholder='Alamat Wallet Crypto (Opsional)' type='text'/></div>
+	  <label class='prof-label' data-i18n='lblNewPass'>Change Password (Optional)</label><div class='input-group'><i class='fa-solid fa-key left-icon'></i><input class='input-dark' id='profNewPass' type='password'/><i class='fa-solid fa-eye right-icon' onclick='window.togglePass("profNewPass", this)'></i></div>
+          <hr style='border:1px dashed #334155; margin: 20px 0;'/>
+          <h4 style='color:#f1c40f; margin-top:0;'><i class='fa-solid fa-lock'></i> <span data-i18n='lblPinTitle'>TRANSACTION SECURITY PIN</span></h4>
+          <p data-i18n='lblPinDesc' style='font-size:0.7rem; color:#94a3b8; margin:0 0 10px 0;'>Create a 6-digit PIN for transactions.</p>
+          <div class='input-group'><i class='fa-solid fa-key left-icon' style='color:#f1c40f;'></i><input class='input-dark' id='profNewPin' maxlength='6' placeholder='Create 6-Digit PIN' style='border-color:#f1c40f;' type='number'/></div>
+          <label class='prof-label' style='color:#2ecc71; margin-top:20px;'><i class='fa-solid fa-shield-halved'></i> <span data-i18n='lblConfChange'>Security Verification</span></label>
+          <p data-i18n='lblConfDesc' style='font-size:0.7rem; color:#94a3b8; margin:0 0 10px 0;'>Enter current password to save profile.</p>
+          <div class='input-group'><i class='fa-solid fa-lock left-icon'></i><input class='input-dark' id='profConfirmPass' type='password'/><i class='fa-solid fa-eye right-icon' onclick='window.togglePass("profConfirmPass", this)'></i></div>
+          <button class='btn-cyan' id='btnUpdateProf' style='background:#22c55e; color:#fff;'><i class='fa-solid fa-save'></i> <span data-i18n='btnSaveChange'>SAVE PROFILE</span></button>
+          <div class='sys-msg' id='msgProf'></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+	<div class='app-screen' id='screen-p2p'>
+   <div class='screen-header'>
+      <div class='header-left'><div class='btn-back' onclick='window.closeScreen()'><i class='fa-solid fa-reply'></i></div><span>P2P MARKETPLACE</span></div><i class='fa-solid fa-house btn-home' onclick='window.closeScreen()'></i>
+   </div>
+   <div class='screen-content'>
+     <button class='btn-claim-pro' onclick='window.bukaModalBeliP2P()' style='margin-bottom:15px; padding:15px; background:linear-gradient(135deg, #e84393 0%, #fd79a8 100%); box-shadow: 0 5px 15px rgba(232, 67, 147, 0.3);'><i class='fa-solid fa-cart-plus' style='color:#fff;'></i> <span style='color:#fff;'>ORDER BELI TOKEN BARU</span></button>
+
+     <div style='display:flex; border-bottom:1px solid #334155; margin-bottom:15px;'>
+         <div id='tabP2pBeli' onclick='window.switchP2PTab("beli")' style='flex:1; text-align:center; padding:10px; cursor:pointer; font-weight:bold; color:#00f2fe; border-bottom:2px solid #00f2fe;'>Order Saya (Beli)</div>
+         <div id='tabP2pJual' onclick='window.switchP2PTab("jual")' style='flex:1; text-align:center; padding:10px; cursor:pointer; font-weight:bold; color:#94a3b8;'>Permintaan Masuk (Sultan)</div>
+     </div>
+
+     <div class='table-responsive' style='max-height: 450px; overflow-y: auto;'>
+         <table style='width: 100%; border-collapse: collapse; text-align: left; font-size:0.8rem;'>
+             <thead><tr style='background: #1e293b;'><th style='padding:8px;'>Waktu & ID</th><th style='padding:8px;'>Detail Token</th><th style='padding:8px;'>Status & Aksi</th></tr></thead>
+             <tbody id='tblP2P'><tr><td colspan='3' style='text-align:center; padding:20px;'>Memuat transaksi P2P...</td></tr></tbody>
+         </table>
+     </div>
+   </div>
+ </div>
+
+ <div class='modal-overlay' id='modalBeliP2P'>
+   <div class='modal-card'>
+     <button class='btn-close-modal' onclick='document.getElementById("modalBeliP2P").style.display="none"' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer;'><i class='fa-solid fa-xmark'></i></button>
+     <h3 style='color:#e84393; margin:0 0 15px 0;'><i class='fa-solid fa-cart-shopping'></i> FORM BELI TOKEN P2P</h3>
+
+     <label class='prof-label'>1. Pilih Agen/Sultan</label>
+     <select class='input-dark no-icon' id='p2pTargetSultan' style='margin-bottom:10px;' onchange='window.tampilkanRekeningSultan()'><option value=''>Memuat Data Sultan...</option></select>
+
+     <div id='infoRekeningSultan' style='display:none; background:rgba(0,0,0,0.4); padding:10px; border:1px dashed #e84393; border-radius:8px; margin-bottom:15px; font-size:0.75rem; color:#e2e8f0; line-height:1.5;'>
+         </div>
+
+     <label class='prof-label'>2. Pilih Jenis Token</label>
+     <select class='input-dark no-icon' id='p2pJenisToken' style='margin-bottom:10px;' onchange='window.loadHargaP2P()'>
+         <option value=''>-- Pilih Jenis --</option>
+         <option value='REG'>Token Aktivasi (REG)</option>
+         <option value='MINING'>Token Speed (MINING)</option>
+     </select>
+
+     <label class='prof-label'>3. Nominal/Harga Sesuai Market</label>
+     <select class='input-dark no-icon' id='p2pNominalToken' style='margin-bottom:15px;'><option value=''>-- Pilih Jenis Token Dulu --</option></select>
+
+     <button class='btn-cyan' id='btnKirimPesananP2P' onclick='window.buatPesananP2P()' style='background:#e84393; color:#fff;'><i class='fa-solid fa-paper-plane'></i> KIRIM REQUEST ORDER</button>
+   </div>
+ </div>
+
+	<!-- LAYAR UTAMA P2P MARKETPLACE -->
+    <div class='app-screen' id='screen-p2p'>
+      <div class='screen-header'>
+         <div class='header-left'><div class='btn-back' onclick='window.closeScreen()'><i class='fa-solid fa-reply'></i></div><span>P2P MARKETPLACE</span></div><i class='fa-solid fa-house btn-home' onclick='window.closeScreen()'></i>
+      </div>
+      <div class='screen-content'>
+        <button class='btn-claim-pro' onclick='window.bukaModalBeliP2P()' style='margin-bottom:15px; padding:15px; background:linear-gradient(135deg, #e84393 0%, #fd79a8 100%); box-shadow: 0 5px 15px rgba(232, 67, 147, 0.3);'><i class='fa-solid fa-cart-plus' style='color:#fff;'></i> <span style='color:#fff;'>ORDER BELI TOKEN BARU</span></button>
+
+        <div style='display:flex; border-bottom:1px solid #334155; margin-bottom:15px;'>
+            <div id='tabP2pBeli' onclick='window.switchP2PTab("beli")' style='flex:1; text-align:center; padding:10px; cursor:pointer; font-weight:bold; color:#00f2fe; border-bottom:2px solid #00f2fe;'>Order Beli Anda</div>
+            <div id='tabP2pJual' onclick='window.switchP2PTab("jual")' style='flex:1; text-align:center; padding:10px; cursor:pointer; font-weight:bold; color:#94a3b8;'>Permintaan Masuk (Sultan)</div>
+        </div>
+
+        <div class='table-responsive' style='max-height: 450px; overflow-y: auto;'>
+            <table style='width: 100%; border-collapse: collapse; text-align: left; font-size:0.8rem;'>
+                <thead><tr style='background: #1e293b;'><th style='padding:8px;'>Waktu & ID</th><th style='padding:8px;'>Detail Token</th><th style='padding:8px;'>Status & Aksi</th></tr></thead>
+                <tbody id='tblP2P'><tr><td colspan='3' style='text-align:center; padding:20px;'>Memuat transaksi P2P...</td></tr></tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL FORM ORDER P2P -->
+    <div class='modal-overlay' id='modalBeliP2P'>
+      <div class='modal-card'>
+        <button class='btn-close-modal' onclick='document.getElementById("modalBeliP2P").style.display="none"' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer;'><i class='fa-solid fa-xmark'></i></button>
+        <h3 style='color:#e84393; margin:0 0 15px 0;'><i class='fa-solid fa-cart-shopping'></i> FORM BELI TOKEN P2P</h3>
+        
+        <label class='prof-label'>1. Pilih Agen/Sultan Penyedia</label>
+        <select class='input-dark no-icon' id='p2pTargetSultan' style='margin-bottom:10px;' onchange='window.tampilkanRekeningSultan()'><option value=''>Memuat Data Sultan...</option></select>
+        
+        <div id='infoRekeningSultan' style='display:none; background:rgba(0,0,0,0.4); padding:10px; border:1px dashed #e84393; border-radius:8px; margin-bottom:15px; font-size:0.75rem; color:#e2e8f0; line-height:1.5;'>
+            <!-- Rincian rekening agen akan muncul di sini -->
+        </div>
+
+        <label class='prof-label'>2. Pilih Jenis Token</label>
+        <select class='input-dark no-icon' id='p2pJenisToken' style='margin-bottom:10px;' onchange='window.loadHargaP2P()'>
+            <option value=''>-- Pilih Jenis --</option>
+            <option value='REG'>Token Aktivasi (REG)</option>
+            <option value='MINING'>Token Speed (MINING)</option>
+        </select>
+        
+        <label class='prof-label'>3. Nominal/Harga Sesuai Market</label>
+        <select class='input-dark no-icon' id='p2pNominalToken' style='margin-bottom:15px;'><option value=''>-- Pilih Jenis Token Dulu --</option></select>
+
+        <button class='btn-cyan' id='btnKirimPesananP2P' onclick='window.buatPesananP2P()' style='background:#e84393; color:#fff;'><i class='fa-solid fa-paper-plane'></i> KIRIM REQUEST ORDER</button>
+      </div>
+    </div>
+
+  <div class='modal-overlay' id='modalNotifAdmin' style='z-index: 999999;'>
+    <div class='modal-card' style='max-width: 400px; text-align: center; border-color: #00f2fe;'>
+      <button class='btn-close-modal' onclick='document.getElementById("modalNotifAdmin").style.display="none"' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer;'><i class='fa-solid fa-xmark'></i></button>
+      <div style='width: 60px; height: 60px; background: rgba(0, 242, 254, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; border: 2px solid #00f2fe;'>
+          <i class='fa-solid fa-envelope-open-text' style='font-size: 1.8rem; color: #00f2fe;'></i>
+      </div>
+      <h3 style='color:#00f2fe; font-family:Orbitron; margin:0 0 5px 0;'>PESAN DARI ADMIN CIS</h3>
+      <div id='isiNotifAdmin' style='font-size:0.85rem; color:#e2e8f0; margin: 15px 0; line-height: 1.5; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px dashed #334155;'>
+          Isi pesan di sini...
+      </div>
+      <button class='btn-cyan' onclick='document.getElementById("modalNotifAdmin").style.display="none"' style='margin-top: 10px;'>TUTUP PESAN</button>
+    </div>
+  </div>
+  
+  <div class='modal-overlay' id='chatModal'>
+    <div class='modal-card' style='background:#162032;'>
+      <button class='btn-close-modal' onclick='window.closeChatModal()' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer;'><i class='fa-solid fa-xmark'></i></button>
+      <h3 style='color:#00f2fe; font-family:Orbitron; margin:0 0 10px 0;'><i class='fa-solid fa-headset'></i> <span data-i18n='chatTitle'>Help Center</span></h3>
+      <p data-i18n='chatDesc' style='font-size:0.75rem; color:#94a3b8;'>Contact Admin for issues.</p>
+      <textarea id='chatPesan' placeholder='Type your message or issue...' style='width:100%; height:100px; background:#0b0f19; border:1px solid #334155; border-radius:8px; padding:10px; color:#fff; font-family:inherit; margin-bottom:10px;'></textarea>
+      <button class='btn-cyan' data-i18n='btnSendChat' id='btnKirimChat' onclick='window.kirimPesanPusat()' style='padding:10px; font-size:0.9rem;'>SEND MESSAGE</button>
+      <div class='sys-msg msg-ok' id='msgChat'></div>
+    </div>
+  </div>
+
+  <div class='modal-overlay' id='modalPin'>
+    <div class='modal-card' style='text-align:center;'>
+      <h3 style='color:#f1c40f; font-family:Orbitron; margin:0 0 5px 0;'><i class='fa-solid fa-lock'></i> <span data-i18n='pinAuthTitle'>PIN AUTHORIZATION</span></h3>
+      <p data-i18n='pinAuthDesc' style='font-size:0.75rem; color:#94a3b8; margin:0 0 15px 0;'>Enter your 6-Digit PIN.</p>
+      <div class='pin-input-area'>
+        <input class='pin-box' id='p1' maxlength='1' type='password'/><input class='pin-box' id='p2' maxlength='1' type='password'/><input class='pin-box' id='p3' maxlength='1' type='password'/>
+        <input class='pin-box' id='p4' maxlength='1' type='password'/><input class='pin-box' id='p5' maxlength='1' type='password'/><input class='pin-box' id='p6' maxlength='1' type='password'/>
+      </div>
+      <button class='btn-cyan' data-i18n='btnConfirmPin' id='btnConfirmPin' style='background:#f39c12; margin-bottom:10px;'>PROCESS PIN</button>
+      <button class='switch-link' data-i18n='btnCancel' onclick='window.closePinModal()' style='width:100%; background:none; border:none; color:#ef4444;'>Cancel</button>
+    </div>
+  </div>
+  
+  <div class='modal-overlay' id='modalLeaderboard'>
+    <div class='modal-card' style='max-width: 450px;'>
+      <button class='btn-close-modal' onclick='document.getElementById("modalLeaderboard").style.display="none"' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer;'><i class='fa-solid fa-xmark'></i></button>
+      <h3 style='color:#f1c40f; font-family:Orbitron; text-align:center; margin:0 0 15px 0;'><i class='fa-solid fa-crown'></i> <span data-i18n='menuTopSultan'>TOP 10 SULTAN</span></h3>
+      <p style='font-size:0.75rem; color:#94a3b8; text-align:center; margin-top:0;'>Para pengepul token terpercaya. Beli Token langsung via WhatsApp!</p>
+      <div id='leaderboardList' style='max-height:350px; overflow-y:auto; padding-right:5px;'></div>
+    </div>
+  </div>
+
+  <div class='modal-overlay' id='modalHargaPasar'>
+    <div class='modal-card' style='max-width: 450px;'>
+      <button class='btn-close-modal' onclick='window.closeWalletModal("modalHargaPasar")' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer;'><i class='fa-solid fa-xmark'></i></button>
+      <h3 style='color:#e67e22; margin:0 0 15px 0;'><i class='fa-solid fa-tags'></i> DAFTAR HARGA PASAR</h3>
+      <p style='font-size:0.75rem; color:#94a3b8; margin-top:0;'>Gunakan patokan harga ini untuk bertransaksi (jual/beli) Token dengan Pengepul.</p>
+      <div class='table-responsive' style='max-height:350px; overflow-y:auto;'>
+        <table style='width: 100%; border-collapse: collapse; text-align: left; font-size:0.85rem;'>
+          <thead><tr style='background: #1e293b;'><th style='padding:8px 5px;'>Jenis Token</th><th style='padding:8px 5px;'>Fungsi & Durasi</th><th style='padding:8px 5px;'>Patokan Harga</th></tr></thead>
+          <tbody id='tblHargaPasar'><tr><td colspan='3' style='text-align:center;'>Memuat harga...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class='modal-overlay' id='modalSaldo'>
+    <div class='modal-card'>
+      <button class='btn-close-modal' onclick='window.closeWalletModal("modalSaldo")' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer;'><i class='fa-solid fa-xmark'></i></button>
+      <h3 style='color:#00f2fe; margin:0;'><i class='fa-solid fa-wallet'></i> <span data-i18n='idrBalance'>IDR BALANCE</span></h3>
+      <div id='wdSisaSaldo' style='font-size:2rem; font-family:Orbitron; font-weight:900; color:#fff;'>Rp 0</div>
+      <div style='background:rgba(243, 156, 18, 0.1); border:1px dashed #f39c12; padding:15px; border-radius:8px; margin-top:15px;'>
+          <p style='margin:0 0 10px 0; font-size:0.8rem; color:#f39c12;'><i class='fa-brands fa-digital-ocean'></i> <span data-i18n='vrscEx'>Exchangeable VRSC Coins:</span> <strong id='txtDogeBelumTukar'>Rp 0</strong></p>
+          <button class='btn-cyan' data-i18n='btnEx' id='btnTukarDoge' onclick='window.tukarDogeKeRupiah()' style='padding:10px; font-size:0.8rem; background:#f39c12; color:#fff;'><i class='fa-solid fa-exchange-alt'></i> EXCHANGE COINS TO IDR</button>
+      </div>
+    </div>
+  </div>
+
+  <div class='modal-overlay' id='modalBeliDaya'>
+    <div class='modal-card'>
+      <button class='btn-close-modal' onclick='window.closeWalletModal("modalBeliDaya")' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer;'><i class='fa-solid fa-xmark'></i></button>
+      <h3 style='color:#2ecc71; margin:0;'><i class='fa-solid fa-bolt'></i> <span data-i18n='menuUpgrade'>UPGRADE SPEED</span></h3>
+      <p data-i18n='upNote' style='font-size:0.8rem; color:#94a3b8; margin:0 0 10px 0;'>Select an <b style='color:#2ecc71;'>Upgrade Token</b> from your stock to boost mining speed.</p>
+      
+      <p data-i18n='lblSelTk' style='font-size:0.75rem; color:#f1c40f; margin:0 0 10px 0; font-weight:bold;'><i class='fa-solid fa-box-open'></i> SELECT TOKEN FROM STOCK:</p>
+      <div class='token-card-list' id='listTokenBeliDaya' style='max-height: 180px; overflow-y: auto; padding-right: 5px; margin-bottom: 15px;'><div style='text-align:center; padding:15px; color:#64748b; font-size:0.85rem;'>Searching token...</div></div>
+      <input id='selectedTokenBeliDaya' type='hidden' value=''/>
+      <input id='selectedNominalTokenBeliDaya' type='hidden' value='0'/>
+      
+      <div class='input-group' style='margin-bottom:15px;'>
+          <input class='input-dark no-icon' id='pinBeliHashInline' placeholder='Masukkan 6-Digit PIN Anda' style='border-color:#2ecc71;' type='password' maxlength='6' inputmode='numeric'/>
+          <i class='fa-solid fa-eye right-icon' onclick='window.togglePass("pinBeliHashInline", this)'></i>
+      </div>
+
+      <button class='btn-cyan' data-i18n='btnUseTokenNow' id='btnBeliHash' onclick='window.eksekusiBeliHashInline()' style='background:#2ecc71; color:#fff;'><i class='fa-solid fa-fire'></i> USE TOKEN NOW</button>
+      <div class='sys-msg' id='msgBeliHash'></div>
+    </div>
+  </div>
+
+  <div class='modal-overlay' id='modalWithdraw'>
+    <div class='modal-card'>
+      <button class='btn-close-modal' onclick='window.closeWalletModal("modalWithdraw")' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer;'><i class='fa-solid fa-xmark'></i></button>
+      <h3 style='color:#f39c12; margin:0;'><i class='fa-solid fa-print'></i> <span data-i18n='menuWd'>WITHDRAW BALANCE</span></h3>
+      <p data-i18n='wdNote' style='font-size:0.8rem; color:#94a3b8; margin:0 0 10px 0;'>Mint IDR Balance to Token to sell/send to friends.</p>
+      <div style='background:rgba(243, 156, 18, 0.1); border:1px dashed #f39c12; padding:10px; border-radius:8px; margin-bottom:15px; text-align:center;'>
+          <span data-i18n='lblAvBal' style='font-size:0.75rem; color:#f39c12; font-weight:bold;'>AVAILABLE BALANCE</span><br/><span id='infoSaldoCetak' style='font-family:Orbitron; font-size:1.3rem; font-weight:900; color:#fff;'>Rp 0</span>
+      </div>
+      <select class='input-dark no-icon' id='jenisTokenWd' style='margin-bottom:10px;'>
+          <option value='MINING'>Mint Speed Upgrade Token</option>
+          <option value='REG'>Mint Account Activation Token</option>
+      </select>
+      
+      <input class='input-dark no-icon' id='targetUserWd' placeholder='Target Username (Your Friend)' style='margin-bottom:10px;' type='text' oninput='this.value = this.value.toUpperCase().replace(/\s/g, "")'/>
+      
+      <select class='input-dark no-icon' id='inputWithdraw' style='color:#f39c12; font-weight:bold; margin-bottom:15px;'>
+          <option value='10000'>Withdraw: Rp 10.000</option>
+          <option value='20000'>Withdraw: Rp 20.000</option>
+          <option value='50000'>Withdraw: Rp 50.000</option>
+          <option value='100000'>Withdraw: Rp 100.000</option>
+          <option value='500000'>Withdraw: Rp 500.000</option>
+          <option value='1000000'>Withdraw: Rp 1.000.000</option>
+      </select>
+
+      <div class='input-group' style='margin-bottom:15px;'>
+          <input class='input-dark no-icon' id='pinWithdrawInline' placeholder='Masukkan 6-Digit PIN Anda' style='border-color:#f1c40f;' type='password' maxlength='6' inputmode='numeric'/>
+          <i class='fa-solid fa-eye right-icon' onclick='window.togglePass("pinWithdrawInline", this)'></i>
+      </div>
+
+      <button class='btn-cyan' data-i18n='btnMint' id='btnWithdraw' onclick='window.eksekusiWdInline()' style='background:#f39c12; color:#fff;'>PROCESS WITHDRAWAL</button>
+      <div class='sys-msg' id='msgWithdraw'></div>
+    </div>
+  </div>
+
+  <div class='modal-overlay' id='modalStokToken'>
+    <div class='modal-card' style='max-width: 450px;'>
+      <button class='btn-close-modal' onclick='window.closeWalletModal("modalStokToken")' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer;'><i class='fa-solid fa-xmark'></i></button>
+      <h3 style='color:#9b59b6; margin:0;'><i class='fa-solid fa-box-open'></i> <span data-i18n='menuStock'>MY TOKEN STOCK</span></h3>
+      <p data-i18n='tkNote' style='font-size:0.7rem; color:#94a3b8; margin:0 0 15px 0;'>*Used or sent tokens will be removed.</p>
+      
+      <h4 style='color:#f1c40f; margin:10px 0 5px 0;'><i class='fa-solid fa-shield-cat'></i> TOKEN AKTIVASI (REG)</h4>
+      <div class='table-responsive' style='max-height: 150px; overflow-y: auto; margin-bottom: 15px;'>
+        <table style='width: 100%; border-collapse: collapse; text-align: left; font-size:0.85rem;'>
+          <thead><tr style='background: #1e293b;'><th data-i18n='thDate' style='padding:8px 5px;'>Time &amp; Source</th><th data-i18n='thCode' style='padding:8px 5px;'>Code &amp; Value</th><th data-i18n='thAct' style='padding:8px 5px;'>Action</th></tr></thead>
+          <tbody id='tblMyTokensReg'><tr><td colspan='3' style='text-align:center; padding:15px;'>Searching token...</td></tr></tbody>
+        </table>
+      </div>
+
+      <h4 style='color:#2ecc71; margin:10px 0 5px 0;'><i class='fa-solid fa-bolt'></i> TOKEN UPGRADE (MINING)</h4>
+      <div class='table-responsive' style='max-height: 150px; overflow-y: auto;'>
+        <table style='width: 100%; border-collapse: collapse; text-align: left; font-size:0.85rem;'>
+          <thead><tr style='background: #1e293b;'><th data-i18n='thDate' style='padding:8px 5px;'>Time &amp; Source</th><th data-i18n='thCode' style='padding:8px 5px;'>Code &amp; Value</th><th data-i18n='thAct' style='padding:8px 5px;'>Action</th></tr></thead>
+          <tbody id='tblMyTokensMining'><tr><td colspan='3' style='text-align:center; padding:15px;'>Searching token...</td></tr></tbody>
+        </table>
+      </div>
+
+      <div id='formTransferToken' style='display:none; background:#1e293b; padding:15px; border-radius:10px; border:1px solid #f39c12; margin-top:20px;'>
+        <h4 style='color:#f39c12; margin:0 0 10px 0;'><span data-i18n='sendTk'>Send Token to Friend</span>: <span id='lblTokenTransfer' style='color:#fff;'></span></h4>
+        <p data-i18n='sendDesc' style='font-size:0.75rem; color:#94a3b8; margin-top:0;'>Enter recipient Username.</p>
+        <input class='input-dark no-icon' id='inpTargetUser' placeholder='Friend Username' type='text' oninput='this.value = this.value.toUpperCase().replace(/\s/g, "")'/>
+        <input id='inpTokenIdTransfer' type='hidden'/> <input id='inpTokenNominalTransfer' type='hidden'/> <input id='inpTokenCodeTransfer' type='hidden'/>
+        <div style='display:flex; gap:10px; margin-bottom:0; margin-top:10px;'><button class='btn-cyan' data-i18n='btnSend' onclick='window.askPinBeforeAction("SEND_TOKEN")' style='margin-bottom:0; background:#22c55e; color:#fff;'>SEND</button><button class='btn-cyan' data-i18n='btnCancel' onclick='window.batalTransfer()' style='margin-bottom:0; background:#ef4444; color:#fff;'>CANCEL</button></div>
+        <div class='sys-msg msg-err' id='msgTransfer'></div>
+      </div>
+    </div>
+  </div>
+
+  <div class='modal-overlay' id='modalNetwork'>
+    <div class='modal-card' style='max-width: 450px; width:95%;'>
+      <button class='btn-close-modal' onclick='window.closeNetworkModal()' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer; z-index:10;'><i class='fa-solid fa-xmark'></i></button>
+      <h3 style='color:#3498db; margin:top:0; font-family:Orbitron;'><i class='fa-solid fa-sitemap'></i> <span data-i18n='menuNetwork'>NETWORK TREE</span></h3>
+      
+      <div style='display:flex; border-bottom:1px solid #334155; margin-bottom:15px;'>
+          <div id='tabNetDownline' onclick='window.switchNetTab("downline")' style='flex:1; text-align:center; padding:10px; cursor:pointer; font-weight:bold; color:#00f2fe; border-bottom:2px solid #00f2fe;'>Downline</div>
+          <div id='tabNetBonus' onclick='window.switchNetTab("bonus")' style='flex:1; text-align:center; padding:10px; cursor:pointer; font-weight:bold; color:#94a3b8;'>Bonus Received</div>
+      </div>
+
+      <div id='netAreaDownline'>
+          <div style='background:#1e293b; padding:10px; border-radius:8px; margin-bottom:15px; border-left:3px solid #3498db; font-size:0.8rem; display:flex; justify-content:space-between; align-items:center;'>
+              <div><span style='color:#94a3b8;'>Your Sponsor:</span> <b id='uplineNameText' style='color:#fff;'>-</b></div>
+              <a href='#' id='uplineWaBtn' style='display:none; background:#2ecc71; color:#fff; padding:5px 10px; border-radius:5px; text-decoration:none; font-weight:bold; font-size:0.75rem;' target='_blank'><i class='fa-brands fa-whatsapp'></i> Chat Upline</a>
+          </div>
+          <div class='tree-wrapper' id='networkTreeList'>
+             <div style='text-align:center; padding:20px; color:#64748b; font-size:0.8rem;'><i class='fa-solid fa-spinner fa-spin' style='font-size:2rem; margin-bottom:10px; color:#3498db;'></i><br/>Searching network tree...</div>
+          </div>
+      </div>
+
+      <div id='netAreaBonus' style='display:none;'>
+          <div class='table-responsive' style='max-height: 300px; overflow-y: auto;'>
+              <table style='width: 100%; border-collapse: collapse; text-align: left; font-size:0.8rem;'>
+                  <thead><tr style='background: #1e293b;'><th style='padding:8px;'>Time</th><th style='padding:8px;'>Source</th><th style='padding:8px;'>Coin Bonus</th></tr></thead>
+                  <tbody id='tblBonusSponsor'></tbody>
+              </table>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='modal-overlay' id='modalLegal'>
+    <div class='modal-card' style='max-width: 600px; max-height: 85vh; display: flex; flex-direction: column;'>
+      <button class='btn-close-modal' onclick='window.closeWalletModal("modalLegal")' style='position:absolute; right:15px; top:15px; background:none; border:none; color:#ef4444; font-size:1.2rem; cursor:pointer; z-index:10;'><i class='fa-solid fa-xmark'></i></button>
+      <h3 style='color:#3498db; margin:0 0 15px 0; font-family:Orbitron; text-align:center;'><i class='fa-solid fa-scale-balanced'></i> SYARAT & KETENTUAN</h3>
+      
+      <div style='overflow-y: auto; padding-right: 10px; font-size: 0.75rem; color: #cbd5e1; line-height: 1.6; text-align: justify;'>
+          <h4 style='color:#fff;'>HAK KEKAYAAN INTELEKTUAL & ATURAN LAYANAN</h4>
+          <p>Bagian ini mengatur kepemilikan, penggunaan, serta perlindungan hukum dan operasional yang terkait dengan Platform <b>CIS (Charity Integration System) Protocol</b>.</p>
+          <p>Dengan mendaftar dan menggunakan layanan ini, Anda secara otomatis menyetujui seluruh aturan yang ditetapkan oleh Master Pusat.</p>
+
+          <h4 style='color:#f1c40f; margin-bottom:5px;'>A. Kepemilikan Hak & Teknologi</h4>
+          <ol style='padding-left: 15px; margin-top: 0;'>
+              <li>Seluruh hak kekayaan intelektual yang melekat pada Platform CIS, termasuk sistem <i>Cloud Mining</i>, kode sumber, logo, antarmuka, dan algoritma distribusi jaringan, adalah milik sah pengembang CIS Protocol.</li>
+              <li>Pengguna (Miner) diberikan hak eksklusif terbatas untuk menyewa infrastruktur penambangan (Hashrate) sesuai dengan durasi Token Upgrade yang diaktifkan.</li>
+          </ol>
+
+          <h4 style='color:#f1c40f; margin-bottom:5px;'>B. P2P Marketplace & Transaksi</h4>
+          <ol style='padding-left: 15px; margin-top: 0;'>
+              <li>Pengguna memahami bahwa nilai tukar aset digital (VRSC) ke Rupiah (IDR) dapat berfluktuasi mengikuti kondisi pasar global secara <i>real-time</i>.</li>
+              <li>Transaksi jual-beli <b>Token Aktivasi (REG)</b> maupun <b>Token Upgrade (MINING)</b> antar pengguna di dalam ekosistem P2P adalah kesepakatan murni antar pihak. Platform CIS telah menyediakan "Daftar Harga Pasar" sebagai patokan resmi agar tidak terjadi monopoli.</li>
+          </ol>
+
+          <h4 style='color:#f1c40f; margin-bottom:5px;'>C. Ekosistem Charity (Amal) Terintegrasi</h4>
+          <ol style='padding-left: 15px; margin-top: 0;'>
+              <li>Platform CIS tidak semata-mata mencari keuntungan finansial. Sistem ini dirancang untuk memastikan sebagian dari sirkulasi ekonomi dialokasikan untuk program <b>Misi Sosial dan Kemanusiaan (Charity)</b>.</li>
+              <li>Dengan aktif melakukan <i>claim</i> dan mengembangkan jaringan, Anda telah berkontribusi langsung dalam proyek Maha Karya kemanusiaan ini.</li>
+          </ol>
+
+          <h4 style='color:#f1c40f; margin-bottom:5px;'>D. Perlindungan & Pembatasan Tanggung Jawab</h4>
+          <ol style='padding-left: 15px; margin-top: 0;'>
+              <li>Platform membebaskan diri dari segala bentuk klaim atas kehilangan aset akibat kelalaian pengguna dalam menjaga kerahasiaan <b>Password</b> dan <b>6-Digit PIN Transaksi</b>.</li>
+              <li>Sistem Radar Keamanan Pusat (Anti-Hack) berhak penuh mengambil tindakan instan (Pemblokiran/Reset Akun) jika mendeteksi penggunaan <i>Auto-Clicker</i>, modifikasi data, atau bentuk kecurangan lainnya tanpa pemberitahuan sebelumnya.</li>
+          </ol>
+      </div>
+      
+      <button class='btn-cyan' onclick='window.closeWalletModal("modalLegal")' style='margin-top:15px; background:#34495e; color:#fff;'><i class='fa-solid fa-check-double'></i> SAYA MENGERTI & SETUJU</button>
+    </div>
+  </div>
+<script type='module'>
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy, where, onSnapshot, limit, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    // KONFIGURASI FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyCZSkQO1v0y3C6zQEtwYMckQmqGT7pdRy0", 
+      authDomain: "cis-cloud-mining.firebaseapp.com",
+      projectId: "cis-cloud-mining",
+      storageBucket: "cis-cloud-mining.firebasestorage.app",
+      messagingSenderId: "31688283953",
+      appId: "1:31688283953:web:fa89bea963a48733e30210"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ==========================================
+    // INISIALISASI VARIABEL GLOBAL & HELPER
+    // ==========================================
+    
+    let myDeviceID = localStorage.getItem("cisMinerDeviceID");
+    if (!myDeviceID) {
+        myDeviceID = "DEV-" + Math.random().toString(36).substr(2, 9) + "-" + Date.now();
+        localStorage.setItem("cisMinerDeviceID", myDeviceID);
+    }
+
+    let globalVrscPriceIdr = 0; let globalVrscPriceUsdt = 0; let globalSpeedMultiplier = 1.0; 
+    let currentAdminRole = ""; let currentAdminAkses = []; let allUsersData = [];
+
+    function formatKripto(angka) { return new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 10 }).format(angka); }
+    function getFloatVal(id) { let el = document.getElementById(id); if (!el) return 0; let val = el.value.toString().trim().replace(/%/g, '').replace(/,/g, '.'); let parts = val.split('.'); if (parts.length > 2) { val = parts.slice(0, -1).join('') + '.' + parts[parts.length - 1]; } return parseFloat(val) || 0; }
+    function formatTanggalJam(ts) { if(!ts) return "<span style='color:#64748b'>-</span>"; let d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}) + " WIB"; }
+
+    window.togglePassMaster = (id, icon) => { const inp = document.getElementById(id); if (inp.type === 'password') { inp.type = 'text'; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); } else { inp.type = 'password'; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); } };
+    window.showToast = (msg) => { const box = document.getElementById('toastBox'); document.getElementById('toastMsg').innerText = msg; box.style.opacity = 1; box.style.visibility = 'visible'; box.style.top = '50px'; setTimeout(() => { box.style.opacity = 0; box.style.visibility = 'hidden'; box.style.top = '20px'; }, 3000); };
+    
+    window.syncLang = (lang) => { localStorage.setItem('cisLang', lang); window.location.reload(); };
+    window.changeLang = () => { 
+        let savedLang = localStorage.getItem('cisLang') || 'id';
+        let selectors = [document.getElementById('langSelector'), document.getElementById('langSelectorLogin')];
+        selectors.forEach(el => { if(el) el.value = savedLang; });
+    };
+
+    window.logoutUser = () => {
+        const keysToRemove = ["cisMinerDocId", "cisMinerEmail", "cisMinerUser", "cisIsMining", "cisDoge", "cisSpeed", "cisExp", "cisSaldoRp", "cisLastTick", "cisLastClaimGame", "cisLastReadNotif"];
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+        window.location.reload();
+    };
+
+    window.openScreen = (id) => {
+        if(id === 'screen-home') { window.closeScreen(); return; } 
+        document.querySelectorAll('.app-screen').forEach(s => s.style.display = 'none'); 
+        const targetScreen = document.getElementById(id); 
+        if(targetScreen) targetScreen.style.display = 'flex'; 
+	if(id === 'screen-p2p') window.switchP2PTab('beli');
+     if(id === 'screen-profile') setupProfileUI();
+        const sb = document.getElementById('sidebarMenu'); 
+        if(sb.classList.contains('open')) window.toggleSidebar();
+    };
+    
+    window.closeScreen = () => { 
+        document.querySelectorAll('.app-screen').forEach(s => s.style.display = 'none'); 
+        document.getElementById('screen-home').style.display = 'block'; 
+    };
+    
+    window.openWalletModal = (id) => { document.getElementById(id).style.display = 'flex'; };
+    window.closeWalletModal = (id) => { document.getElementById(id).style.display = 'none'; if(id === 'modalStokToken') { let f = document.getElementById('formTransferToken'); if(f) f.style.display = 'none'; } };
+    window.openNetworkModal = () => { document.getElementById('modalNetwork').style.display = 'flex'; window.loadNetworkTree(); };
+    window.closeNetworkModal = () => { document.getElementById('modalNetwork').style.display = 'none'; };
+
+    window.switchNetTab = (tab) => { document.getElementById('netAreaDownline').style.display = tab === 'downline' ? 'block' : 'none'; document.getElementById('netAreaBonus').style.display = tab === 'bonus' ? 'block' : 'none'; document.getElementById('tabNetDownline').style.borderBottom = tab === 'downline' ? '2px solid #00f2fe' : 'none'; document.getElementById('tabNetBonus').style.borderBottom = tab === 'bonus' ? '2px solid #00f2fe' : 'none'; document.getElementById('tabNetDownline').style.color = tab === 'downline' ? '#00f2fe' : '#94a3b8'; document.getElementById('tabNetBonus').style.color = tab === 'bonus' ? '#00f2fe' : '#94a3b8'; };
+    window.togglePass = (id, icon) => { const inp = document.getElementById(id); inp.type = inp.type === 'password' ? 'text' : 'password'; icon.classList.toggle('fa-eye'); icon.classList.toggle('fa-eye-slash'); };
+    window.toggleAuthForm = (f) => { document.getElementById('formLogin').style.display = f==='log' ? 'block' : 'none'; document.getElementById('formReg').style.display = f==='reg' ? 'block' : 'none'; document.getElementById('formForgot').style.display = f==='forgot' ? 'block' : 'none'; };
+    window.toggleSidebar = () => { const sb = document.getElementById('sidebarMenu'); const ov = document.getElementById('sidebarOverlay'); if(sb.classList.contains('open')) { sb.classList.remove('open'); ov.style.opacity=0; setTimeout(()=>ov.style.display='none',300); } else { sb.classList.add('open'); ov.style.display='block'; setTimeout(()=>ov.style.opacity=1,10); } };
+    window.openChatModal = () => { document.getElementById('chatModal').style.display = 'flex'; };
+    window.closeChatModal = () => { document.getElementById('chatModal').style.display = 'none'; };
+    
+    function msg(id, text, type) { const b = document.getElementById(id); b.innerText = text; b.className = "sys-msg " + (type === "ok" ? "msg-ok" : "msg-err"); b.style.display = "block"; }
+
+    let REWARD_CLAIM_PERMAINAN = 50; let BONUS_CLAIM_PERMAINAN = 0; let WAKTU_MULAI_BONUS = "00:00"; let WAKTU_SELESAI_BONUS = "00:00";
+    let PERSENTASE_BONUS_CLAIM = 0; let PERSENTASE_BONUS_TOPUP = 0; let CONFIG_DEVICE_LOCK = false; let currentMultiplier = 1.0; 
+    window.IS_FREEMIUM = false; window.STATUS_AKUN_USER = "INACTIVE"; 
+
+    let docId = null; let myEmail = ""; let myUsername = ""; let myPass = ""; let myReferredBy = "";
+    let myDoge = 0; let mySpeed = 0; let expTime = 0; let edUser = 0; let edEmail = 0; let mySaldoRupiah = 0; 
+    let isMining = false; let miningInt = null; let unsubSnapshot = null;
+    let unsubNotifGlobal = null; let unsubNotifPersonal = null;
+    let globalNotifs = []; let personalNotifs = [];
+    let dogePriceRp = 2500; const baseHargaDoge = 2500; let myPin = ""; let lastCheckin = 0; let lastTickMs = Date.now();
+    let claimTimerInt = null; 
+
+    let netMultiplier = 1.0; let simulatedPing = 24;
+    function updateNetworkSpeed() {
+        if (!isMining) { let elNet = document.getElementById('visualNet'); if(elNet) { elNet.innerText = "OFF"; elNet.style.color = "#94a3b8"; } return; }
+        let conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        let netText = "STRONG"; let netColor = "#2ecc71";
+        if (conn) {
+            if (conn.downlink >= 10) { netMultiplier = 1.0; simulatedPing = Math.floor(Math.random() * 15) + 15; } 
+            else if (conn.downlink >= 2 && conn.downlink < 10) { netMultiplier = 0.75; simulatedPing = Math.floor(Math.random() * 40) + 40; netText = "MODERATE"; netColor = "#f1c40f"; } 
+            else { netMultiplier = 0.3; simulatedPing = Math.floor(Math.random() * 180) + 120; netText = "WEAK"; netColor = "#e74c3c"; }
+        } else { netMultiplier = (Math.floor(Math.random() * 20) + 80) / 100; simulatedPing = Math.floor(Math.random() * 40) + 20; }
+        let elNet = document.getElementById('visualNet'); if(elNet) { elNet.innerText = netText; elNet.style.color = netColor; }
+        let pingEl = document.getElementById('visualPing'); if (pingEl) { pingEl.innerText = `${simulatedPing}ms`; if (simulatedPing <= 50) pingEl.style.color = "#2ecc71"; else if (simulatedPing <= 100) pingEl.style.color = "#f1c40f"; else pingEl.style.color = "#e74c3c"; }
+    }
+    setInterval(updateNetworkSpeed, 3000);
+
+    async function fetchConfigGame() {
+        try {
+            const snap = await getDocs(query(collection(db, "System_Config"), where("tipe", "==", "GAME_CONFIG")));
+            if(!snap.empty) { let d = snap.docs[0].data(); REWARD_CLAIM_PERMAINAN = d.reward_claim || 50; BONUS_CLAIM_PERMAINAN = d.bonus_claim || 0; WAKTU_MULAI_BONUS = d.jam_mulai || "00:00"; WAKTU_SELESAI_BONUS = d.jam_selesai || "00:00"; }
+            const confSnap = await getDocs(query(collection(db, "System_Config"), where("tipe", "==", "REGISTRATION")));
+            if(!confSnap.empty) { let c = confSnap.docs[0].data(); PERSENTASE_BONUS_CLAIM = c.persentase_bonus_claim || 0; PERSENTASE_BONUS_TOPUP = c.persentase_bonus_topup || 0; CONFIG_DEVICE_LOCK = c.device_lock_active !== undefined ? c.device_lock_active : true; window.IS_FREEMIUM = c.is_freemium === true; }
+            const multSnap = await getDocs(query(collection(db, "System_Config"), where("tipe", "==", "SPEED_MULTIPLIER")));
+            if(!multSnap.empty) { currentMultiplier = multSnap.docs[0].data().multiplier || 1.0; }
+        } catch(e) {}
+    }
+
+    function animateValue(id, start, end, duration, suffix = "") {
+        if (!document.getElementById(id)) return;
+        if (start === end) {
+            if(id === "statOnline" || id === "statOnlineDash") { document.getElementById(id).innerHTML = Math.max(0, end).toLocaleString('en-US') + " <span class='blink-dot'></span>"; }
+            else { document.getElementById(id).innerHTML = end.toLocaleString('en-US') + suffix; }
+            return;
+        }
+        var range = end - start; var current = start; var increment = -1;
+        if (end > start) { increment = Math.ceil(range / (duration/50)); }
+        var stepTime = Math.abs(Math.floor(duration / (range / increment))); var obj = document.getElementById(id);
+        var timer = setInterval(function() {
+            current += increment; let stopTimer = false;
+            if (increment > 0 && current >= end) stopTimer = true;
+            if (0 > increment && end >= current) stopTimer = true;
+            if (stopTimer) { current = end; clearInterval(timer); }
+            if(id === "statOnline" || id === "statOnlineDash") { obj.innerHTML = Math.max(0, current).toLocaleString('en-US') + " <span class='blink-dot'></span>"; } 
+            else { obj.innerHTML = current.toLocaleString('en-US') + suffix; }
+        }, stepTime);
+    }
+
+    async function fetchPlatformStats() {
+        try {
+            let online = 1204; let registered = 8450; let withdrawn = 452890;
+            const snap = await getDocs(query(collection(db, "System_Config"), where("tipe", "==", "GLOBAL_STATS")));
+            if(!snap.empty) { const data = snap.docs[0].data(); if(data.online) online = data.online; if(data.registered) registered = data.registered; if(data.withdrawn) withdrawn = data.withdrawn; }
+            if(online > registered) online = registered; if(4 > online) { if (registered >= 4) { online = 4; } else { online = registered; } }
+
+            let diffOnline = 0; if (registered > online) { diffOnline = Math.min(10, registered-online); }
+            let targetOnline = online + Math.floor(Math.random() * diffOnline);
+            animateValue("statOnline", 0, targetOnline, 2000); animateValue("statReg", 0, registered, 2500); animateValue("statWd", 0, withdrawn, 2500, " VRSC");
+            animateValue("statOnlineDash", 0, targetOnline, 2000); animateValue("statRegDash", 0, registered, 2500); animateValue("statWdDash", 0, withdrawn, 2500, " VRSC");
+
+            setInterval(() => {
+                let els = [document.getElementById('statOnline'), document.getElementById('statOnlineDash')];
+                els.forEach(el => {
+                    if(el) {
+                       let currentText = el.innerText.replace(/,/g, '').trim(); let current = parseInt(currentText); if (isNaN(current)) current = 4;
+                       let diff = Math.floor(Math.random() * 5) - 2; let newVal = current + diff;
+                       if (4 > newVal) { newVal = registered >= 4 ? 4 : registered; } if (newVal > registered) { newVal = registered; }
+                       el.innerHTML = newVal.toLocaleString('en-US') + " <span class='blink-dot'></span>";
+                    }
+                });
+            }, 6000);
+        } catch(e) {}
+    }
+
+    setInterval(async () => { if(isMining && docId) { try { await updateDoc(doc(db, "Akun_Publik", docId), { saldo_doge: myDoge }); } catch(e){} } }, 15000);
+    window.addEventListener('beforeunload', () => { if(myDoge > 0) { localStorage.setItem("cisDoge", myDoge); localStorage.setItem("cisLastTick", Date.now()); } });
+
+    window.fetchPrice = async () => {
+        try {
+            let simbolDan = String.fromCharCode(38);
+            const liveUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=verus-coin' + simbolDan + 'vs_currencies=idr';
+            const response = await fetch(liveUrl); const data = await response.json();
+            if (data && data['verus-coin'] && data['verus-coin'].idr) { dogePriceRp = data['verus-coin'].idr; document.getElementById('displayLivePrice').innerHTML = "Rp " + dogePriceRp.toLocaleString('id-ID') + " <span style='color:#2ecc71; font-size:0.6rem;'>(Live)</span>"; }
+        } catch(e) {
+            try { const snap = await getDocs(query(collection(db, "System_Config"), where("tipe", "==", "GLOBAL_STATS"))); if(!snap.empty) { dogePriceRp = snap.docs[0].data().harga_doge_pusat || 2500; document.getElementById('displayLivePrice').innerText = "Rp " + dogePriceRp.toLocaleString('id-ID'); } } catch(err) {}
+        }
+        if(docId) { updateUI(); adjustDifficulty(); }
+    };
+    setInterval(window.fetchPrice, 180000);
+    
+    function adjustDifficulty() { 
+        let ind = document.getElementById('diffIndicator'); if(ind) ind.style.display = 'none'; 
+        let eSpd = document.getElementById('displaySpeed'); if(eSpd) eSpd.innerText = formatKripto(mySpeed || 0); 
+    }
+
+    function updateClaimTimer() {
+        let lastGameClaim = parseInt(localStorage.getItem('cisLastClaimGame')) || 0;
+        let timeDiff = Date.now() - lastGameClaim;
+        let sisaMs = 3600000 - timeDiff;
+        
+        const btn = document.getElementById('btnClaimGame');
+        const tContainer = document.getElementById('claimTimerContainer');
+        const tText = document.getElementById('claimTimerText');
+
+        if(sisaMs > 0) {
+            if(btn) btn.style.display = 'none';
+            if(tContainer) tContainer.style.display = 'flex';
+            const jalankanTimer = () => {
+                let currentRem = 3600000 - (Date.now() - (parseInt(localStorage.getItem('cisLastClaimGame')) || 0));
+                if(currentRem <= 0) {
+                    clearInterval(claimTimerInt);
+                    if(btn) btn.style.display = 'block';
+                    if(tContainer) tContainer.style.display = 'none';
+                } else {
+                    let m = Math.floor((currentRem / 1000) / 60).toString().padStart(2, '0');
+                    let s = Math.floor((currentRem / 1000) % 60).toString().padStart(2, '0');
+                    if(tText) tText.innerText = `${m} : ${s}`;
+                }
+            };
+            jalankanTimer();
+            if(claimTimerInt) clearInterval(claimTimerInt);
+            claimTimerInt = setInterval(jalankanTimer, 1000);
+        } else {
+            if(btn) btn.style.display = 'block';
+            if(tContainer) tContainer.style.display = 'none';
+            if(claimTimerInt) clearInterval(claimTimerInt);
+        }
+    }
+
+    function updateUI() {
+        let eDoge = document.getElementById('displayDoge'); if(eDoge) eDoge.innerText = formatKripto(myDoge || 0);
+        let eRp = document.getElementById('displayRupiah'); if(eRp) eRp.innerText = "Rp " + Math.floor((myDoge||0) * dogePriceRp).toLocaleString('id-ID');
+        let sisa = 0; let targetTime = Date.now(); if (expTime > targetTime) { sisa = Math.ceil((expTime - targetTime) / 86400000); }
+        let lSel = document.getElementById('langSelector'); let dayText = (lSel && lSel.value === 'id') ? " Hari" : " Days";
+        let eSisa = document.getElementById('displaySisaHari'); if(eSisa) eSisa.innerText = sisa + dayText;
+        let eWd = document.getElementById('wdSisaSaldo'); if(eWd) eWd.innerText = "Rp " + (mySaldoRupiah||0).toLocaleString('id-ID');
+        let eTukar = document.getElementById('txtDogeBelumTukar'); if(eTukar) eTukar.innerText = "Rp " + Math.floor((myDoge||0) * dogePriceRp).toLocaleString('id-ID');
+        let iCetak = document.getElementById('infoSaldoCetak'); if(iCetak) iCetak.innerText = "Rp " + (mySaldoRupiah||0).toLocaleString('id-ID');
+        let iBeli = document.getElementById('infoSaldoBeliDaya'); if(iBeli) iBeli.innerText = "Rp " + (mySaldoRupiah||0).toLocaleString('id-ID');
+        let eSpd = document.getElementById('displaySpeed'); if(eSpd) eSpd.innerText = formatKripto(mySpeed || 0);
+        updateClaimTimer();
+    }
+
+    window.kirimPesanPusat = async () => {
+      const p = document.getElementById('chatPesan').value; const btn = document.getElementById('btnKirimChat');
+      if(5 > p.length) { msg('msgChat', "Message too short!", "error"); return; }
+      btn.innerText = "SENDING..."; btn.disabled = true;
+      try { await addDoc(collection(db, "Pesan_Bantuan"), { email: myEmail, username: myUsername, pesan: p, waktu: serverTimestamp(), status: "OPEN", sender: "USER" }); document.getElementById('chatPesan').value = ""; msg('msgChat', "Message Sent Successfully!", "ok"); setTimeout(window.closeChatModal, 2000); } 
+      catch(e) { msg('msgChat', "Failed to Send", "error"); } btn.innerText = "SEND MESSAGE"; btn.disabled = false;
+    };
+
+    let miningTickCount = 0;
+    function startMiningEngine() {
+        if(window.REQ_PERPANJANG && Date.now() > expTime) return;
+        if(0 >= mySpeed) return;
+        
+        isMining = true; document.getElementById('btnStart').disabled = true; document.getElementById('btnStop').disabled = false; document.getElementById('btnStop').style.opacity = '1'; 
+        let v = document.getElementById('miningVisualDash');
+        if(v) { v.style.display = 'block'; setTimeout(() => { v.classList.add('active'); document.getElementById('visualTemp').innerText = "68°C"; document.getElementById('visualTemp').style.color = "#e74c3c"; updateNetworkSpeed(); }, 50); }
+        localStorage.setItem("cisIsMining", "true"); lastTickMs = Date.now();
+        if (miningInt) clearInterval(miningInt);
+        miningInt = setInterval(() => {
+            let now = Date.now();
+            if(window.REQ_PERPANJANG && now > expTime) { document.getElementById('btnStop').click(); window.showToast("Active Time Expired!"); return; }
+            let deltaSec = (now - lastTickMs) / 1000;
+            if (deltaSec > 0 && deltaSec <= 10) { let finalSpeed = mySpeed * currentMultiplier * netMultiplier; myDoge += (finalSpeed * deltaSec); }
+            lastTickMs = now; updateUI(); miningTickCount++;
+            if(miningTickCount >= 5) { localStorage.setItem("cisDoge", myDoge); localStorage.setItem("cisLastTick", lastTickMs); miningTickCount = 0; }
+            if(v && isMining) {
+                let displayHash = formatKripto(mySpeed * currentMultiplier * netMultiplier);
+                document.getElementById('visualHashrate').innerText = displayHash + " D/s";
+                let term = document.getElementById('terminalLog');
+                let logs = [`> Scanning network (${simulatedPing} ms)...`, `> Block VRSC found... OK`, `> Securing transaction...`, `> Syncing to Master Node... Success`, `> Optimizing engine...`];
+                let p = document.createElement('div'); p.className = 'log-line'; p.innerText = logs[Math.floor(Math.random() * logs.length)]; term.appendChild(p);
+                if(term.childNodes.length > 3) term.removeChild(term.firstChild);
+            }
+        }, 1000);
+    }
+
+    document.getElementById('btnStart').addEventListener('click', () => {
+        if(window.STATUS_AKUN_USER === "INACTIVE" && !window.IS_FREEMIUM) { window.showToast("ACCESS DENIED: Account not activated."); return; }
+        if(window.REQ_PERPANJANG && Date.now() > expTime) { window.showToast("ACCESS DENIED: Active time expired."); return; }
+        if(0 >= mySpeed) { window.showToast("ACCESS DENIED: Speed is 0 D/s."); return; }
+        startMiningEngine();
+    });
+
+    document.getElementById('btnStop').addEventListener('click', async () => {
+        isMining = false; clearInterval(miningInt);
+        localStorage.setItem("cisIsMining", "false"); localStorage.setItem("cisDoge", myDoge); localStorage.setItem("cisLastTick", Date.now());
+        document.getElementById('btnStart').disabled = false; document.getElementById('btnStop').disabled = true; document.getElementById('btnStop').style.opacity = '0.5'; 
+        let v = document.getElementById('miningVisualDash');
+        if(v) { v.classList.remove('active'); document.getElementById('visualTemp').innerText = "30°C"; document.getElementById('visualTemp').style.color = "#94a3b8"; document.getElementById('visualPing').innerText = "--"; document.getElementById('visualPing').style.color = "#94a3b8"; document.getElementById('visualNet').innerText = "OFF"; document.getElementById('visualNet').style.color = "#94a3b8"; document.getElementById('terminalLog').innerHTML = "<div class='log-line'>> System idle... Ready to start.</div>"; document.getElementById('visualHashrate').innerText = "0.00 D/s"; }
+        if(docId) { await updateDoc(doc(db, "Akun_Publik", docId), { saldo_doge: myDoge }); }
+    });
+
+    window.claimPermainan = async () => {
+        if(window.STATUS_AKUN_USER === "INACTIVE" && !window.IS_FREEMIUM) { window.showToast("ACCESS DENIED: Account not activated."); return; }
+        
+        let lastGameClaim = parseInt(localStorage.getItem('cisLastClaimGame')) || 0;
+        if(Date.now() - lastGameClaim < 3600000) { 
+            window.showToast("Claim not ready yet. Please wait!"); 
+            updateClaimTimer(); 
+            return; 
+        }
+
+        const btnGame = document.getElementById('btnClaimGame'); 
+        btnGame.disabled = true; 
+        btnGame.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> VERIFYING...";
+        
+        try {
+            const userRef = doc(db, "Akun_Publik", docId); 
+            const userSnap = await getDocs(query(collection(db, "Akun_Publik"), where("email", "==", myEmail)));
+            
+            if(!userSnap.empty) {
+                let uData = userSnap.docs[0].data(); 
+                let timeDiff = Date.now() - (uData.last_claim_reward || 0);
+                
+                if(timeDiff < 3600000) { 
+                    window.showToast("Claim not ready yet. Please wait!"); 
+                    localStorage.setItem('cisLastClaimGame', uData.last_claim_reward);
+                    updateClaimTimer(); 
+                    btnGame.disabled = false; 
+                    btnGame.innerHTML = "<i class='fa-solid fa-gem'></i> CLAIM COINS (1 HR)";
+                    return; 
+                }
+                
+                let isJamBonus = false;
+                let valBonus = parseFloat(BONUS_CLAIM_PERMAINAN) || 0;
+                if(valBonus > 0) {
+                    let d = new Date(); 
+                    let jam = d.getHours().toString().padStart(2, '0'); 
+                    let menit = d.getMinutes().toString().padStart(2, '0'); 
+                    let waktuSekarangStr = jam + ":" + menit;
+                    if (waktuSekarangStr >= WAKTU_MULAI_BONUS && WAKTU_SELESAI_BONUS >= waktuSekarangStr) {
+                        isJamBonus = true;
+                    }
+                }
+                
+                let totalRewardDoge = parseFloat(REWARD_CLAIM_PERMAINAN) || 50; 
+                let pesanToast = "CLAIM SUCCESS: +" + formatKripto(totalRewardDoge) + " VRSC.";
+                if (isJamBonus) { 
+                    totalRewardDoge += valBonus; 
+                    pesanToast = "CLAIM SUCCESS: +" + formatKripto(totalRewardDoge) + " VRSC. (Happy Hour Bonus!)"; 
+                }
+                
+                myDoge = parseFloat(myDoge) || 0;
+                myDoge += totalRewardDoge;
+                
+                await updateDoc(userRef, { saldo_doge: myDoge, last_claim_reward: Date.now() }); 
+                localStorage.setItem('cisLastClaimGame', Date.now());
+                
+                await addDoc(collection(db, "Mutasi_Mining"), { 
+                    email: myEmail, 
+                    jenis: "IN", 
+                    deskripsi: isJamBonus ? "Coin Claim (Bonus)" : "Coin Claim", 
+                    nominal: totalRewardDoge, 
+                    timestamp_local: Date.now() 
+                });
+                
+                if (myReferredBy && myReferredBy !== "" && window.PERSENTASE_BONUS_CLAIM > 0) {
+                    const snapRef = await getDocs(query(collection(db, "Akun_Publik"), where("username", "==", myReferredBy)));
+                    if(!snapRef.empty) {
+                        let refData = snapRef.docs[0].data(); 
+                        let pBonus = parseFloat(window.PERSENTASE_BONUS_CLAIM) || 0;
+                        let bonusDogeClaim = totalRewardDoge * (pBonus / 100);
+                        
+                        await updateDoc(doc(db, "Akun_Publik", snapRef.docs[0].id), { 
+                            saldo_doge: (parseFloat(refData.saldo_doge) || 0) + bonusDogeClaim, 
+                            total_bonus_sponsor_doge: (parseFloat(refData.total_bonus_sponsor_doge) || 0) + bonusDogeClaim 
+                        });
+                        
+                        await addDoc(collection(db, "Mutasi_Mining"), { 
+                            email: refData.email, 
+                            jenis: "IN", 
+                            deskripsi: `Sponsor Bonus from (${myUsername})`, 
+                            nominal: bonusDogeClaim, 
+                            timestamp_local: Date.now() 
+                        });
+                    }
+                }
+                
+                window.showToast(pesanToast); 
+                updateUI(); 
+                window.muatMutasiLokal();
+            } else {
+                window.showToast("Error: Account Not Found!");
+                btnGame.disabled = false; btnGame.innerHTML = "<i class='fa-solid fa-gem'></i> CLAIM COINS (1 HR)";
+            }
+        } catch(e) { 
+            console.error(e);
+            window.showToast("System Error: " + e.message); 
+            btnGame.disabled = false; 
+            btnGame.innerHTML = "<i class='fa-solid fa-gem'></i> CLAIM COINS (1 HR)"; 
+        }
+    };
+
+    window.loadNetworkTree = async () => {
+        const listDiv = document.getElementById('networkTreeList'); const uplineNameText = document.getElementById('uplineNameText'); const uplineWaBtn = document.getElementById('uplineWaBtn');
+        if(myReferredBy) {
+            uplineNameText.innerText = myReferredBy;
+            try { const upSnap = await getDocs(query(collection(db, "Akun_Publik"), where("username", "==", myReferredBy))); if(!upSnap.empty) { let upWa = upSnap.docs[0].data().wa; if(upWa) { uplineWaBtn.href = `https://wa.me/${upWa}`; uplineWaBtn.style.display = 'inline-block'; } } } catch(e){}
+        } else { uplineNameText.innerText = "None"; uplineWaBtn.style.display = 'none'; }
+        try {
+            const snap = await getDocs(query(collection(db, "Akun_Publik"), where("referred_by", "==", myUsername))); let html = ""; let count = 0;
+            snap.forEach(d => { 
+                let data = d.data(); let date = data.created_at ? data.created_at.toDate().toLocaleDateString('en-US') : '-'; 
+                let waBtn = data.wa ? `<a href="https://wa.me/${data.wa}" target="_blank" style="background:#2ecc71; color:#fff; padding:5px 10px; border-radius:5px; text-decoration:none; font-size:0.7rem; font-weight:bold;"><i class="fa-brands fa-whatsapp"></i> Chat</a>` : '';
+                html += `<div class='tree-node level-1'><div class='tree-icon'><i class='fa-solid fa-user-check'></i></div><div class='tree-info'><div class='tree-name'>${data.username}</div><div class='tree-detail'>Joined: ${date}</div></div><div>${waBtn}</div></div>`; count++; 
+            });
+            if(count === 0) html = "<div style='text-align:center; padding:20px; color:#64748b; font-size:0.8rem;'>You have no downlines yet.</div>";
+            listDiv.innerHTML = html;
+        } catch(e) { listDiv.innerHTML = "<div style='text-align:center; color:#ef4444; font-size:0.8rem;'>Failed to load.</div>"; }
+        
+        const tbodyBonus = document.getElementById('tblBonusSponsor');
+        try {
+            const qMutasi = query(collection(db, "Mutasi_Mining"), where("email", "==", myEmail), orderBy("timestamp_local", "desc"));
+            const snapMutasi = await getDocs(qMutasi); let htmlBonus = '';
+            snapMutasi.forEach(d => {
+                let m = d.data();
+                if(m.deskripsi.toLowerCase().includes("sponsor")) {
+                    let tgl = new Date(m.timestamp_local).toLocaleDateString('en-US');
+                    let formatUang = m.nominal > 0 ? `${formatKripto(m.nominal)}` : `0`;
+                    let dariMatch = m.deskripsi.match(/\(([^)]+)\)/); let dari = dariMatch ? dariMatch[1] : "-";
+                    htmlBonus += `<tr><td style='padding:8px;'>${tgl}</td><td style='padding:8px; color:#f1c40f; font-weight:bold;'>${dari}</td><td style='padding:8px; color:#22c55e;'>+${formatUang}</td></tr>`;
+                }
+            });
+            if(htmlBonus === '') htmlBonus = "<tr><td colspan='3' style='text-align:center; padding:15px;'>No bonuses received yet.</td></tr>";
+            tbodyBonus.innerHTML = htmlBonus;
+        } catch(e) { tbodyBonus.innerHTML = "<tr><td colspan='3'>Failed to Load.</td></tr>"; }
+    };
+
+    window.renderNotifikasi = () => {
+        const notifDiv = document.getElementById('notifList'); const badge = document.getElementById('notifBadge');
+        let combined = [...globalNotifs, ...personalNotifs]; combined.sort((a, b) => b.timestamp_local - a.timestamp_local);
+        let lastReadTime = parseInt(localStorage.getItem('cisLastReadNotif')) || 0; let html = "";
+        if(combined.length === 0) { html = `<div style='padding:20px; text-align:center; color:#64748b; font-size:0.8rem;'>${document.getElementById('langSelector').value==='en'?'No messages.':'Tidak ada pesan.'}</div>`; badge.style.display = 'none'; } 
+        else {
+            if(combined[0].timestamp_local > lastReadTime) { badge.style.display = 'inline-block'; } else { badge.style.display = 'none'; }
+            combined.slice(0, 15).forEach(d => {
+                let t = new Date(d.timestamp_local).toLocaleString(); let iconHtml = d.tipe === 'PERSONAL' ? `<i class='fa-solid fa-bell' style='color:#f39c12;'></i> ACCOUNT MSG` : `<i class='fa-solid fa-bullhorn' style='color:#00f2fe;'></i> BROADCAST`;
+                let clr = d.tipe === 'PERSONAL' ? '#f39c12' : '#00f2fe';
+                html += `<div class='notif-item'><div style='color:${clr}; font-weight:bold; font-size:0.75rem;'>${iconHtml}</div><div style='color:#e2e8f0; margin:5px 0;'>${d.pesan}</div><div style='color:#64748b; font-size:0.65rem; text-align:right;'>${t}</div></div>`;
+            });
+        } notifDiv.innerHTML = html;
+    };
+
+    window.tampilkanPopUpAdmin = (pesan) => {
+        const mod = document.getElementById('modalNotifAdmin');
+        const txt = document.getElementById('isiNotifAdmin');
+        if(mod && txt) {
+            txt.innerText = pesan;
+            mod.style.display = 'flex';
+        } else {
+            window.showToast("🔔 ADMIN CIS: " + pesan);
+        }
+    };
+
+    function muatNotifikasi() {
+      if(unsubNotifGlobal) unsubNotifGlobal(); if(unsubNotifPersonal) unsubNotifPersonal();
+      
+      unsubNotifGlobal = onSnapshot(query(collection(db, "Notifikasi_Global"), orderBy("timestamp_local", "desc"), limit(10)), (snap) => {
+          globalNotifs = []; snap.forEach(doc => { let d = doc.data(); d.tipe = 'GLOBAL'; globalNotifs.push(d); }); window.renderNotifikasi();
+          snap.docChanges().forEach((change) => { 
+              if (change.type === "added") { 
+                  let d = change.doc.data(); 
+                  if(Date.now() - d.timestamp_local < 10000) window.tampilkanPopUpAdmin(d.pesan); 
+              } 
+          });
+      });
+      
+      if(myEmail) {
+          unsubNotifPersonal = onSnapshot(query(collection(db, "Notifikasi_Personal"), where("email", "==", myEmail), orderBy("timestamp_local", "desc"), limit(10)), (snap) => {
+              personalNotifs = []; snap.forEach(doc => { let d = doc.data(); d.tipe = 'PERSONAL'; personalNotifs.push(d); }); window.renderNotifikasi();
+              snap.docChanges().forEach((change) => { 
+                  if (change.type === "added") { 
+                      let d = change.doc.data(); 
+                      if(Date.now() - d.timestamp_local < 10000) window.tampilkanPopUpAdmin(d.pesan); 
+                  } 
+              });
+          }, (error) => {});
+      }
+    }
+
+    window.deleteMutasi = async (id) => { if(confirm("Delete this transaction record?")) { try { await deleteDoc(doc(db, "Mutasi_Mining", id)); window.muatMutasiLokal(); } catch(e){} } };
+    window.deleteAllMutasi = async () => { if(confirm("Delete ALL your transaction history?")) { try { const snap = await getDocs(query(collection(db, "Mutasi_Mining"), where("email", "==", myEmail))); snap.forEach(async (d) => { await deleteDoc(doc(db, "Mutasi_Mining", d.id)); }); setTimeout(window.muatMutasiLokal, 1500); window.showToast("History Cleared."); } catch(e){} } };
+    async function catatMutasi(jenis, desk, nom) { if(!docId) return; await addDoc(collection(db, "Mutasi_Mining"), { email: myEmail, jenis: jenis, deskripsi: desk, nominal: nom, timestamp_local: Date.now() }); window.muatMutasiLokal(); }
+    
+    window.muatMutasiLokal = async function() {
+      try {
+        const snap = await getDocs(query(collection(db, "Mutasi_Mining"), where("email", "==", myEmail), orderBy("timestamp_local", "desc"), limit(20))); let html = ''; 
+        if(snap.empty) { html = `<div style='padding:20px; text-align:center;'>No transactions yet.</div>`; } 
+        else {
+          snap.forEach(d => {
+            let x = d.data(); let mId = d.id; let cl = x.jenis==="IN"?"#22c55e":(x.jenis==="OUT"?"#ef4444":"#94a3b8"); let sign = x.jenis==="IN"?"+":(x.jenis==="OUT"?"-":"");
+            let formatUang = ""; let isCrypto = x.deskripsi.toLowerCase().includes("claim") || x.deskripsi.toLowerCase().includes("sponsor") || x.deskripsi.toLowerCase().includes("coin") || x.deskripsi.toLowerCase().includes("klaim") || x.deskripsi.toLowerCase().includes("koin");
+            if(isCrypto) { let nomCrypto = x.nominal || 0; formatUang = nomCrypto > 0 ? `${formatKripto(nomCrypto)} VRSC` : `VRSC`; } else { formatUang = `Rp ${x.nominal.toLocaleString('en-US')}`; }
+            let delBtn = `<i class="fa-solid fa-xmark" style="color:#475569; margin-left:15px; cursor:pointer;" onclick="window.deleteMutasi('${mId}')"></i>`;
+            html += `<div class='mutasi-item'><div><b style='color:#fff;'>${x.deskripsi}</b><br/><span style='font-size:0.7rem; color:#64748b;'>${new Date(x.timestamp_local).toLocaleString()}</span></div><div style='display:flex; align-items:center;'><span style='color:${cl}; font-weight:bold;'>${sign}${formatUang}</span>${delBtn}</div></div>`;
+          });
+        } document.getElementById('mutasiListFull').innerHTML = html;
+      } catch (error) {}
+    }
+
+    window.tukarDogeKeRupiah = async () => {
+        let dogeValueRp = Math.floor(myDoge * dogePriceRp);
+        if(dogeValueRp < 100) { window.showToast("VRSC Coin not enough to exchange!"); return; }
+        if(!confirm(`Exchange ${formatKripto(myDoge)} VRSC to Rp ${dogeValueRp.toLocaleString('en-US')}?`)) return;
+        const btn = document.getElementById('btnTukarDoge'); btn.disabled=true; btn.innerText="PROCESSING...";
+        mySaldoRupiah += dogeValueRp; myDoge = 0;
+        await updateDoc(doc(db, "Akun_Publik", docId), { saldo_doge: 0, saldo_rupiah: mySaldoRupiah });
+        catatMutasi("IN", `Exchange Coins: VRSC to IDR`, dogeValueRp);
+        localStorage.setItem("cisDoge", 0); localStorage.setItem("cisSaldoRp", mySaldoRupiah);
+        window.showToast("Exchange Successful!"); updateUI();
+        btn.disabled=false; btn.innerHTML=`<i class='fa-solid fa-exchange-alt'></i> EXCHANGE COINS TO IDR`;
+    };
+
+    window.loadPaketMiningUser = async () => {
+        const select = document.getElementById('pilihPaketHash'); const snap = await getDocs(query(collection(db, "Config_Mining"), orderBy("nominal", "asc"))); let html = "<option value=''>-- Select Speed Package --</option>";
+        snap.forEach(d => { let p = d.data(); html += `<option value='${p.nominal}|${p.speed}|${p.durasi_hari}'>Engine Rp ${p.nominal.toLocaleString('en-US')} (${formatKripto(p.speed)} D/s | ${p.durasi_hari} Days)</option>`; });
+        if(select) select.innerHTML = html;
+    }
+
+    // ==========================================
+    // SISTEM PENGAMANAN PIN & TOMBOL INLINE
+    // ==========================================
+    const wdBtnReal = document.createElement('button'); wdBtnReal.id = 'btnWithdrawActual'; wdBtnReal.style.display = 'none'; document.body.appendChild(wdBtnReal);
+    const sendBtnReal = document.createElement('button'); sendBtnReal.id = 'btnSendTokenActual'; sendBtnReal.style.display = 'none'; document.body.appendChild(sendBtnReal);
+    const beliHashBtnReal = document.createElement('button'); beliHashBtnReal.id = 'btnBeliHashActual'; beliHashBtnReal.style.display = 'none'; document.body.appendChild(beliHashBtnReal);
+    
+    let currentPinAction = "";
+
+    window.eksekusiBeliHashInline = () => {
+        const inp = document.getElementById('pinBeliHashInline').value;
+        if(inp && inp.length === 6) {
+            if(inp === myPin) { document.getElementById('btnBeliHashActual').click(); }
+            else { msg('msgBeliHash', "PIN Salah!", "error"); }
+        } else { msg('msgBeliHash', "Masukkan 6-Digit PIN Anda!", "error"); }
+    };
+
+    window.eksekusiWdInline = () => {
+        const inp = document.getElementById('pinWithdrawInline').value;
+        if(inp && inp.length === 6) {
+            if(inp === myPin) { document.getElementById('btnWithdrawActual').click(); }
+            else { msg('msgWithdraw', "PIN Salah!", "error"); }
+        } else { msg('msgWithdraw', "Masukkan 6-Digit PIN Anda!", "error"); }
+    };
+
+    window.askPinBeforeAction = (action) => {
+        if(!myPin || myPin.trim() === "") {
+            alert("Anda belum mengatur PIN Keamanan!\nSilakan buat 6 Digit PIN di menu 'My Profile' terlebih dahulu.");
+            window.openScreen('screen-profile');
+            return;
+        }
+        currentPinAction = action;
+        document.getElementById('modalPin').style.display = 'flex';
+        for(let i=1; i<=6; i++) {
+            let p = document.getElementById('p'+i);
+            if(p) { p.value = ''; p.disabled = false; }
+        }
+        setTimeout(() => document.getElementById('p1').focus(), 100);
+    };
+
+    window.closePinModal = () => {
+        document.getElementById('modalPin').style.display = 'none';
+    };
+
+    for(let i=1; i<=6; i++) {
+        let el = document.getElementById('p'+i);
+        if(el) {
+            el.addEventListener('input', function() {
+                if(this.value.length === 1 && i < 6) document.getElementById('p'+(i+1)).focus();
+            });
+            el.addEventListener('keydown', function(e) {
+                if(e.key === 'Backspace' && this.value === '' && i > 1) document.getElementById('p'+(i-1)).focus();
+            });
+        }
+    }
+
+    document.getElementById('btnConfirmPin').addEventListener('click', () => {
+        let pEntered = "";
+        for(let i=1; i<=6; i++) pEntered += document.getElementById('p'+i).value;
+        
+        if(pEntered !== myPin) {
+            alert("❌ PIN YANG ANDA MASUKKAN SALAH!");
+            return;
+        }
+        
+        window.closePinModal();
+        if(currentPinAction === 'WD') {
+            document.getElementById('btnWithdrawActual').click();
+        } else if (currentPinAction === 'BELI_HASH') {
+            document.getElementById('btnBeliHashActual').click();
+        } else if (currentPinAction === 'SEND_TOKEN') {
+            document.getElementById('btnSendTokenActual').click();
+        }
+    });
+
+    beliHashBtnReal.addEventListener('click', async () => {
+        const kodeTokenTerpilih = document.getElementById('selectedTokenBeliDaya').value;
+        const nomTokenTerpilih = parseInt(document.getElementById('selectedNominalTokenBeliDaya').value || "0");
+        
+        if(!kodeTokenTerpilih) return msg('msgBeliHash', "Select a Token from your stock!", "error");
+        
+        const btn = document.getElementById('btnBeliHash'); 
+        btn.disabled = true; btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> MENCARI DATA KECEPATAN...";
+        
+        try {
+            const qPaket = query(collection(db, "Config_Mining"), where("nominal", "==", nomTokenTerpilih));
+            const snapPaket = await getDocs(qPaket);
+            if(snapPaket.empty) { throw `Pusat belum mengatur Paket Kecepatan untuk nominal Rp ${nomTokenTerpilih.toLocaleString('id-ID')}! Hubungi Admin.`; }
+            
+            let paketData = snapPaket.docs[0].data();
+            let speedTambah = parseFloat(paketData.speed) || 0;
+            let hariTambah = parseInt(paketData.durasi_hari) || 30;
+            let hargaPaket = parseInt(paketData.nominal) || 0;
+            
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> MEMBAKAR TOKEN...";
+
+            const snap = await getDocs(query(collection(db, "Database_Token"), where("kode_token", "==", kodeTokenTerpilih)));
+            if(snap.empty) { throw "Token not found!"; }
+            const tDocRef = doc(db, "Database_Token", snap.docs[0].id); 
+            const userRef = doc(db, "Akun_Publik", docId);
+            
+            await runTransaction(db, async (transaction) => {
+                const tokenDoc = await transaction.get(tDocRef); const userDoc = await transaction.get(userRef);
+                if (!tokenDoc.exists() || !userDoc.exists()) { throw "Failed reading database."; }
+                const tData = tokenDoc.data();
+                if(tData.status !== "AKTIF") { throw "Token is already used or inactive."; }
+                if(tData.distribusi_ke === 'REG') { throw "Activation Tokens cannot be used to upgrade speed!"; }
+                
+                let finalHariTambah = (tData.durasi_hari && tData.durasi_hari > 0) ? tData.durasi_hari : hariTambah;
+                transaction.update(tDocRef, { status: "TERPAKAI", dipakai_oleh: myEmail, pemilik: myEmail, waktu_dipakai: serverTimestamp() });
+                
+                let currentKecepatan = parseFloat(userDoc.data().kecepatan_hash || 0);
+                mySpeed = currentKecepatan + parseFloat(speedTambah); 
+                expTime = Math.max((userDoc.data().expired_at || 0), Date.now()) + (finalHariTambah * 86400000); 
+                
+                transaction.update(userRef, { kecepatan_hash: mySpeed, expired_at: expTime });
+                let kodeSensor = kodeTokenTerpilih.substring(0, 4) + "-****";
+                transaction.set(doc(collection(db, "Mutasi_Mining")), { email: myEmail, jenis: "IN", deskripsi: `Add ${formatKripto(speedTambah)} D/s via Token ${kodeSensor}`, nominal: hargaPaket, timestamp_local: Date.now() });
+            });
+            
+            if (myReferredBy && myReferredBy !== "" && window.PERSENTASE_BONUS_TOPUP > 0) {
+                const snapRef = await getDocs(query(collection(db, "Akun_Publik"), where("username", "==", myReferredBy)));
+                if(!snapRef.empty) {
+                    let refData = snapRef.docs[0].data(); 
+                    let bonusDogeTopUp = (hargaPaket * (window.PERSENTASE_BONUS_TOPUP / 100)) / dogePriceRp;
+                    await updateDoc(doc(db, "Akun_Publik", snapRef.docs[0].id), { saldo_doge: (refData.saldo_doge || 0) + bonusDogeTopUp, total_bonus_sponsor_doge: (refData.total_bonus_sponsor_doge || 0) + bonusDogeTopUp });
+                    await addDoc(collection(db, "Mutasi_Mining"), { email: refData.email, jenis: "IN", deskripsi: `Sponsor Bonus from (${myUsername})`, nominal: bonusDogeTopUp, timestamp_local: Date.now() });
+                    await addDoc(collection(db, "Notifikasi_Personal"), { email: refData.email, pesan: `DOWNLINE INFO! Your downline (${myUsername}) just upgraded their engine. Bonus added to VRSC.`, timestamp_local: Date.now() });
+                }
+            }
+            
+            localStorage.setItem("cisSpeed", mySpeed); localStorage.setItem("cisExp", expTime); updateUI(); adjustDifficulty(); window.loadMyTokens(); 
+            msg('msgBeliHash', `Sukses! Kecepatan bertambah +${formatKripto(speedTambah)} D/s`, "ok"); 
+            setTimeout(() => { document.getElementById('msgBeliHash').style.display='none'; document.getElementById('selectedTokenBeliDaya').value = ''; document.getElementById('selectedNominalTokenBeliDaya').value = '0'; window.closeWalletModal('modalBeliDaya'); document.getElementById('pinBeliHashInline').value = ''; }, 2500);
+            
+        } catch(e) { msg('msgBeliHash', typeof e === "string" ? e : "Gagal menambahkan kecepatan.", "error"); }
+        btn.disabled = false; btn.innerHTML = "<i class='fa-solid fa-fire'></i> USE TOKEN NOW";
+    });
+
+    wdBtnReal.addEventListener('click', async () => {
+        const jenisToken = document.getElementById('jenisTokenWd').value; 
+        const targetUser = document.getElementById('targetUserWd').value.trim(); 
+        const targetRp = Number(document.getElementById('inputWithdraw').value); 
+        const btn = document.getElementById('btnWithdraw');
+        
+        if(!targetUser) { msg('msgWithdraw', "Target username required!", "error"); return; }
+        if(targetRp < 10000 || targetRp % 10000 !== 0) { msg('msgWithdraw', "Invalid nominal option!", "error"); return; } 
+        if(mySaldoRupiah < targetRp) { msg('msgWithdraw', `Insufficient IDR Balance!`, "error"); return; }
+        
+        btn.disabled = true; btn.innerText = "SENDING REQUEST...";
+        try {
+            const snapPending = await getDocs(query(collection(db, "Request_Withdraw"), where("email_pemohon", "==", myEmail), where("status", "==", "PENDING")));
+            if (!snapPending.empty) { msg('msgWithdraw', "DENIED: You still have a pending withdrawal request.", "error"); btn.disabled = false; btn.innerText = "PROCESS WITHDRAWAL"; return; }
+
+            await updateDoc(doc(db, "Akun_Publik", docId), {
+                saldo_rupiah: mySaldoRupiah - targetRp
+            });
+            mySaldoRupiah -= targetRp;
+            localStorage.setItem("cisSaldoRp", mySaldoRupiah);
+            updateUI(); 
+
+            await addDoc(collection(db, "Request_Withdraw"), { 
+                email_pemohon: myEmail, 
+                username_pemohon: myUsername, 
+                doc_id_pemohon: docId, 
+                nominal_rupiah: targetRp, 
+                distribusi_ke: jenisToken, 
+                target_username: targetUser, 
+                target_wa: "", 
+                status: "PENDING", 
+                waktu_request: serverTimestamp() 
+            });
+            
+            catatMutasi("OUT", `⏳ Pengajuan WD: Token ${jenisToken}`, targetRp);
+            alert("⏳ PENGAJUAN WITHDRAW BERHASIL!\n\nSistem sedang memproses permintaan Anda.\nHarap menunggu persetujuan Admin maksimal 1x24 Jam.");
+            
+            msg('msgWithdraw', "Request Sent to Central.", "ok"); 
+            setTimeout(() => { const msgBox = document.getElementById('msgWithdraw'); if(msgBox) msgBox.style.display = 'none'; window.closeWalletModal('modalWithdraw'); document.getElementById('pinWithdrawInline').value = ''; }, 3000);
+            
+        } catch(e) { msg('msgWithdraw', "Failed to Send Request", "error"); }
+        btn.disabled = false; btn.innerText = "PROCESS WITHDRAWAL";
+    });
+
+    window.bukaTransfer = (id, kode, nom) => { document.getElementById('inpTokenIdTransfer').value = id; document.getElementById('inpTokenCodeTransfer').value = kode; document.getElementById('inpTokenNominalTransfer').value = nom; document.getElementById('lblTokenTransfer').innerText = "Rp " + nom.toLocaleString('en-US'); document.getElementById('formTransferToken').style.display = 'block'; document.getElementById('inpTargetUser').focus(); };
+    window.batalTransfer = () => { document.getElementById('formTransferToken').style.display = 'none'; document.getElementById('inpTargetUser').value = ''; document.getElementById('msgTransfer').style.display = 'none'; };
+
+    window.loadMyTokens = async function() {
+        const tbodyReg = document.getElementById('tblMyTokensReg');
+        const tbodyMining = document.getElementById('tblMyTokensMining');
+        const listAktivasi = document.getElementById('listTopUpTokens'); 
+        const listBeliDaya = document.getElementById('listTokenBeliDaya'); 
+        if(!myEmail) return;
+
+        try {
+            if(tbodyReg) tbodyReg.innerHTML = "<tr><td colspan='3' style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> Mencari...</td></tr>";
+            if(tbodyMining) tbodyMining.innerHTML = "<tr><td colspan='3' style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> Mencari...</td></tr>";
+            if(listAktivasi) listAktivasi.innerHTML = "<div style='text-align:center; color:#94a3b8;'><i class='fa-solid fa-spinner fa-spin'></i> Mencari Token...</div>"; 
+            if(listBeliDaya) listBeliDaya.innerHTML = "<div style='text-align:center; color:#94a3b8;'><i class='fa-solid fa-spinner fa-spin'></i> Mencari Token...</div>";
+            
+            let safeEmail = myEmail; let safeUser = myUsername ? myUsername : "UNKNOWN";
+            
+            let queries = [
+                getDocs(query(collection(db, "Database_Token"), where("pemilik", "==", safeEmail)))
+            ];
+            if(safeUser !== "UNKNOWN" && safeUser.trim() !== "") {
+                queries.push(getDocs(query(collection(db, "Database_Token"), where("pemilik_username", "==", safeUser))));
+            }
+            
+            const snaps = await Promise.all(queries);
+            let tokenMap = new Map(); 
+            snaps.forEach(snap => { 
+                snap.forEach(d => {
+                    let data = d.data();
+                    if(data.status === "AKTIF") {
+                        tokenMap.set(d.id, { id: d.id, ...data }); 
+                    }
+                }); 
+            });
+
+            let tokens = Array.from(tokenMap.values());
+            
+            let htmlTableReg = ""; let htmlTableMining = ""; 
+            let htmlAktivasi = ""; let htmlBeliDaya = "";
+
+            if(tokens.length === 0) { 
+                if(tbodyReg) tbodyReg.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>Tidak ada Token Aktivasi.</td></tr>";
+                if(tbodyMining) tbodyMining.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>Tidak ada Token Upgrade.</td></tr>";
+                if(listAktivasi) listAktivasi.innerHTML = "<div style='text-align:center; color:#ef4444;'>Tidak ada Token Aktivasi.</div>";
+                if(listBeliDaya) listBeliDaya.innerHTML = "<div style='text-align:center; color:#ef4444;'>Tidak ada Token Speed.</div>"; 
+                return; 
+            }
+
+            tokens.sort((a,b) => { 
+                let getSec = (t) => t ? (t.seconds || Date.now()/1000) : Date.now()/1000;
+                let timeA = getSec(a.waktu_dipakai) || getSec(a.waktu_transfer) || getSec(a.dibuat_pada);
+                let timeB = getSec(b.waktu_dipakai) || getSec(b.waktu_transfer) || getSec(b.dibuat_pada);
+                return timeB - timeA; 
+            });
+
+            tokens.forEach(t => {
+                let ts = t.waktu_transfer || t.dibuat_pada;
+                let dateObj = ts ? (ts.toDate ? ts.toDate() : new Date(ts.seconds * 1000)) : new Date();
+                let dateStr = dateObj.toLocaleDateString('id-ID');
+                let timeStr = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+                let asalToken = t.pengirim ? t.pengirim : "Pusat";
+                let codeHtml = `<span id='pin_${t.id}'>••••-••••-••••-••••</span> <i class='fa-solid fa-eye' style='cursor:pointer; margin-left:5px; color:#94a3b8;' onclick='window.togglePin("${t.id}", "${t.kode_token}", this)'></i>`;
+                let actionHtml = `<button class='btn-cyan' style='padding:5px 10px; font-size:0.65rem; background:#3498db; color:#fff;' onclick='window.bukaTransfer("${t.id}", "${t.kode_token}", ${t.nominal_rupiah})'><i class="fa-solid fa-paper-plane"></i></button>`;
+                
+                let trHtml = `<tr>
+                    <td><span style='font-size:0.75rem; color:#fff;'>${dateStr}</span><br/><span style='color:#94a3b8; font-size:0.65rem;'>Dr: ${asalToken}</span></td>
+                    <td style='color:#00f2fe; font-family:Orbitron;'>${codeHtml}<br/><b style='color:#2ecc71; font-family:sans-serif; font-size:0.75rem;'>Rp ${(t.nominal_rupiah || 0).toLocaleString('id-ID')}</b></td>
+                    <td style='text-align:right;'>${actionHtml}</td>
+                </tr>`;
+
+                if(t.distribusi_ke === 'REG') {
+                    htmlTableReg += trHtml;
+                    htmlAktivasi += `<div class='token-card' onclick='document.querySelectorAll(".token-card").forEach(c=>c.classList.remove("selected")); this.classList.add("selected"); document.getElementById("selectedTokenCode").value="${t.kode_token}";'><div class='token-card-info'><div class='token-card-code'>${t.kode_token}</div><div class='token-card-amount' style='color:#f1c40f;'>${t.durasi_hari ? `EXTEND: ${t.durasi_hari} HARI` : "KODE AKTIVASI"}</div><div class='token-card-source'>Dari: ${asalToken}</div></div><div class='token-card-radio'></div></div>`;
+                } else {
+                    htmlTableMining += trHtml;
+                    htmlBeliDaya += `<div class='token-card' onclick='document.querySelectorAll("#listTokenBeliDaya .token-card").forEach(c=>c.classList.remove("selected-burn")); this.classList.add("selected-burn"); document.getElementById("selectedTokenBeliDaya").value="${t.kode_token}"; document.getElementById("selectedNominalTokenBeliDaya").value="${t.nominal_rupiah}";' style='border-color:#2ecc71; background:rgba(46, 204, 113, 0.05);'><div class='token-card-info'><div class='token-card-code' style='color:#2ecc71;'>${t.kode_token}</div><div class='token-card-amount' style='color:#fff;'>Nilai: Rp ${(t.nominal_rupiah || 0).toLocaleString('id-ID')}</div><div class='token-card-source'>Dari: ${asalToken}</div></div><div class='token-card-radio' style='border-color:#2ecc71;'></div></div>`;
+                }
+            });
+            
+            if(tbodyReg) tbodyReg.innerHTML = htmlTableReg === "" ? "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>Tidak ada Token Aktivasi.</td></tr>" : htmlTableReg;
+            if(tbodyMining) tbodyMining.innerHTML = htmlTableMining === "" ? "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>Tidak ada Token Upgrade.</td></tr>" : htmlTableMining;
+
+            if(listAktivasi) listAktivasi.innerHTML = htmlAktivasi === "" ? "<div style='color:#ef4444; text-align:center; padding:10px;'>Tidak ada Token Aktivasi.</div>" : htmlAktivasi;
+            if(listBeliDaya) listBeliDaya.innerHTML = htmlBeliDaya === "" ? "<div style='color:#ef4444; text-align:center; padding:10px;'>Tidak ada Token Speed.</div>" : htmlBeliDaya;
+            
+        } catch(e) {
+            console.error("TOKEN SYNC ERROR:", e);
+            if(tbodyReg) tbodyReg.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>Gagal memuat.</td></tr>";
+            if(tbodyMining) tbodyMining.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>Gagal memuat.</td></tr>";
+        }
+    };
+
+	// ==========================================
+    // FUNGSI P2P MARKETPLACE (BELI TOKEN)
+    // ==========================================
+    let currentP2PTab = "beli";
+
+    window.switchP2PTab = (tab) => {
+        currentP2PTab = tab;
+        document.getElementById('tabP2pBeli').style.color = tab === 'beli' ? '#00f2fe' : '#94a3b8';
+        document.getElementById('tabP2pBeli').style.borderBottom = tab === 'beli' ? '2px solid #00f2fe' : 'none';
+        document.getElementById('tabP2pJual').style.color = tab === 'jual' ? '#00f2fe' : '#94a3b8';
+        document.getElementById('tabP2pJual').style.borderBottom = tab === 'jual' ? '2px solid #00f2fe' : 'none';
+        window.loadP2POrders();
+    };
+
+    window.bukaModalBeliP2P = async () => {
+        window.openWalletModal('modalBeliP2P');
+        const selSultan = document.getElementById('p2pTargetSultan');
+        selSultan.innerHTML = "<option value=''>Memuat Data Sultan...</option>";
+        document.getElementById('infoRekeningSultan').style.display = 'none';
+        
+        try {
+            // Mencari user yang memiliki Token AKTIF di Brankas
+            const snap = await getDocs(query(collection(db, "Database_Token"), where("status", "==", "AKTIF")));
+            let listSultan = new Set();
+            snap.forEach(d => {
+                let owner = d.data().pemilik_username;
+                if(owner && owner !== "Pusat" && owner !== "CIS_USER" && owner !== "CIS01" && owner !== myUsername) {
+                    listSultan.add(owner);
+                }
+            });
+            let html = "<option value=''>-- Pilih Agen/Sultan Penyedia --</option>";
+            listSultan.forEach(s => { html += `<option value='${s}'>${s}</option>`; });
+            if(listSultan.size === 0) html = "<option value=''>Belum ada Sultan dengan stok token</option>";
+            selSultan.innerHTML = html;
+        } catch(e) { selSultan.innerHTML = "<option value=''>Gagal memuat data</option>"; }
+    };
+
+    window.tampilkanRekeningSultan = async () => {
+        const sultan = document.getElementById('p2pTargetSultan').value;
+        const box = document.getElementById('infoRekeningSultan');
+        if(!sultan) { box.style.display = 'none'; return; }
+        box.style.display = 'block'; box.innerHTML = "Memuat rekening...";
+        try {
+            const snap = await getDocs(query(collection(db, "Akun_Publik"), where("username", "==", sultan)));
+            if(!snap.empty) {
+                let d = snap.docs[0].data();
+                box.innerHTML = `<b style='color:#e84393;'>💳 Info Rekening [${sultan}]:</b><br/>Bank: <b style='color:#fff;'>${d.bank || 'Belum diatur'}</b><br/>E-Wallet: <b style='color:#fff;'>${d.ewallet || 'Belum diatur'}</b><br/>Crypto: <b style='color:#fff;'>${d.crypto || 'Belum diatur'}</b><br/><span style='color:#f1c40f;'>WA: ${d.wa || '-'}</span>`;
+                box.setAttribute('data-email', d.email);
+            } else { box.innerHTML = "Data rekening tidak ditemukan."; }
+        } catch(e) { box.innerHTML = "Gagal memuat rekening."; }
+    };
+
+    window.loadHargaP2P = async () => {
+        const jenis = document.getElementById('p2pJenisToken').value;
+        const selNominal = document.getElementById('p2pNominalToken');
+        if(!jenis) { selNominal.innerHTML = "<option value=''>-- Pilih Jenis Token Dulu --</option>"; return; }
+        selNominal.innerHTML = "<option value=''>Memuat Harga Market...</option>";
+        try {
+            const snap = await getDocs(query(collection(db, "Config_Marketplace"), where("jenis", "==", jenis), orderBy("modal", "asc")));
+            let html = "<option value=''>-- Pilih Harga Pasar --</option>";
+            snap.forEach(d => {
+                let p = d.data();
+                html += `<option value='${p.modal}|${p.jual}'>Beli: Rp ${p.jual.toLocaleString('id-ID')} (Kode: ${p.modal/1000}K)</option>`;
+            });
+            selNominal.innerHTML = html === "<option value=''>-- Pilih Harga Pasar --</option>" ? "<option value=''>Belum ada harga diatur Pusat</option>" : html;
+        } catch(e) { selNominal.innerHTML = "<option value=''>Gagal memuat harga</option>"; }
+    };
+
+    window.buatPesananP2P = async () => {
+        const sultan = document.getElementById('p2pTargetSultan').value;
+        const emailSultan = document.getElementById('infoRekeningSultan').getAttribute('data-email');
+        const jenis = document.getElementById('p2pJenisToken').value;
+        const nomData = document.getElementById('p2pNominalToken').value;
+        const btn = document.getElementById('btnKirimPesananP2P');
+
+        if(!sultan || !jenis || !nomData) return alert("Lengkapi Form Order P2P!");
+        const [modalPusat, hargaJual] = nomData.split('|');
+
+        btn.disabled = true; btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> MEMPROSES ORDER...";
+        try {
+            // Cek ketersediaan token di brankas Sultan secara LIVE
+            const tSnap = await getDocs(query(collection(db, "Database_Token"), where("pemilik", "==", emailSultan), where("status", "==", "AKTIF"), where("distribusi_ke", "==", jenis), where("nominal_rupiah", "==", parseInt(modalPusat))));
+            if(tSnap.empty) { alert("Maaf, stok Token jenis ini di Sultan tersebut sedang kosong/habis."); btn.disabled = false; btn.innerHTML = "<i class='fa-solid fa-paper-plane'></i> KIRIM REQUEST ORDER"; return; }
+
+            await addDoc(collection(db, "P2P_Order"), {
+                pembeli: myEmail, pembeli_user: myUsername,
+                penjual: emailSultan, penjual_user: sultan,
+                jenis_token: jenis, nominal_pusat: parseInt(modalPusat), harga_jual: parseInt(hargaJual),
+                status: "PENDING", waktu_order: serverTimestamp(), id_token_terkunci: ""
+            });
+            await addDoc(collection(db, "Notifikasi_Personal"), { email: emailSultan, pesan: `🛒 P2P MARKET: ${myUsername} memesan Token ${jenis} (Seharga Rp ${parseInt(hargaJual).toLocaleString('id-ID')}). Segera cek menu P2P!`, timestamp_local: Date.now() });
+
+            showToast("Order Beli Sukses Terkirim!");
+            document.getElementById('modalBeliP2P').style.display = 'none';
+            window.loadP2POrders();
+        } catch(e) { alert("Gagal memproses order."); }
+        btn.disabled = false; btn.innerHTML = "<i class='fa-solid fa-paper-plane'></i> KIRIM REQUEST ORDER";
+    };
+
+    window.loadP2POrders = async () => {
+        const tbody = document.getElementById('tblP2P');
+        tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> Memuat Transaksi P2P...</td></tr>";
+        try {
+            let qField = currentP2PTab === "beli" ? "pembeli" : "penjual";
+            const snap = await getDocs(query(collection(db, "P2P_Order"), where(qField, "==", myEmail)));
+            let dataArr = []; snap.forEach(d => { dataArr.push({id: d.id, ...d.data()})});
+            dataArr.sort((a,b) => (b.waktu_order?.seconds || 0) - (a.waktu_order?.seconds || 0));
+
+            if(dataArr.length === 0) { tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#94a3b8;'>Belum ada transaksi P2P.</td></tr>"; return; }
+
+            let html = "";
+            dataArr.forEach(x => {
+                let waktu = formatTanggalJam(x.waktu_order);
+                let partner = currentP2PTab === "beli" ? x.penjual_user : x.pembeli_user;
+                let lblPartner = currentP2PTab === "beli" ? "Ke Sultan: " : "Dari Pembeli: ";
+                let sttColor = x.status === "SELESAI" ? "#2ecc71" : (x.status === "DIKIRIM" ? "#f1c40f" : (x.status === "BATAL" ? "#e74c3c" : "#3498db"));
+                
+                let btnAksi = "";
+                // LOGIKA AKSI PEMBELI
+                if(currentP2PTab === "beli") {
+                    if(x.status === "DIKIRIM") {
+                        btnAksi = `<button class='btn-cyan' onclick='window.prosesAksiP2P("${x.id}", "TERIMA", "${x.id_token_terkunci}")' style='padding:5px; font-size:0.65rem; background:#2ecc71; color:#fff; width:100%; margin-bottom:5px;'><i class='fa-solid fa-check-double'></i> CONFIRM TERIMA</button>`;
+                    } else if (x.status === "PENDING") {
+                        btnAksi = `<button class='btn-cyan' onclick='window.prosesAksiP2P("${x.id}", "BATAL", "")' style='padding:5px; font-size:0.65rem; background:#e74c3c; color:#fff; width:100%;'><i class='fa-solid fa-xmark'></i> BATAL ORDER</button>`;
+                    }
+                } 
+                // LOGIKA AKSI PENJUAL (SULTAN)
+                else {
+                    if(x.status === "PENDING") {
+                        btnAksi = `<button class='btn-cyan' onclick='window.prosesAksiP2P("${x.id}", "KIRIM", "")' style='padding:5px; font-size:0.65rem; background:#f1c40f; color:#000; width:100%; margin-bottom:5px;'><i class='fa-solid fa-paper-plane'></i> KIRIM TOKEN</button>
+                                   <button class='btn-cyan' onclick='window.prosesAksiP2P("${x.id}", "BATAL", "")' style='padding:5px; font-size:0.65rem; background:#e74c3c; color:#fff; width:100%;'><i class='fa-solid fa-xmark'></i> TOLAK</button>`;
+                    } else if (x.status === "DIKIRIM") {
+                        btnAksi = `<span style='font-size:0.7rem; color:#f1c40f;'><i class='fa-solid fa-clock'></i> Menunggu Confirm Pembeli</span>
+                                   <button class='btn-cyan' onclick='window.prosesAksiP2P("${x.id}", "BATAL_DIKIRIM", "${x.id_token_terkunci}")' style='padding:5px; font-size:0.65rem; background:#e74c3c; color:#fff; width:100%; margin-top:5px;'><i class='fa-solid fa-xmark'></i> TARIK TOKEN (BATAL)</button>`;
+                    }
+                }
+                
+                let linkWa = `https://wa.me/?text=Halo%20${partner},%20terkait%20transaksi%20P2P%20Token%20CIS%20saya...`;
+                if(x.status !== "SELESAI" && x.status !== "BATAL") {
+                    btnAksi += `<a href='${linkWa}' target='_blank' style='display:block; text-align:center; background:#25D366; color:#fff; padding:5px; border-radius:5px; text-decoration:none; font-size:0.65rem; font-weight:bold; margin-top:5px;'><i class='fa-brands fa-whatsapp'></i> Chat WA</a>`;
+                }
+
+                html += `<tr>
+                    <td><span style='font-size:0.7rem; color:#94a3b8;'>${waktu}</span><br/><span style='font-family:Orbitron; font-size:0.6rem; color:#64748b;'>ID: ${x.id.slice(0,6).toUpperCase()}</span></td>
+                    <td><b style='color:#e84393; font-size:0.75rem;'>Token ${x.jenis_token}</b><br/><span style='color:#94a3b8; font-size:0.7rem;'>Harga: <b style='color:#2ecc71;'>Rp ${x.harga_jual.toLocaleString('id-ID')}</b></span><br/><span style='font-size:0.65rem;'>${lblPartner} <b style='color:#00f2fe;'>${partner}</b></span></td>
+                    <td><b style='color:${sttColor}; font-size:0.75rem;'>${x.status}</b><div style='margin-top:5px;'>${btnAksi}</div></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        } catch(e) { tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>Gagal memuat.</td></tr>"; }
+    };
+
+    window.prosesAksiP2P = async (orderId, aksi, idTokenTerkunci) => {
+        if(!confirm(`PENTING: Yakin memproses transaksi ini menjadi: ${aksi}?`)) return;
+        try {
+            const orderRef = doc(db, "P2P_Order", orderId);
+            
+            await runTransaction(db, async (transaction) => {
+                const oDoc = await transaction.get(orderRef);
+                if(!oDoc.exists()) throw "Data Order tidak ditemukan!";
+                let oData = oDoc.data();
+
+                if (aksi === "KIRIM") {
+                    const tSnap = await getDocs(query(collection(db, "Database_Token"), where("pemilik", "==", myEmail), where("status", "==", "AKTIF"), where("distribusi_ke", "==", oData.jenis_token), where("nominal_rupiah", "==", oData.nominal_pusat)));
+                    if(tSnap.empty) throw "Anda tidak memiliki stok Token yang sesuai dan Aktif!";
+                    let tDoc = tSnap.docs[0];
+                    transaction.update(doc(db, "Database_Token", tDoc.id), { status: "TERKUNCI" });
+                    transaction.update(orderRef, { status: "DIKIRIM", id_token_terkunci: tDoc.id });
+                    transaction.set(doc(collection(db, "Notifikasi_Personal")), { email: oData.pembeli, pesan: `🛒 P2P: Sultan ${myUsername} telah Mengirim/Mengunci token pesanan Anda. Silakan transfer pembayaran dan klik Confirm!`, timestamp_local: Date.now() });
+                } 
+                else if (aksi === "TERIMA") {
+                    if(!idTokenTerkunci) throw "Sistem Error: ID Token Escrow tidak ditemukan.";
+                    transaction.update(doc(db, "Database_Token", idTokenTerkunci), { status: "AKTIF", pemilik: myEmail, pemilik_username: myUsername, pengirim: oData.penjual_user, waktu_transfer: serverTimestamp() });
+                    transaction.update(orderRef, { status: "SELESAI", waktu_update: serverTimestamp() });
+                    transaction.set(doc(collection(db, "Notifikasi_Personal")), { email: oData.penjual, pesan: `🛒 P2P SUKSES: Pembeli ${myUsername} telah mengkonfirmasi penerimaan Token. Transaksi Beli Token Selesai.`, timestamp_local: Date.now() });
+                }
+                else if (aksi === "BATAL") {
+                    transaction.update(orderRef, { status: "BATAL", waktu_update: serverTimestamp() });
+                    let emailPartner = currentP2PTab === "beli" ? oData.penjual : oData.pembeli;
+                    transaction.set(doc(collection(db, "Notifikasi_Personal")), { email: emailPartner, pesan: `🛒 P2P: Pesanan Token DIBATALKAN oleh Partner transaksi.`, timestamp_local: Date.now() });
+                }
+                else if (aksi === "BATAL_DIKIRIM") {
+                    if(!idTokenTerkunci) throw "Sistem Error: ID Token Escrow tidak ditemukan.";
+                    transaction.update(doc(db, "Database_Token", idTokenTerkunci), { status: "AKTIF" }); 
+                    transaction.update(orderRef, { status: "BATAL", waktu_update: serverTimestamp() });
+                    transaction.set(doc(collection(db, "Notifikasi_Personal")), { email: oData.pembeli, pesan: `🛒 P2P: Sultan membatalkan pesanan (Waktu habis/Tidak ada transfer). Token ditarik kembali.`, timestamp_local: Date.now() });
+                }
+            });
+            showToast("Aksi [" + aksi + "] Berhasil diproses!");
+            window.loadP2POrders();
+            window.loadMyTokens();
+        } catch (error) { alert("GAGAL: " + (typeof error === "string" ? error : "Terjadi kesalahan Database Cloud.")); }
+    };
+	
+
+    window.openHargaPasar = async () => {
+        window.openWalletModal('modalHargaPasar');
+        const tbody = document.getElementById('tblHargaPasar');
+        tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'><i class='fa-solid fa-spinner fa-spin'></i> Memuat harga resmi dari Pusat...</td></tr>";
+        try {
+            const snap = await getDocs(query(collection(db, "Config_Marketplace"), orderBy("modal", "asc")));
+            let html = "";
+            snap.forEach(d => {
+                let p = d.data();
+                let bgBadge = p.jenis === 'REG' ? '#f1c40f' : '#2ecc71';
+                let textJenis = p.jenis === 'REG' ? 'Token Aktivasi' : 'Token Upgrade';
+                
+                html += `<tr>
+                    <td><span style='background:${bgBadge}; color:#000; padding:3px 6px; border-radius:4px; font-size:0.65rem; font-weight:bold;'>${p.jenis}</span><br/><b>${textJenis}</b></td>
+                    <td style='font-size:0.75rem; color:#00f2fe;'>${p.keterangan}</td>
+                    <td>
+                        <span style='font-size:0.65rem; color:#94a3b8;'>Modal Cetak Pusat:</span><br/>
+                        <b style='color:#2ecc71;'>Rp ${p.modal.toLocaleString('id-ID')}</b><br/>
+                        <span style='font-size:0.65rem; color:#f1c40f; margin-top:5px; display:inline-block;'>Harga Beli di Pengepul:</span><br/>
+                        <b style='color:#f39c12; font-size:1.1rem;'>Rp ${p.jual.toLocaleString('id-ID')}</b>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html === "" ? "<tr><td colspan='3' style='text-align:center;'>Daftar harga sedang disiapkan oleh Pusat.</td></tr>" : html;
+        } catch(e) {
+            tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>Gagal memuat harga. Cek koneksi internet Anda.</td></tr>";
+        }
+    };
+
+    window.openLeaderboard = async () => {
+        window.openWalletModal('modalLeaderboard');
+        const listDiv = document.getElementById('leaderboardList');
+        listDiv.innerHTML = "<div style='text-align:center; padding:30px;'><i class='fa-solid fa-spinner fa-spin' style='font-size:2rem; color:#f1c40f;'></i><br/><br/>Memindai brankas stok token...</div>";
+        
+        try {
+            const snap = await getDocs(query(collection(db, "Database_Token"), where("status", "==", "AKTIF")));
+            let userCounts = {};
+            
+            snap.forEach(doc => {
+                let t = doc.data();
+                let owner = t.pemilik_username;
+                
+                if(owner && owner !== "Pusat" && owner !== "CIS_USER" && owner !== "CIS01") {
+                    if(!userCounts[owner]) userCounts[owner] = { count: 0, val: 0 };
+                    userCounts[owner].count += 1;
+                    userCounts[owner].val += (t.nominal_rupiah || 0);
+                }
+            });
+            
+            let sortedUsers = Object.keys(userCounts).map(k => {
+                return { username: k, count: userCounts[k].count, val: userCounts[k].val };
+            }).sort((a,b) => b.count - a.count);
+            
+            let top10 = sortedUsers.slice(0, 10);
+            
+            if(top10.length === 0) {
+                listDiv.innerHTML = "<div style='text-align:center; padding:20px; color:#94a3b8;'>Belum ada agen/user yang memiliki stok token untuk dijual.</div>";
+                return;
+            }
+            
+            let html = ""; let rank = 1;
+            for(let u of top10) {
+                let waBtn = "";
+                const uSnap = await getDocs(query(collection(db, "Akun_Publik"), where("username", "==", u.username)));
+                if(!uSnap.empty) {
+                    let waNum = uSnap.docs[0].data().wa;
+                    if(waNum) {
+                        if(waNum.startsWith("0")) waNum = "62" + waNum.substring(1);
+                        let linkWa = `https://wa.me/${waNum}?text=Halo%20Sultan%20${u.username},%20saya%20mau%20beli%20Token%20CIS%20Mining.`;
+                        waBtn = `<a href="${linkWa}" target="_blank" style="background:#2ecc71; color:#fff; padding:6px 15px; border-radius:8px; text-decoration:none; font-size:0.75rem; font-weight:bold; box-shadow:0 4px 10px rgba(46,204,113,0.3); display:inline-block;"><i class="fa-brands fa-whatsapp"></i> Beli</a>`;
+                    }
+                }
+                let rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
+                html += `
+                <div class='leaderboard-item ${rankClass}'>
+                    <div class='rank-num'>${rank}</div>
+                    <div style='flex:1;'>
+                        <b style='color:#00f2fe; font-size:1.05rem;'>${u.username}</b><br/>
+                        <span style='font-size:0.8rem; color:#f1c40f; font-weight:bold;'><i class='fa-solid fa-box-open'></i> ${u.count} Lbr (Rp ${(u.val).toLocaleString('id-ID')})</span>
+                    </div>
+                    <div>${waBtn}</div>
+                </div>`;
+                rank++;
+            }
+            listDiv.innerHTML = html;
+        } catch(error) {
+            listDiv.innerHTML = "<div style='text-align:center; color:#ef4444;'>Gagal memuat Top 10 Sultan. Silakan coba lagi.</div>";
+        }
+    };
+
+    function setupProfileUI() {
+      document.getElementById('profUser').value = localStorage.getItem("cisMinerUser"); document.getElementById('profEmail').value = myEmail; document.getElementById('profNewPass').value = ""; document.getElementById('profConfirmPass').value = "";
+      
+      // Ambil data rekening dari allUsersData (variabel global)
+      let me = allUsersData.find(u => u.email === myEmail);
+      if(me) {
+          document.getElementById('profBank').value = me.bank || "";
+          document.getElementById('profEwallet').value = me.ewallet || "";
+          document.getElementById('profCrypto').value = me.crypto || "";
+      }
+      
+      if(edUser >= 2) document.getElementById('profUser').disabled = true; if(edEmail >= 2) document.getElementById('profEmail').disabled = true;
+    }
+    
+    document.getElementById('btnUpdateProf').addEventListener('click', async () => {
+      const nPass = document.getElementById('profNewPass').value; 
+      const cPass = document.getElementById('profConfirmPass').value;
+      const uBank = document.getElementById('profBank').value;
+      const uEwallet = document.getElementById('profEwallet').value;
+      const uCrypto = document.getElementById('profCrypto').value;
+      const btn = document.getElementById('btnUpdateProf');
+      
+      if(!cPass) { msg('msgProf', "Current password required for security!", "error"); return; }
+      if(cPass !== myPass) { msg('msgProf', "Incorrect current password!", "error"); return; }
+
+      let updates = { bank: uBank, ewallet: uEwallet, crypto: uCrypto }; 
+      if(nPass !== "") { updates.password = nPass; myPass = nPass; } 
+      let newPin = document.getElementById('profNewPin').value;
+      if(newPin && newPin.length === 6) { updates.tx_pin = newPin; myPin = newPin; }
+      
+      btn.innerText = "PROCESSING..."; btn.disabled = true;
+      try {
+        await updateDoc(doc(db, "Akun_Publik", docId), updates);
+        window.showToast("Profile & Rekening Saved!"); msg('msgProf', "Profile & Rekening Saved!", "ok"); 
+        document.getElementById('profConfirmPass').value = ""; 
+        document.getElementById('profNewPass').value = ""; 
+        document.getElementById('profNewPin').value = "";
+      } catch(e) { msg('msgProf', "Failed to Save", "error"); }
+      btn.innerHTML = `<i class='fa-solid fa-save'></i> <span data-i18n='btnSaveChange'>SAVE PROFILE</span>`; btn.disabled = false;
+    });
+
+    window.addEventListener('load', () => {
+
+        let launchTimerInt = null;
+        function startLaunchTimer(targetDate) {
+            if(launchTimerInt) clearInterval(launchTimerInt);
+            let targetTime = new Date(targetDate).getTime();
+            if(isNaN(targetTime)) { document.getElementById("launch-timer").innerHTML = "AWAITING DATA"; return; }
+            
+            launchTimerInt = setInterval(() => {
+                let now = new Date().getTime();
+                let distance = targetTime - now;
+                
+                // JIKA WAKTU HABIS (MENTOK DI NOL)
+                if(distance <= 0) {
+                    clearInterval(launchTimerInt);
+                    document.getElementById("launch-timer").innerHTML = "00:00:00"; // Paksa berhenti di 0
+                    
+                    // Hilangkan penutup layar secara instan
+                    const overlay = document.getElementById('status-overlay');
+                    const mainApp = document.getElementById('mainAppContainer');
+                    const splash = document.getElementById('splash-screen');
+                    
+                    if(overlay) overlay.style.display = 'none';
+                    if(mainApp) mainApp.style.display = 'flex';
+                    if(splash) splash.style.display = 'none';
+                    return; // Stop fungsi agar tidak menghitung minus
+                }
+                
+                let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                let display = "";
+                if(days > 0) display += days + "D ";
+                display += String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
+                document.getElementById("launch-timer").innerHTML = display;
+            }, 1000);
+        }
+
+        try {
+            onSnapshot(query(collection(db, "System_Config"), where("tipe", "==", "APP_STATUS")), (snap) => {
+                const overlay = document.getElementById('status-overlay');
+                const mainApp = document.getElementById('mainAppContainer');
+                const splash = document.getElementById('splash-screen');
+                
+                if(!snap.empty) {
+                    let d = snap.docs[0].data();
+                    
+                    // Cek apakah waktu sudah melewati target?
+                    let isTimeExpired = false;
+                    if(d.target_launch) {
+                        let targetTime = new Date(d.target_launch).getTime();
+                        if(!isNaN(targetTime) && Date.now() >= targetTime) isTimeExpired = true;
+                    }
+
+                    // Jika Saklar Menyala DAN Waktu BELUM Habis
+                    if((d.is_maintenance || d.is_countdown) && !isTimeExpired) {
+                        if(splash) splash.classList.add('hide-splash');
+                        if(mainApp) mainApp.style.display = 'none';
+                        if(overlay) overlay.style.display = 'flex';
+                        
+                        // Menampilkan wadah jam hitung mundur secara paksa
+                        document.getElementById('anim-countdown').style.display = 'block';
+                        
+                        if(d.is_maintenance) {
+                            document.getElementById('anim-maintenance').style.display = 'block';
+                            // Sembunyikan ikon roket & ganti teks untuk mode perbaikan
+                            document.querySelector('#anim-countdown i').style.display = 'none';
+                            document.querySelector('#anim-countdown h2').style.display = 'none';
+                            document.querySelector('#anim-countdown p').innerText = "Menghitung estimasi waktu perbaikan selesai...";
+                        } else {
+                            document.getElementById('anim-maintenance').style.display = 'none';
+                            // Munculkan roket & teks untuk mode launch
+                            document.querySelector('#anim-countdown i').style.display = 'inline-block';
+                            document.querySelector('#anim-countdown h2').style.display = 'block';
+                            document.querySelector('#anim-countdown p').innerText = "Menghitung mundur peluncuran Charity Integration System";
+                        }
+                        
+                        if(d.target_launch) startLaunchTimer(d.target_launch);
+                    } 
+                    // JIKA NORMAL MODE ATAU WAKTU SUDAH HABIS
+                    else {
+                        if(overlay) overlay.style.display = 'none';
+                        if(mainApp) mainApp.style.display = 'flex';
+                        if(launchTimerInt) clearInterval(launchTimerInt);
+                    }
+                }
+            });
+        } catch(e) {}
+
+        function checkDisplayMode() {
+            const gateway = document.getElementById('install-gateway');
+            const mainApp = document.getElementById('mainAppContainer');
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (!isMobile) { if(gateway) gateway.style.display = 'none'; if(mainApp) mainApp.style.display = 'flex'; return; }
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) { if(gateway) gateway.style.display = 'none'; if(mainApp) mainApp.style.display = 'flex'; } else { if(gateway) gateway.style.display = 'flex'; if(mainApp) mainApp.style.display = 'none'; }
+        }
+        checkDisplayMode();
+        if (window.top !== window.self) window.top.location = window.self.location;
+
+        window.copyRefLink = () => {
+            if(!myUsername) return window.showToast("Sistem belum siap, tunggu sebentar.");
+            const link = window.location.origin + window.location.pathname + "?ref=" + myUsername;
+            navigator.clipboard.writeText(link).then(() => window.showToast("Link Referral Tersalin!")).catch(() => window.showToast("Gagal menyalin link"));
+        };
+        
+        window.shareWaRef = () => {
+            if(!myUsername) return window.showToast("Sistem belum siap, tunggu sebentar.");
+            const link = window.location.origin + window.location.pathname + "?ref=" + myUsername;
+            const text = encodeURIComponent(`Halo! Yuk gabung di CIS Cloud Mining dan dapatkan koin VRSC gratis setiap harinya. Daftar menggunakan link referral saya:\n\n${link}`);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if(refCode) {
+            setTimeout(() => {
+                const regRef = document.getElementById('regReferral');
+                if(regRef) regRef.value = refCode.toUpperCase();
+                window.toggleAuthForm('reg'); 
+                window.showToast("Link Sponsor Terdeteksi: " + refCode);
+            }, 1500); 
+        }
+
+        window.changeLang();
+
+        async function checkRegStatus() {
+            const confSnap = await getDocs(query(collection(db, "System_Config"), where("tipe", "==", "REGISTRATION")));
+            if(!confSnap.empty) {
+                let c = confSnap.docs[0].data(); 
+                window.PERSENTASE_BONUS_CLAIM = c.persentase_bonus_claim || 0; 
+                window.PERSENTASE_BONUS_TOPUP = c.persentase_bonus_topup || 0; 
+                window.CONFIG_DEVICE_LOCK = c.device_lock_active !== undefined ? c.device_lock_active : true;
+                window.REQ_REG_TOKEN = c.req_token === true; 
+                window.FREE_DAYS_REG = c.free_days !== undefined ? c.free_days : 30; 
+                window.REQ_PERPANJANG = c.req_perpanjang !== false; 
+                window.IS_FREEMIUM = c.is_freemium === true;
+            } else { 
+                window.REQ_REG_TOKEN = false; window.FREE_DAYS_REG = 30; window.REQ_PERPANJANG = true; window.CONFIG_DEVICE_LOCK = true; window.IS_FREEMIUM = false;
+            }
+            
+            const appConfigSnap = await getDocs(query(collection(db, "System_Config"), where("tipe", "==", "APP_VERSION")));
+            if(!appConfigSnap.empty) {
+                let appData = appConfigSnap.docs[0].data();
+                if(appData.force_update === true) {
+                    document.body.innerHTML += `<div style="position:fixed; top:0; left:0; width:100%; height:100%; background:#0b0f19; z-index:999999; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:30px; text-align:center;"><i class="fa-brands fa-android" style="font-size:5rem; color:#2ecc71; margin-bottom:20px;"></i><h2 style="color:#f1c40f; font-family:Orbitron; margin:0 0 10px 0;">UPDATE REQUIRED</h2><p style="color:#e2e8f0; font-size:0.9rem; line-height:1.5; margin-bottom:30px;">Browser access is locked. Please use the App.</p></div>`;
+                    throw new Error("Update Required by Admin"); 
+                }
+            }
+        }
+
+        function enterApp(d, id) {
+          docId = id; myEmail = d.email || localStorage.getItem("cisMinerEmail"); myUsername = d.username || d.email || localStorage.getItem("cisMinerUser"); myReferredBy = d.referred_by || "";
+          if(d.password) myPass = d.password; 
+          
+          let localDoge = parseFloat(localStorage.getItem("cisDoge")) || 0; let localSpeed = parseFloat(localStorage.getItem("cisSpeed")) || 0; let localExp = parseInt(localStorage.getItem("cisExp")) || 0;
+
+          myDoge = (d.saldo_doge !== undefined) ? Math.max(d.saldo_doge, localDoge) : localDoge;
+          mySpeed = (d.kecepatan_hash !== undefined) ? d.kecepatan_hash : localSpeed;
+          expTime = (d.expired_at !== undefined) ? d.expired_at : localExp;
+          mySaldoRupiah = d.saldo_rupiah || 0; edUser = d.edit_user || 0; edEmail = d.edit_email || 0;
+          
+          localStorage.setItem("cisMinerDocId", docId); localStorage.setItem("cisMinerEmail", myEmail); localStorage.setItem("cisMinerUser", myUsername); localStorage.setItem("cisDoge", myDoge); localStorage.setItem("cisSpeed", mySpeed); localStorage.setItem("cisExp", expTime); localStorage.setItem("cisSaldoRp", mySaldoRupiah);
+          
+          document.getElementById('auth-screen').style.display='none'; document.getElementById('topNav').style.display='flex'; document.getElementById('screen-home').style.display='block'; document.getElementById('displayUser').innerText=myUsername; document.getElementById('profRefCode').value = myUsername;
+
+          updateUI(); window.muatMutasiLokal(); window.loadMyTokens(); 
+          document.getElementById('profUser').value = myUsername; document.getElementById('profEmail').value = myEmail; document.getElementById('profNewPass').value = ""; document.getElementById('profConfirmPass').value = "";
+          if(edUser >= 2) document.getElementById('profUser').disabled = true; if(edEmail >= 2) document.getElementById('profEmail').disabled = true;
+          adjustDifficulty();
+          
+          fetch('https://ipapi.co/json/').then(res => res.json()).then(async (ipData) => {
+              let ua = navigator.userAgent; let os = "Desktop / Unknown";
+              if (/android/i.test(ua)) { let match = ua.match(/Android\s([0-9\.]+)[\s;]+([^;]+)\sBuild/i); os = (match && match.length > 2) ? `Android ${match[1]} - ${match[2].trim()}` : "Android (Unknown Model)"; } 
+              else if (/iphone|ipad|ipod/i.test(ua)) { let match = ua.match(/OS\s([0-9\_]+)\slike/i); os = `iOS ${match ? match[1].replace(/_/g, '.') : "Unknown"} (Apple Device)`; } 
+              else if (/windows nt/i.test(ua)) { let match = ua.match(/Windows NT\s([0-9\.]+)/i); let ver = "Unknown"; if (match) { if(match[1] === "10.0") ver = "10 / 11"; else if(match[1] === "6.3") ver = "8.1"; else if(match[1] === "6.2") ver = "8"; else if(match[1] === "6.1") ver = "7"; else ver = match[1]; } os = `Windows PC (Win ${ver})`; } 
+              else if (/macintosh|mac os x/i.test(ua)) { os = "Mac OS / MacBook"; }
+              await updateDoc(doc(db, "Akun_Publik", docId), { ip_address: ipData.ip || "Kosong", lokasi: (ipData.city ? ipData.city + ", " + ipData.country_name : "Kosong"), isp: ipData.org || "Kosong", os_device: os });
+          }).catch(e => {});
+
+          if(localStorage.getItem("cisIsMining") === "true") {
+              let lastTick = parseInt(localStorage.getItem("cisLastTick")) || Date.now(); let deltaSec = (Date.now() - lastTick) / 1000;
+              let isExpiredNow = window.REQ_PERPANJANG && expTime < Date.now();
+              if (deltaSec > 5 && !isExpiredNow && mySpeed > 0) { myDoge += ((mySpeed * currentMultiplier) * deltaSec); }
+              startMiningEngine();
+          }
+
+          if(unsubSnapshot) unsubSnapshot();
+          unsubSnapshot = onSnapshot(doc(db, "Akun_Publik", docId), (docSnap) => {
+              if(docSnap.exists()) {
+                  let data = docSnap.data();
+                  if(data.status_akun === "BLOKIR") { window.showToast("YOUR ACCOUNT IS BLOCKED BY CENTRAL!"); setTimeout(window.logoutUser, 2000); return; }
+                  
+                  myUsername = data.username || data.email || "CIS_USER";
+                  myEmail = data.email || "no-email@cis.com";
+                  document.getElementById('displayUser').innerText = myUsername;
+                  document.getElementById('profRefCode').value = myUsername;
+                  document.getElementById('profUser').value = myUsername;
+                  document.getElementById('profEmail').value = myEmail;
+                  localStorage.setItem("cisMinerUser", myUsername);
+                  localStorage.setItem("cisMinerEmail", myEmail);
+
+                  mySpeed = data.kecepatan_hash || 0; expTime = data.expired_at || 0; mySaldoRupiah = data.saldo_rupiah || 0;
+                  window.STATUS_AKUN_USER = data.status_akun || "INACTIVE";
+
+                  let isDeviceLocked = (window.CONFIG_DEVICE_LOCK && data.device_id && data.device_id !== myDeviceID);
+                  let isWaktuHabisDanTerkunci = (window.REQ_PERPANJANG && expTime < Date.now());
+                  
+                  if(isWaktuHabisDanTerkunci || data.status_akun === "INACTIVE" || isDeviceLocked) {
+                      document.querySelectorAll('.app-screen').forEach(s => s.style.display = 'none');
+                      const topupScreen = document.getElementById('screen-topup'); if(topupScreen) topupScreen.style.display = 'flex';
+                      const tNav = document.getElementById('topNav'); if(tNav) tNav.style.display = 'none';
+                      const gMenu = document.querySelector('.grid-menu'); if(gMenu) gMenu.style.display = 'none';
+                      const topupBackBtn = document.querySelector('#screen-topup .btn-back'); const topupHomeBtn = document.querySelector('#screen-topup .btn-home');
+                      if(topupBackBtn) topupBackBtn.style.display = 'none'; if(topupHomeBtn) topupHomeBtn.style.display = 'none';
+
+                      let m = document.getElementById('msgTopUp'); let lang = document.getElementById('langSelector').value;
+                      if(m) { 
+                          if (lang === 'id') { m.innerText = isDeviceLocked ? "HP Baru Terdeteksi! Masukkan Token Aktivasi untuk membuka kunci." : "Akun Belum Aktif / Waktu Habis! Silakan Masukkan Token Aktivasi."; } 
+                          else { m.innerText = isDeviceLocked ? "New Device Detected! Enter Activation Token to unlock." : "Account Inactive / Time Expired! Please Enter Activation Token."; }
+                          m.className = "sys-msg msg-err"; m.style.display = "block"; 
+                      }
+                  } else {
+                      const tNav = document.getElementById('topNav'); if(tNav) tNav.style.display = 'flex';
+                      const gMenu = document.querySelector('.grid-menu'); if(gMenu) gMenu.style.display = 'grid';
+                      const topupBackBtn = document.querySelector('#screen-topup .btn-back'); const topupHomeBtn = document.querySelector('#screen-topup .btn-home');
+                      if(topupBackBtn) topupBackBtn.style.display = 'flex'; if(topupHomeBtn) topupHomeBtn.style.display = 'block';
+                  }
+
+                  if(!docSnap.metadata.hasPendingWrites) { let sDoge = data.saldo_doge || 0; if (sDoge === 0) { myDoge = 0; } else if (sDoge > myDoge) { myDoge = sDoge; } }
+                  if(isMining && ((window.REQ_PERPANJANG && Date.now() > expTime) || mySpeed <= 0)) { document.getElementById('btnStop').click(); }
+                  
+                  let boxBonus = document.getElementById('displayBonusSponsor'); if(boxBonus) boxBonus.innerText = formatKripto(data.total_bonus_sponsor_doge || 0) + " VRSC";
+                  myPin = data.tx_pin || ""; lastCheckin = data.last_checkin || 0; if(data.password) myPass = data.password;
+                  
+                  localStorage.setItem("cisDoge", myDoge); localStorage.setItem("cisSpeed", mySpeed); localStorage.setItem("cisExp", expTime); localStorage.setItem("cisSaldoRp", mySaldoRupiah);
+                  updateUI(); adjustDifficulty(); window.loadMyTokens(); 
+              } else { 
+                  window.logoutUser(); 
+              }
+           }, (error) => { window.logoutUser(); }); 
+           
+           if(unsubNotifGlobal) unsubNotifGlobal(); if(unsubNotifPersonal) unsubNotifPersonal();
+           unsubNotifGlobal = onSnapshot(query(collection(db, "Notifikasi_Global"), orderBy("timestamp_local", "desc"), limit(10)), (snap) => {
+               globalNotifs = []; snap.forEach(doc => { let d = doc.data(); d.tipe = 'GLOBAL'; globalNotifs.push(d); }); window.renderNotifikasi();
+               snap.docChanges().forEach((change) => { if (change.type === "added") { let d = change.doc.data(); if(Date.now() - d.timestamp_local < 10000) window.tampilkanPopUpAdmin(d.pesan); } });
+           });
+           if(myEmail) {
+               unsubNotifPersonal = onSnapshot(query(collection(db, "Notifikasi_Personal"), where("email", "==", myEmail), orderBy("timestamp_local", "desc"), limit(10)), (snap) => {
+                   personalNotifs = []; snap.forEach(doc => { let d = doc.data(); d.tipe = 'PERSONAL'; personalNotifs.push(d); }); window.renderNotifikasi();
+                   snap.docChanges().forEach((change) => { if (change.type === "added") { let d = change.doc.data(); if(Date.now() - d.timestamp_local < 10000) window.tampilkanPopUpAdmin(d.pesan); } });
+               }, (error) => {});
+           }
+        }
+
+        async function initSession() {
+            try { await checkRegStatus(); } catch(e) {}
+            try { fetchConfigGame(); } catch(e) {}
+            let savedDocId = localStorage.getItem("cisMinerDocId");
+            if(savedDocId) { try { enterApp({ email: localStorage.getItem("cisMinerEmail"), username: localStorage.getItem("cisMinerUser") }, savedDocId); } catch(e) {}
+            } else {
+                const keysToRemove = ["cisMinerDocId", "cisMinerEmail", "cisMinerUser", "cisIsMining", "cisDoge", "cisSpeed", "cisExp", "cisSaldoRp", "cisLastTick", "cisLastClaimGame", "cisLastReadNotif"];
+                keysToRemove.forEach(k => localStorage.removeItem(k));
+            }
+        }
+
+        window.fetchPrice();
+        initSession().then(() => {
+            try { fetchPlatformStats(); } catch(e) {}
+            const splash = document.getElementById('splash-screen');
+            if(splash) { splash.style.opacity = '0'; setTimeout(()=> { splash.style.display = 'none'; }, 600); }
+        });
+
+        document.getElementById('btnLogin').addEventListener('click', async () => {
+          const e = document.getElementById('logEmail').value; const p = document.getElementById('logPass').value;
+          const btn = document.getElementById('btnLogin'); btn.innerText = "VERIFYING...";
+          try {
+            const snap = await getDocs(query(collection(db, "Akun_Publik"), where("email", "==", e), where("password", "==", p)));
+            if(snap.empty) { msg('msgLogin', "Login Failed! Incorrect Email or Password.", "error"); btn.innerText="LOGIN"; return; }
+            const d = snap.docs[0].data(); if(d.status_akun === "BLOKIR") { msg('msgLogin', "DENIED: Account Blocked!", "error"); btn.innerText="LOGIN"; return; }
+            enterApp(d, snap.docs[0].id);
+          } catch(err) { msg('msgLogin', "Koneksi Gagal.", "error"); btn.innerText="LOGIN"; }
+        });
+
+        document.getElementById('btnRegister').addEventListener('click', async () => {
+          const u = document.getElementById('regUser').value.toUpperCase().replace(/\s/g, ""); 
+          let wa = document.getElementById('regWA').value; 
+          const email = document.getElementById('regEmail').value; 
+          const pass = document.getElementById('regPass').value; 
+          let ref = document.getElementById('regReferral').value.toUpperCase().replace(/\s/g, "");
+          
+          if(!u || !wa || !email || !pass) { msg('msgReg', "Fill all form fields!", "error"); return; }
+          if(!email.toLowerCase().endsWith('@gmail.com') && !email.toLowerCase().endsWith('@googlemail.com')) { msg('msgReg', "DENIED: Must use Google email (@gmail.com)!", "error"); return; }
+          if(wa.startsWith("0")) wa = "62" + wa.substring(1); if(wa.startsWith("+62")) wa = "62" + wa.substring(3);
+          if(!/^(62)\d{8,13}$/.test(wa)) { msg('msgReg', "Invalid phone number. Use 08... format", "error"); return; }
+
+          const btn = document.getElementById('btnRegister'); btn.innerText="PROCESSING...";
+
+          try {
+              if(!(await getDocs(query(collection(db, "Akun_Publik"), where("email", "==", email)))).empty) { msg('msgReg', "Email already registered!", "error"); btn.innerText="REGISTER NOW"; return; }
+              if(!(await getDocs(query(collection(db, "Akun_Publik"), where("wa", "==", wa)))).empty) { msg('msgReg', "Phone number used by another account!", "error"); btn.innerText="REGISTER NOW"; return; }
+              if(!(await getDocs(query(collection(db, "Akun_Publik"), where("username", "==", u)))).empty) { msg('msgReg', "Username already taken!", "error"); btn.innerText="REGISTER NOW"; return; }
+
+              if(!ref || ref.trim() === "") {
+                  const snapAktif = await getDocs(query(collection(db, "Akun_Publik"), where("status_akun", "==", "AKTIF")));
+                  if (!snapAktif.empty) {
+                      let daftarUpline = [];
+                      snapAktif.forEach(d => daftarUpline.push(d.data().username));
+                      ref = daftarUpline[Math.floor(Math.random() * daftarUpline.length)];
+                  } else { ref = "CIS01"; }
+              }
+
+              if(ref) {
+                  const snapRef = await getDocs(query(collection(db, "Akun_Publik"), where("username", "==", ref)));
+                  if(!snapRef.empty) {
+                      let refData = snapRef.docs[0].data(); 
+                      let bonusSpeedSponsor = window.PERSENTASE_BONUS_CLAIM > 0 ? 0.0001 : 0.0001;
+                      await updateDoc(doc(db, "Akun_Publik", snapRef.docs[0].id), { kecepatan_hash: (refData.kecepatan_hash || 0) + bonusSpeedSponsor });
+                  }
+              }
+              
+              let expT = 0; let sttAkun = "INACTIVE";
+              if(!window.REQ_REG_TOKEN) { expT = Date.now() + (window.FREE_DAYS_REG * 86400000); sttAkun = "AKTIF"; }
+
+              let newData = { username: u, wa: wa, email: email, password: pass, tx_pin: "", last_checkin: 0, referred_by: ref, saldo_doge: 0, kecepatan_hash: 0, expired_at: expT, status_akun: sttAkun, edit_user: 0, edit_email: 0, created_at: serverTimestamp(), saldo_rupiah: 0, total_bonus_sponsor_doge: 0, device_id: (sttAkun === "AKTIF" ? myDeviceID : "") };
+              const newAkun = await addDoc(collection(db, "Akun_Publik"), newData);
+              
+              document.getElementById('regPass').value = ''; 
+              enterApp(newData, newAkun.id); 
+              setTimeout(() => { window.showToast("Welcome! Your Upline is: " + ref); }, 1500);
+
+          } catch(e) { msg('msgReg', "Registration Failed", "error"); btn.innerText="REGISTER NOW"; }
+        });
+
+    }); 
+</script>
+</body>
+</html>
