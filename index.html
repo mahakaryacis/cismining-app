@@ -1,832 +1,854 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agen Resmi MTrans Palembang KM 12 | Tiket Bus AKAP Premium</title>
-  <meta name="description" content="Loket Resmi MTrans Palembang KM 12 (Jl. SMB II Sukodadi). Keberangkatan 12.00 - 14.00 WIB tujuan Jakarta, Semarang, Solo, Surabaya, Kediri, Blitar, Malang. Pesan tiket via WA 0821-1041-040." />
-  <meta name="keywords" content="Mtrans Palembang, Mtrans KM 12, Agen Mtrans Palembang, Tiket Bus Palembang Malang, Tiket Bus Palembang Surabaya, Tiket Bus Palembang Blitar, Sleeper Bus Palembang" />
-
-  <!-- Tailwind CSS & FontAwesome CDN -->
+  <title>MTRANS PALEMBANG — Portal Ulasan & Layanan Resmi</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-    body {
-      background-color: #0f172a;
-      color: #f8fafc;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+    html { scroll-behavior: smooth; }
+    body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
+    .star-btn { transition: transform 0.15s ease, color 0.15s ease; }
+    .star-btn:hover { transform: scale(1.18); }
+    .print-only { display: none; }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
-
-    /* Toast Notification */
-    #toast {
-      transition: all 0.3s ease;
-      transform: translateY(100px);
-      opacity: 0;
-      pointer-events: none;
-    }
-    #toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    /* Mode Cetak / PDF (@media print) */
     @media print {
-      @page { size: A4 landscape; margin: 12mm; }
+      @page { size: A4 portrait; margin: 14mm; }
       body {
         background: #ffffff !important;
         color: #000000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
       .no-print { display: none !important; }
       .print-only { display: block !important; }
-      #printArea, #printArea * {
-        background: #ffffff !important;
+      .print-box, .print-box * {
         color: #000000 !important;
         border-color: #000000 !important;
-        box-shadow: none !important;
       }
-      table { width: 100% !important; border-collapse: collapse !important; font-size: 11px !important; }
-      th, td { border: 1px solid #000000 !important; padding: 6px 8px !important; color: #000000 !important; }
-      th { background-color: #f1f5f9 !important; font-weight: bold !important; }
+      #printQrContainer img, #printQrContainer canvas {
+        margin: 0 auto !important;
+      }
     }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 antialiased selection:bg-amber-500 selection:text-slate-900">
+<body class="min-h-screen bg-slate-900 text-slate-100 antialiased">
 
-  <!-- NAVBAR -->
-  <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 no-print">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 flex items-center justify-center font-extrabold text-lg shadow-lg shadow-amber-500/20">
-          <i class="fa-solid fa-bus"></i>
-        </div>
-        <div>
-          <h1 class="font-extrabold text-base sm:text-lg tracking-wide text-white leading-tight">MTRANS <span class="text-amber-400">PALEMBANG KM 12</span></h1>
-          <p class="text-[11px] sm:text-xs text-slate-400">Agen Resmi Tiket Bus AKAP Premium</p>
-        </div>
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="no-print fixed bottom-5 left-1/2 -translate-x-1/2 z-[100] hidden items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-2xl transition-all">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastText">Berhasil disalin!</span>
+  </div>
+
+  <!-- MAIN PUBLIC INTERFACE -->
+  <div class="no-print mx-auto max-w-4xl px-4 py-6 sm:py-10">
+
+    <!-- TOP BAR -->
+    <div class="mb-6 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-400">
+        <i class="fa-solid fa-bus"></i>
+        <span>Agen Tiket Bus AKAP Premium</span>
       </div>
-
       <div class="flex items-center gap-2">
-        <a href="#pesan" class="hidden sm:inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-lg transition">
-          <i class="fa-solid fa-ticket"></i> Pesan Tiket
-        </a>
-        <button onclick="openAdminGate()" title="Pengaturan Admin (PIN)" class="p-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-amber-400 border border-slate-700 transition">
+        <button onclick="openQrModal()" class="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20">
+          <i class="fa-solid fa-qrcode"></i>
+          <span>QR Poster</span>
+        </button>
+        <button onclick="requestPin('admin')" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:border-amber-500/50 hover:text-amber-400">
           <i class="fa-solid fa-gear"></i>
+          <span>Admin</span>
         </button>
       </div>
     </div>
-  </header>
 
-  <!-- BANNER PENGUMUMAN (Bisa diedit dari Admin) -->
-  <div id="promoBanner" class="bg-amber-500/15 border-b border-amber-500/30 text-amber-300 text-xs sm:text-sm py-2 px-4 text-center no-print">
-    <i class="fa-solid fa-bullhorn mr-1.5"></i>
-    <span id="promoTextDisplay">Keberangkatan Setiap Hari Pukul 12.00 – 14.00 WIB dari Loket KM 12 Sukodadi. Tersedia Kelas Sleeper & Executive!</span>
-  </div>
-
-  <!-- HERO SECTION -->
-  <section class="relative overflow-hidden border-b border-slate-800 no-print">
-    <div class="max-w-6xl mx-auto px-4 py-8 sm:py-12 grid lg:grid-cols-12 gap-8 items-center">
-      <div class="lg:col-span-7 space-y-5">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          Loket Resmi KM 12 • Bebas Macet Arah Banyuasin & Talang Kelapa
-        </div>
-
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
-          Perjalanan Nyaman <span class="text-amber-400">Palembang – Jawa Timur</span> Bersama MTrans
-        </h2>
-
-        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-          Melayani pemesanan tiket resmi rute <strong>Palembang – Lampung – Jakarta – Semarang – Solo – Surabaya – Kediri – Blitar – Malang</strong> dengan armada AKAP Premium (Sleeper Captain & Executive Double Legrest).
-        </p>
-
-        <!-- Info Cepat -->
-        <div class="grid sm:grid-cols-2 gap-3 pt-1">
-          <div class="bg-slate-800/80 border border-slate-700/80 rounded-xl p-3.5 flex items-start gap-3">
-            <i class="fa-solid fa-clock text-amber-400 text-lg mt-0.5"></i>
-            <div>
-              <p class="text-xs text-slate-400 font-medium">Jam Keberangkatan</p>
-              <p id="jamDisplay" class="text-sm sm:text-base font-bold text-white">12.00 – 14.00 WIB (Setiap Hari)</p>
+    <!-- HERO CARD -->
+    <div class="overflow-hidden rounded-2xl border border-slate-700/80 bg-slate-800/90 shadow-2xl">
+      <div class="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 sm:p-8">
+        <div class="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
+          <div id="avatarBox" class="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-amber-400/70 bg-slate-900 shadow-lg">
+            <i class="fa-solid fa-bus-simple text-4xl text-amber-400"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+              <h1 id="dispName" class="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">MTRANS PALEMBANG</h1>
+              <span class="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2.5 py-0.5 text-xs font-bold text-amber-400">
+                <i class="fa-solid fa-star"></i>
+                <span id="dispRating">4.5</span> Google Maps
+              </span>
+            </div>
+            <p id="dispTagline" class="mt-1.5 text-sm text-cyan-300">
+              Armada Bus AKAP Premium • Pemesanan Tiket Cepat via WhatsApp Resmi
+            </p>
+            <div class="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs text-slate-300 sm:justify-start">
+              <span class="inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-clock text-emerald-400"></i>
+                <span id="dispHours">Setiap Hari, 07.00 – 22.00 WIB</span>
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-location-dot text-amber-400"></i>
+                <span>Sukodadi, Alang-Alang Lebar, Palembang</span>
+              </span>
             </div>
           </div>
-          <div class="bg-slate-800/80 border border-slate-700/80 rounded-xl p-3.5 flex items-start gap-3">
-            <i class="fa-solid fa-location-dot text-cyan-400 text-lg mt-0.5"></i>
-            <div>
-              <p class="text-xs text-slate-400 font-medium">Lokasi Loket KM 12</p>
-              <p class="text-xs sm:text-sm font-semibold text-white">Jl. SMB II, Sukodadi, Alang-Alang Lebar, Palembang</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tombol Aksi Utama -->
-        <div class="flex flex-wrap gap-3 pt-2">
-          <a href="#pesan" class="flex-1 sm:flex-none inline-flex justify-center items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold px-5 py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition">
-            <i class="fa-brands fa-whatsapp text-lg"></i> Pesan Tiket Sekarang
-          </a>
-          <a id="mapsLinkBtn" href="https://www.google.com/maps/search/?api=1&query=3MPM%2BPPG+Jl.+Sultan+Mahmud+Badaruddin+II+Sukodadi+Palembang" target="_blank" class="flex-1 sm:flex-none inline-flex justify-center items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold px-4 py-3 rounded-xl transition">
-            <i class="fa-solid fa-map-location-dot text-cyan-400"></i> Rute Google Maps
-          </a>
-          <a id="reviewLinkBtn" href="https://www.google.com/maps/search/?api=1&query=MTRANS+PALEMBANG+3MPM%2BPPG+Sukodadi" target="_blank" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/40 font-bold px-4 py-3 rounded-xl transition">
-            <i class="fa-solid fa-star"></i> Beri Ulasan Bintang 5
-          </a>
         </div>
       </div>
 
-      <!-- Kartu Kontak & Pembayaran Cepat -->
-      <div class="lg:col-span-5 bg-slate-800/70 border border-slate-700 rounded-2xl p-5 sm:p-6 space-y-4 shadow-xl">
-        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
-          <h3 class="font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-headset text-amber-400"></i> Kontak Resmi Loket KM 12
-          </h3>
-          <span class="text-[11px] bg-emerald-500/20 text-emerald-400 px-2.5 py-0.5 rounded-full font-semibold">Fast Respon</span>
-        </div>
+      <!-- INTERACTIVE REVIEW BOOSTER -->
+      <div class="border-t border-slate-700/80 bg-slate-900/60 p-6 sm:p-8">
+        <div class="mx-auto max-w-xl text-center">
+          <span class="inline-block rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-400">
+            Penilaian Perjalanan Anda
+          </span>
+          <h2 class="mt-2 text-lg font-bold text-white sm:text-xl">
+            Bagaimana pengalaman Anda bersama MTRANS Palembang?
+          </h2>
+          <p class="mt-1 text-xs text-slate-400 sm:text-sm">
+            Ketuk jumlah bintang di bawah ini untuk memberikan penilaian atau masukan langsung kepada kru kami.
+          </p>
 
-        <!-- Nomor WA (Dipisah Label & Nomor Murni + Tombol Copy) -->
-        <div class="bg-slate-900/90 border border-slate-700 rounded-xl p-3.5">
-          <p class="text-xs text-slate-400 mb-1">WhatsApp / Telepon Admin Resmi</p>
-          <div class="flex items-center justify-between gap-2">
-            <span id="waNumberText" class="text-lg font-mono font-bold text-emerald-400 tracking-wider">08211041040</span>
-            <button onclick="copyText('08211041040', 'Nomor WA berhasil disalin!')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-slate-200 text-xs font-bold border border-slate-600 transition flex items-center gap-1.5">
-              <i class="fa-regular fa-copy"></i> Salin
-            </button>
+          <!-- STAR SELECTOR -->
+          <div id="starGroup" class="mt-5 flex items-center justify-center gap-3 text-4xl sm:gap-4 sm:text-5xl">
+            <button type="button" onclick="selectStar(1)" class="star-btn text-slate-600 focus:outline-none" aria-label="1 Bintang"><i class="fa-solid fa-star"></i></button>
+            <button type="button" onclick="selectStar(2)" class="star-btn text-slate-600 focus:outline-none" aria-label="2 Bintang"><i class="fa-solid fa-star"></i></button>
+            <button type="button" onclick="selectStar(3)" class="star-btn text-slate-600 focus:outline-none" aria-label="3 Bintang"><i class="fa-solid fa-star"></i></button>
+            <button type="button" onclick="selectStar(4)" class="star-btn text-slate-600 focus:outline-none" aria-label="4 Bintang"><i class="fa-solid fa-star"></i></button>
+            <button type="button" onclick="selectStar(5)" class="star-btn text-slate-600 focus:outline-none" aria-label="5 Bintang"><i class="fa-solid fa-star"></i></button>
           </div>
-        </div>
+          <p id="starLabel" class="mt-2 text-xs font-semibold text-amber-400">Pilih 1 sampai 5 bintang</p>
 
-        <!-- Info Rekening (Dipisah Label & Nomor Murni + Tombol Copy) -->
-        <div class="bg-slate-900/90 border border-slate-700 rounded-xl p-3.5">
-          <p class="text-xs text-slate-400 mb-1">Pembayaran Transfer / DP Tiket</p>
-          <p id="bankLabelDisplay" class="text-xs font-semibold text-amber-400 mb-1.5">Konfirmasi via WA Admin (Atau isi di Panel Admin)</p>
-          <div id="rekBox" class="hidden flex items-center justify-between gap-2">
-            <span id="rekNumberDisplay" class="text-base sm:text-lg font-mono font-bold text-cyan-400 tracking-wider"></span>
-            <button onclick="copyRekening()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-slate-200 text-xs font-bold border border-slate-600 transition flex items-center gap-1.5">
-              <i class="fa-regular fa-copy"></i> Salin
-            </button>
-          </div>
-        </div>
+          <!-- PANEL POSITIF (4-5 BINTANG) -->
+          <div id="panelPositive" class="mt-5 hidden rounded-xl border border-emerald-500/40 bg-emerald-950/30 p-4 text-left">
+            <div class="flex items-start gap-2.5">
+              <i class="fa-solid fa-heart mt-0.5 text-emerald-400"></i>
+              <div>
+                <h3 class="text-sm font-bold text-emerald-300">Terima kasih atas kepercayaannya!</h3>
+                <p class="mt-0.5 text-xs text-slate-300">
+                  Bantu kru kami makin semangat dengan menuliskan ulasan singkat di Google Maps. Anda bisa klik inspirasi ulasan di bawah untuk menyalin otomatis:
+                </p>
+              </div>
+            </div>
 
-        <!-- Keunggulan Singkat -->
-        <div class="grid grid-cols-3 gap-2 pt-1 text-center">
-          <div class="bg-slate-900/70 rounded-xl p-2.5 border border-slate-700/60">
-            <i class="fa-solid fa-bed text-amber-400 text-base mb-1"></i>
-            <p class="text-[11px] font-semibold text-slate-200">Sleeper Captain</p>
+            <div class="mt-3 grid gap-2 sm:grid-cols-2">
+              <button type="button" onclick="copyTemplateReview(0)" class="rounded-lg border border-slate-700 bg-slate-800/90 p-2.5 text-left text-xs text-slate-200 hover:border-amber-400">
+                <i class="fa-regular fa-copy mr-1 text-amber-400"></i>
+                "Armada bus AKAP premium, kursi nyaman dan bersih. Pesan tiket lewat WA sangat mudah!"
+              </button>
+              <button type="button" onclick="copyTemplateReview(1)" class="rounded-lg border border-slate-700 bg-slate-800/90 p-2.5 text-left text-xs text-slate-200 hover:border-amber-400">
+                <i class="fa-regular fa-copy mr-1 text-amber-400"></i>
+                "Pelayanan agen MTrans Palembang ramah, keberangkatan tepat waktu, perjalanan aman dan nyaman."
+              </button>
+            </div>
+
+            <a id="btnGoMaps" href="https://share.google/74xCVCzNnP5SMCK0A" target="_blank" rel="noopener noreferrer"
+               class="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-5 py-3 text-sm font-extrabold text-slate-950 shadow-lg hover:bg-amber-300">
+              <i class="fa-brands fa-google"></i>
+              <span>Buka Google Maps & Beri Bintang 5</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+            </a>
           </div>
-          <div class="bg-slate-900/70 rounded-xl p-2.5 border border-slate-700/60">
-            <i class="fa-solid fa-motorcycle text-cyan-400 text-base mb-1"></i>
-            <p class="text-[11px] font-semibold text-slate-200">Bagasi Motor</p>
+
+          <!-- PANEL KELUHAN/SARAN (1-3 BINTANG) -->
+          <div id="panelFeedback" class="mt-5 hidden rounded-xl border border-amber-500/40 bg-slate-800/90 p-4 text-left">
+            <h3 class="text-sm font-bold text-amber-400">
+              <i class="fa-solid fa-headset mr-1.5"></i>Sampaikan Kendala Anda Langsung ke Pengelola
+            </h3>
+            <p class="mt-1 text-xs text-slate-300">
+              Mohon maaf atas ketidaknyamanannya. Tulis detail kendala agar tim MTRANS Palembang bisa segera menindaklanjuti via WhatsApp.
+            </p>
+            <div class="mt-3 space-y-2.5">
+              <input id="fbName" type="text" placeholder="Nama Anda (Opsional)" class="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none" />
+              <textarea id="fbMessage" rows="3" placeholder="Ceritakan kendala atau saran perbaikan untuk kami..." class="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none"></textarea>
+              <button type="button" onclick="sendFeedbackWa()" class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-bold text-slate-950 hover:bg-emerald-400">
+                <i class="fa-brands fa-whatsapp text-lg"></i>
+                <span>Kirim Masukan ke CS WhatsApp</span>
+              </button>
+            </div>
           </div>
-          <div class="bg-slate-900/70 rounded-xl p-2.5 border border-slate-700/60">
-            <i class="fa-solid fa-restroom text-emerald-400 text-base mb-1"></i>
-            <p class="text-[11px] font-semibold text-slate-200">Toilet & Pantry</p>
+
+          <!-- DIRECT FALLBACK BUTTON -->
+          <div id="directMapsRow" class="mt-5">
+            <a id="btnDirectMaps" href="https://share.google/74xCVCzNnP5SMCK0A" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 text-xs font-semibold text-cyan-400 underline-offset-4 hover:underline">
+              <i class="fa-solid fa-map-location-dot"></i>
+              <span>Atau buka langsung profil Google Maps MTRANS Palembang</span>
+            </a>
           </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- FORM PEMESANAN OTOMATIS VIA WHATSAPP -->
-  <section id="pesan" class="max-w-6xl mx-auto px-4 py-10 no-print">
-    <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-5 sm:p-8 shadow-2xl">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-slate-700 pb-4">
-        <div>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-2">
-            <i class="fa-solid fa-calculator text-amber-400"></i> Kalkulator & Pesan Tiket Cepat
-          </h2>
-          <p class="text-xs sm:text-sm text-slate-400 mt-1">Pilih rute & kelas untuk melihat estimasi tarif, lalu kirim langsung ke WhatsApp Admin.</p>
+    <!-- GRID INFO: KONTAK, ALAMAT, MEDSOS, REKENING -->
+    <div class="mt-6 grid gap-4 md:grid-cols-2">
+
+      <!-- KARTU PEMESANAN & WHATSAPP -->
+      <div class="rounded-2xl border border-slate-700/80 bg-slate-800/80 p-5">
+        <h3 class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-emerald-400">
+          <i class="fa-brands fa-whatsapp text-base"></i>
+          Pemesanan Tiket & CS Resmi
+        </h3>
+        <div class="mt-3 rounded-xl border border-slate-700 bg-slate-900/80 p-3.5">
+          <div class="text-xs text-slate-400">Nomor Telepon / WhatsApp Resmi</div>
+          <div class="mt-1 flex items-center justify-between gap-2">
+            <span id="dispPhone" class="font-mono text-base font-bold tracking-wider text-white">08211041040</span>
+            <button type="button" onclick="copyTextById('dispPhone', 'Nomor WA/Telepon disalin!')" class="rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-slate-700">
+              <i class="fa-regular fa-copy mr-1"></i>Salin
+            </button>
+          </div>
         </div>
-        <span class="self-start sm:self-center text-xs bg-amber-500/15 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-lg font-semibold">
-          <i class="fa-solid fa-clock mr-1"></i> Berangkat 12.00 – 14.00 WIB
-        </span>
+        <div class="mt-3 grid grid-cols-2 gap-2.5">
+          <button type="button" onclick="openWaBooking()" class="flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-3 py-2.5 text-xs font-bold text-slate-950 hover:bg-emerald-400">
+            <i class="fa-brands fa-whatsapp text-base"></i>
+            <span>Pesan Tiket</span>
+          </button>
+          <a id="btnCallPhone" href="tel:08211041040" class="flex items-center justify-center gap-2 rounded-xl border border-slate-600 bg-slate-900 px-3 py-2.5 text-xs font-bold text-white hover:border-amber-400">
+            <i class="fa-solid fa-phone text-amber-400"></i>
+            <span>Telepon</span>
+          </a>
+        </div>
       </div>
 
-      <form id="bookingForm" onsubmit="kirimKeWA(event)" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1.5">1. Pilih Jalur Rute</label>
-          <select id="pilihJalur" onchange="updateFormOptions()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400">
-            <option value="malang">Palembang – Surabaya – Malang</option>
-            <option value="blitar">Palembang – Kediri – Blitar – Malang</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1.5">2. Titik Naik & Kelas</label>
-          <select id="pilihAsal" onchange="hitungEstimasi()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400"></select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1.5">3. Zona Kota Tujuan</label>
-          <select id="pilihTujuan" onchange="hitungEstimasi()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400"></select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1.5">4. Kota Turun Spesifik (Opsional)</label>
-          <input type="text" id="kotaSpesifik" placeholder="Contoh: Solo / Surabaya / Kepanjen" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" />
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1.5">5. Tanggal Keberangkatan</label>
-          <input type="date" id="tglBerangkat" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400" />
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1.5">6. Jml Kursi</label>
-            <input type="number" id="jmlKursi" min="1" max="20" value="1" oninput="hitungEstimasi()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400" />
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1.5">7. Nama Anda</label>
-            <input type="text" id="namaPenumpang" required placeholder="Nama lengkap" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" />
-          </div>
-        </div>
-
-        <!-- Ringkasan Harga & Tombol Kirim -->
-        <div class="sm:col-span-2 lg:col-span-3 mt-2 bg-slate-900/90 border border-slate-700 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <p class="text-xs text-slate-400">Estimasi Total Harga Tiket:</p>
-            <p id="estimasiHarga" class="text-2xl sm:text-3xl font-extrabold text-amber-400">Rp 550.000</p>
-            <p id="detailHargaSatuan" class="text-xs text-slate-400 mt-0.5">1 kursi × Rp 550.000</p>
-          </div>
-          <button type="submit" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold px-6 py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 transition text-sm sm:text-base">
-            <i class="fa-brands fa-whatsapp text-xl"></i> Kirim Pesanan ke WhatsApp
+      <!-- KARTU ALAMAT LOKET -->
+      <div class="rounded-2xl border border-slate-700/80 bg-slate-800/80 p-5">
+        <h3 class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-amber-400">
+          <i class="fa-solid fa-location-dot"></i>
+          Lokasi Agen & Keberangkatan
+        </h3>
+        <p id="dispAddress" class="mt-3 text-sm leading-relaxed text-slate-200">
+          3MPM+PPG, Jl. Sultan Mahmud Badaruddin II, Sukodadi, Kec. Alang-Alang Lebar, Kota Palembang, Sumatera Selatan 30961
+        </p>
+        <div class="mt-3 grid grid-cols-2 gap-2.5">
+          <a id="btnRouteMaps" href="https://share.google/74xCVCzNnP5SMCK0A" target="_blank" rel="noopener noreferrer"
+             class="flex items-center justify-center gap-2 rounded-xl bg-cyan-500 px-3 py-2.5 text-xs font-bold text-slate-950 hover:bg-cyan-400">
+            <i class="fa-solid fa-diamond-turn-right"></i>
+            <span>Petunjuk Rute</span>
+          </a>
+          <button type="button" onclick="copyTextById('dispAddress', 'Alamat loket disalin!')" class="flex items-center justify-center gap-2 rounded-xl border border-slate-600 bg-slate-900 px-3 py-2.5 text-xs font-bold text-white hover:border-cyan-400">
+            <i class="fa-regular fa-copy text-cyan-400"></i>
+            <span>Salin Alamat</span>
           </button>
         </div>
-      </form>
-    </div>
-  </section>
-
-  <!-- DAFTAR HARGA TIKET RESMI (TERMASUK AREA CETAK / PRINT) -->
-  <section id="harga" class="max-w-6xl mx-auto px-4 py-8">
-    <div id="printArea" class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 sm:p-7">
-      <!-- Kop Surat Khusus Print -->
-      <div class="hidden print-only border-b-2 border-black pb-3 mb-4 text-center">
-        <h1 class="text-xl font-extrabold uppercase">AGEN RESMI MTRANS PALEMBANG KM 12</h1>
-        <p class="text-xs">Jl. Sultan Mahmud Badaruddin II, Sukodadi, Kec. Alang-Alang Lebar, Kota Palembang 30961</p>
-        <p class="text-xs font-bold">WhatsApp / Telp: 0821-1041-040 | Jam Keberangkatan: 12.00 – 14.00 WIB</p>
       </div>
 
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
-        <div>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-2">
-            <i class="fa-solid fa-tags text-amber-400 no-print"></i> Daftar Harga Tiket Berdasarkan Tujuan
-          </h2>
-          <p class="text-xs sm:text-sm text-slate-400 mt-1">Tarif resmi keberangkatan Srigunung, Palembang KM 12, dan Lampung.</p>
-        </div>
-        <button onclick="window.print()" class="no-print self-start sm:self-center inline-flex items-center gap-2 bg-slate-700 hover:bg-amber-500 hover:text-slate-950 text-white text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-600 transition">
-          <i class="fa-solid fa-print"></i> Cetak Daftar Harga / PDF
-        </button>
-      </div>
-
-      <!-- Tabel 1: Palembang - Malang -->
-      <div class="mb-8">
-        <h3 class="text-sm sm:text-base font-bold text-amber-400 mb-2.5 uppercase tracking-wider flex items-center gap-2">
-          <i class="fa-solid fa-route no-print"></i> 1. Rute Palembang – Malang (Via Surabaya)
+      <!-- KARTU MEDIA SOSIAL RESMI -->
+      <div class="rounded-2xl border border-slate-700/80 bg-slate-800/80 p-5">
+        <h3 class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-cyan-400">
+          <i class="fa-solid fa-share-nodes"></i>
+          Media Sosial Resmi
         </h3>
-        <div class="overflow-x-auto rounded-xl border border-slate-700">
-          <table class="w-full text-left text-xs sm:text-sm border-collapse">
-            <thead class="bg-slate-900 text-amber-400 uppercase text-[11px] sm:text-xs">
-              <tr>
-                <th class="p-3 border-b border-slate-700">Dari / Kelas</th>
-                <th class="p-3 border-b border-slate-700">Merak - Jakarta</th>
-                <th class="p-3 border-b border-slate-700">Cirebon</th>
-                <th class="p-3 border-b border-slate-700">Tegal - Sragen</th>
-                <th class="p-3 border-b border-slate-700">Ngawi - Caruban</th>
-                <th class="p-3 border-b border-slate-700">Nganjuk - Surabaya</th>
-                <th class="p-3 border-b border-slate-700">Malang</th>
-              </tr>
-            </thead>
-            <tbody id="tbodyMalang" class="divide-y divide-slate-700/70 bg-slate-800/40"></tbody>
-          </table>
-        </div>
+        <p class="mt-1 text-xs text-slate-400">Ikuti informasi jadwal keberangkatan, promo rute, dan armada terbaru kami.</p>
+        <div id="socialLinksBox" class="mt-3 flex flex-wrap gap-2.5"></div>
       </div>
 
-      <!-- Tabel 2: Palembang - Blitar -->
-      <div>
-        <h3 class="text-sm sm:text-base font-bold text-cyan-400 mb-2.5 uppercase tracking-wider flex items-center gap-2">
-          <i class="fa-solid fa-route no-print"></i> 2. Rute Palembang – Blitar (Via Kediri / Tulungagung)
+      <!-- KARTU INFO PEMBAYARAN (OPSIONAL TERPISAH LABEL & NOMOR) -->
+      <div id="bankCard" class="rounded-2xl border border-slate-700/80 bg-slate-800/80 p-5">
+        <h3 class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-amber-400">
+          <i class="fa-solid fa-building-columns"></i>
+          Info Rekening Pemesanan
         </h3>
-        <div class="overflow-x-auto rounded-xl border border-slate-700">
-          <table class="w-full text-left text-xs sm:text-sm border-collapse">
-            <thead class="bg-slate-900 text-cyan-400 uppercase text-[11px] sm:text-xs">
-              <tr>
-                <th class="p-3 border-b border-slate-700">Dari / Kelas</th>
-                <th class="p-3 border-b border-slate-700">Merak - Jakarta</th>
-                <th class="p-3 border-b border-slate-700">Cirebon</th>
-                <th class="p-3 border-b border-slate-700">Tegal - Sragen</th>
-                <th class="p-3 border-b border-slate-700">Ngawi - Caruban</th>
-                <th class="p-3 border-b border-slate-700">Nganjuk - Blitar</th>
-                <th class="p-3 border-b border-slate-700">Malang</th>
-              </tr>
-            </thead>
-            <tbody id="tbodyBlitar" class="divide-y divide-slate-700/70 bg-slate-800/40"></tbody>
-          </table>
+        <div id="bankFilledBox" class="mt-3 hidden rounded-xl border border-slate-700 bg-slate-900/80 p-3.5">
+          <div id="dispBankLabel" class="text-xs font-semibold text-amber-300">Bank — Atas Nama</div>
+          <div class="mt-1.5 flex items-center justify-between gap-2">
+            <span id="dispBankNumber" class="font-mono text-base font-bold tracking-wider text-white"></span>
+            <button type="button" onclick="copyTextById('dispBankNumber', 'Nomor rekening disalin!')" class="rounded-lg bg-amber-400 px-3 py-1.5 text-xs font-bold text-slate-950 hover:bg-amber-300">
+              <i class="fa-regular fa-copy mr-1"></i>Salin Rek
+            </button>
+          </div>
         </div>
+        <p id="bankEmptyBox" class="mt-3 text-xs text-slate-400">
+          Konfirmasi ketersediaan kursi dan metode pembayaran langsung melalui CS WhatsApp resmi sebelum melakukan transfer.
+        </p>
       </div>
 
-      <!-- Kolom Tanda Tangan Khusus Print -->
-      <div class="hidden print-only mt-8 flex justify-end">
-        <div class="text-center text-xs w-52">
-          <p>Palembang, <span id="printDate"></span></p>
-          <p class="font-bold mt-1">Pengurus Loket MTrans KM 12</p>
-          <div class="h-14"></div>
-          <p class="border-t border-black pt-1 font-bold">( .................................... )</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- LINTASAN KOTA & FASILITAS ARMADA -->
-  <section class="max-w-6xl mx-auto px-4 py-8 grid lg:grid-cols-2 gap-6 no-print">
-    <!-- Jalur 1 -->
-    <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 sm:p-6">
-      <h3 class="font-extrabold text-amber-400 text-base sm:text-lg mb-3 flex items-center gap-2">
-        <i class="fa-solid fa-map-pin"></i> Lintasan Jalur Surabaya – Malang
-      </h3>
-      <div class="flex flex-wrap gap-2 text-xs">
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Semarang</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Bawen</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Salatiga</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Boyolali</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Solo</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Sragen</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Ngawi</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Maospati</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Madiun</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Jombang</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Mojokerto</span>
-        <span class="px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold">Surabaya</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Pandaan</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Lawang</span>
-        <span class="px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold">Malang / Suhat</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Bululawang</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Turen</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Kepanjen</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Talangagung</span>
-      </div>
     </div>
 
-    <!-- Jalur 2 -->
-    <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 sm:p-6">
-      <h3 class="font-extrabold text-cyan-400 text-base sm:text-lg mb-3 flex items-center gap-2">
-        <i class="fa-solid fa-map-pin"></i> Lintasan Jalur Kediri – Blitar
-      </h3>
-      <div class="flex flex-wrap gap-2 text-xs">
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Semarang</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Bawen</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Salatiga</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Boyolali</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Solo</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Sragen</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Ngawi</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Maospati</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Madiun</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Caruban</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Nganjuk</span>
-        <span class="px-2.5 py-1 rounded-lg bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 font-bold">Kediri</span>
-        <span class="px-2.5 py-1 rounded-lg bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 font-bold">Tulungagung</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Ngunut</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Rejotangan</span>
-        <span class="px-2.5 py-1 rounded-lg bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 font-bold">Blitar</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Garum</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Wlingi</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Kesamben</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Selorejo</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Karangkates</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Sumberpucung</span>
-        <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200">Talangagung</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- GALERI FOTO LOKET & ARMADA (Bisa diisi dari Panel Admin) -->
-  <section id="galeriSection" class="max-w-6xl mx-auto px-4 py-6 hidden no-print">
-    <h2 class="text-xl font-extrabold text-white mb-4 flex items-center gap-2">
-      <i class="fa-solid fa-images text-amber-400"></i> Galeri Armada & Loket KM 12
-    </h2>
-    <div id="galeriGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="border-t border-slate-800 bg-slate-950/60 mt-10 py-8 px-4 text-center text-xs text-slate-400 no-print">
-    <p class="font-bold text-slate-200 text-sm">MTRANS PALEMBANG KM 12</p>
-    <p class="mt-1">3MPM+PPG, Jl. Sultan Mahmud Badaruddin II, Sukodadi, Kec. Alang-Alang Lebar, Kota Palembang, Sumatera Selatan 30961</p>
-    <p class="mt-1">WhatsApp Resmi: <span class="text-emerald-400 font-semibold">0821-1041-040</span> • Keberangkatan: 12.00 – 14.00 WIB</p>
-    <p class="mt-4 text-[11px] text-slate-500">&copy; <span id="yearNow"></span> Agen Resmi MTrans Palembang KM 12. Siap Melayani Perjalanan Anda.</p>
-  </footer>
-
-  <!-- FLOATING WHATSAPP BUTTON -->
-  <a href="https://wa.me/628211041040?text=Halo%20Admin%20MTrans%20Palembang%20KM%2012%2C%20saya%20ingin%20tanya%20tiket%20keberangkatan." target="_blank" class="fixed bottom-5 right-5 z-40 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-2xl shadow-emerald-500/40 flex items-center justify-center text-3xl transition hover:scale-110 no-print" title="Chat WhatsApp Admin">
-    <i class="fa-brands fa-whatsapp"></i>
-  </a>
+    <!-- FOOTER -->
+    <footer class="mt-8 border-t border-slate-800 pt-5 text-center text-xs text-slate-500">
+      <p>&copy; <span id="yearNow"></span> <span id="footerName">MTRANS PALEMBANG</span> • Portal Layanan & Ulasan Penumpang</p>
+    </footer>
+  </div>
 
   <!-- MODAL PIN VERIFIKASI -->
-  <div id="pinModal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 no-print">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-2xl">
+  <div id="pinModal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-xs rounded-2xl border border-slate-700 bg-slate-800 p-6 shadow-2xl">
       <div class="flex items-center justify-between">
-        <h3 class="font-bold text-white flex items-center gap-2"><i class="fa-solid fa-lock text-amber-400"></i> Verifikasi PIN Admin</h3>
-        <button onclick="closeModal('pinModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <h3 class="text-base font-bold text-amber-400"><i class="fa-solid fa-lock mr-2"></i>Verifikasi PIN Admin</h3>
+        <button type="button" onclick="closeModal('pinModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <p class="text-xs text-slate-400">Masukkan 4 digit PIN pengelola (Default: <code class="text-amber-400">1234</code>)</p>
-      <input type="password" id="pinInput" maxlength="4" inputmode="numeric" placeholder="••••" class="w-full text-center tracking-[0.7em] text-2xl font-mono bg-slate-800 border border-slate-700 rounded-xl py-3 text-white focus:outline-none focus:border-amber-400" />
-      <button onclick="verifyPin()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl transition">Buka Panel Admin</button>
+      <p class="mt-1.5 text-xs text-slate-400">Masukkan 4 digit PIN keamanan (Default: 1234).</p>
+      <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
+             class="mt-4 w-full rounded-xl border border-slate-600 bg-slate-900 py-3 text-center font-mono text-2xl tracking-[0.5em] text-white focus:border-amber-400 focus:outline-none" />
+      <p id="pinError" class="mt-2 hidden text-center text-xs font-semibold text-rose-400">PIN salah! Silakan coba lagi.</p>
+      <button type="button" onclick="verifyPin()" class="mt-4 w-full rounded-xl bg-amber-400 py-2.5 text-sm font-extrabold text-slate-950 hover:bg-amber-300">
+        Buka Panel Admin
+      </button>
     </div>
   </div>
 
-  <!-- MODAL PANEL ADMIN (Scrollable untuk HP Android) -->
-  <div id="adminModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 no-print">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-5 sm:p-6 space-y-5 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3 sticky top-0 bg-slate-900 z-10">
-        <h3 class="font-extrabold text-white flex items-center gap-2">
-          <i class="fa-solid fa-sliders text-amber-400"></i> Pengaturan Loket Digital
-        </h3>
-        <button onclick="closeModal('adminModal')" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
+  <!-- MODAL QR CODE & CETAK POSTER -->
+  <div id="qrModal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm">
+    <div class="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-slate-700 bg-slate-800 p-6 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-cyan-400"><i class="fa-solid fa-qrcode mr-2"></i>QR Code Loket & Armada</h3>
+        <button type="button" onclick="closeModal('qrModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="mt-1 text-xs text-slate-400">Tempel QR ini di meja agen atau sandaran kursi bus agar penumpang langsung masuk ke halaman ulasan.</p>
+
+      <div class="mt-4 flex flex-col items-center rounded-2xl bg-white p-5 text-slate-900">
+        <div id="modalQrContainer" class="flex items-center justify-center"></div>
+        <p id="qrTargetUrlText" class="mt-3 break-all text-center font-mono text-[11px] font-semibold text-slate-700"></p>
       </div>
 
-      <div class="space-y-4 text-sm">
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Teks Pengumuman / Promo Atas</label>
-          <input type="text" id="inPromo" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white" />
+      <div class="mt-4 space-y-2">
+        <label class="block text-xs font-semibold text-slate-300">URL Tujuan QR (Otomatis URL GitHub Pages):</label>
+        <div class="flex gap-2">
+          <input id="qrUrlInput" type="url" class="flex-1 rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-xs text-white focus:border-cyan-400 focus:outline-none" />
+          <button type="button" onclick="refreshQrFromInput()" class="rounded-lg bg-cyan-500 px-3 py-2 text-xs font-bold text-slate-950 hover:bg-cyan-400">
+            Update
+          </button>
         </div>
+      </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Jam Keberangkatan</label>
-          <input type="text" id="inJam" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white" />
-        </div>
+      <div class="mt-5 grid grid-cols-2 gap-2.5">
+        <button type="button" onclick="printPoster()" class="flex items-center justify-center gap-2 rounded-xl bg-amber-400 py-2.5 text-xs font-extrabold text-slate-950 hover:bg-amber-300">
+          <i class="fa-solid fa-print"></i>
+          <span>Cetak Poster PDF</span>
+        </button>
+        <button type="button" onclick="copyTextDirect(document.getElementById('qrUrlInput').value, 'Link Portal disalin!')" class="flex items-center justify-center gap-2 rounded-xl border border-slate-600 bg-slate-900 py-2.5 text-xs font-bold text-white hover:border-cyan-400">
+          <i class="fa-regular fa-copy text-cyan-400"></i>
+          <span>Salin Link</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
-        <div class="grid sm:grid-cols-2 gap-3">
+  <!-- MODAL PANEL ADMIN (SCROLLABLE FOR ANDROID & PC) -->
+  <div id="adminModal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/85 p-3 backdrop-blur-sm sm:p-6">
+    <div class="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-700 bg-slate-800 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-700 bg-slate-900 px-5 py-4">
+        <h3 class="text-base font-bold text-amber-400"><i class="fa-solid fa-sliders mr-2"></i>Pengaturan Portal MTRANS</h3>
+        <button type="button" onclick="closeModal('adminModal')" class="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 space-y-4 overflow-y-auto p-5">
+        <div class="grid gap-3 sm:grid-cols-2">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Bank & Atas Nama</label>
-            <input type="text" id="inBankLabel" placeholder="Contoh: BRI a.n. Loket MTrans" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white" />
+            <label class="text-xs font-semibold text-slate-300">Nama Agen / Cabang</label>
+            <input id="inName" type="text" class="mt-1 w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm text-white focus:border-amber-400 focus:outline-none" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Nomor Rekening Murni</label>
-            <input type="text" id="inRekNo" placeholder="Contoh: 1234567890" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono" />
+            <label class="text-xs font-semibold text-slate-300">Skor Rating Tampilan</label>
+            <input id="inRating" type="text" class="mt-1 w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm text-white focus:border-amber-400 focus:outline-none" />
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Link Ulasan Bintang 5 Google Maps</label>
-          <input type="url" id="inReviewUrl" placeholder="https://g.page/r/..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs" />
+          <label class="text-xs font-semibold text-slate-300">Tagline Layanan</label>
+          <input id="inTagline" type="text" class="mt-1 w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm text-white focus:border-amber-400 focus:outline-none" />
         </div>
 
-        <!-- Upload Foto Galeri (Kompresi Canvas Otomatis) -->
-        <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-3.5 space-y-2">
-          <label class="block text-xs font-semibold text-amber-400">Tambah Foto Armada / Loket (Kompresi Otomatis)</label>
-          <input type="file" id="inFoto" accept="image/*" onchange="handleUploadFoto(event)" class="w-full text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-amber-500 file:text-slate-950 file:font-bold" />
-          <div id="adminGaleriList" class="flex flex-wrap gap-2 pt-2"></div>
-        </div>
-
-        <!-- Backup & Restore JSON -->
-        <div class="bg-slate-800/70 border border-slate-700 rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-2">
-          <span class="text-xs font-semibold text-slate-300">Backup / Restore Data (.json)</span>
-          <div class="flex gap-2">
-            <button onclick="exportBackup()" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-bold hover:bg-cyan-500 hover:text-slate-950 transition">
-              <i class="fa-solid fa-download mr-1"></i> Export
-            </button>
-            <label class="cursor-pointer px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold hover:bg-emerald-500 hover:text-slate-950 transition">
-              <i class="fa-solid fa-upload mr-1"></i> Import
-              <input type="file" accept=".json" onchange="importBackup(event)" class="hidden" />
-            </label>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div>
+            <label class="text-xs font-semibold text-slate-300">Nomor WhatsApp / Telepon (Angka Murni)</label>
+            <input id="inPhone" type="text" placeholder="08211041040x" class="mt-1 w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 font-mono text-sm text-white focus:border-emerald-400 focus:outline-none" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-300">Jam Operasional</label>
+            <input id="inHours" type="text" class="mt-1 w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm text-white focus:border-amber-400 focus:outline-none" />
           </div>
         </div>
 
-        <button onclick="saveAdminSettings()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold py-3 rounded-xl transition">
+        <div>
+          <label class="text-xs font-semibold text-slate-300">Link Ulasan / Profil Google Maps</label>
+          <input id="inMapsUrl" type="url" class="mt-1 w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm text-white focus:border-cyan-400 focus:outline-none" />
+          <p class="mt-1 text-[11px] text-slate-400">Tips: Ganti dengan link "Minta Ulasan" dari Google Business Profile agar langsung membuka kotak Bintang 5.</p>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-300">Alamat Lengkap Loket</label>
+          <textarea id="inAddress" rows="2" class="mt-1 w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-sm text-white focus:border-amber-400 focus:outline-none"></textarea>
+        </div>
+
+        <div class="rounded-xl border border-slate-700 bg-slate-900/60 p-3.5">
+          <div class="mb-2 text-xs font-bold uppercase text-cyan-400">Tautan Media Sosial (Kosongkan jika belum ada)</div>
+          <div class="grid gap-2.5 sm:grid-cols-3">
+            <input id="inFb" type="url" placeholder="Link Facebook" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-xs text-white focus:border-cyan-400 focus:outline-none" />
+            <input id="inIg" type="url" placeholder="Link Instagram" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-xs text-white focus:border-cyan-400 focus:outline-none" />
+            <input id="inTiktok" type="url" placeholder="Link TikTok" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-xs text-white focus:border-cyan-400 focus:outline-none" />
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-slate-700 bg-slate-900/60 p-3.5">
+          <div class="mb-2 text-xs font-bold uppercase text-amber-400">Rekening Pemesanan (Opsional — Terpisah Label & Nomor)</div>
+          <div class="grid gap-2.5 sm:grid-cols-2">
+            <input id="inBankLabel" type="text" placeholder="Contoh: BCA a.n. MTrans Palembang" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-xs text-white focus:border-amber-400 focus:outline-none" />
+            <input id="inBankNumber" type="text" placeholder="Nomor Rekening Murni (angka saja)" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 font-mono text-xs text-white focus:border-amber-400 focus:outline-none" />
+          </div>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div>
+            <label class="text-xs font-semibold text-slate-300">Foto Logo / Armada (Kompres Otomatis)</label>
+            <input id="inPhoto" type="file" accept="image/*" onchange="handlePhotoUpload(event)"
+                   class="mt-1 block w-full text-xs text-slate-300 file:mr-2 file:rounded-lg file:border-0 file:bg-amber-400 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-slate-950 hover:file:bg-amber-300" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-300">Ubah PIN Admin (4 Digit)</label>
+            <input id="inNewPin" type="password" inputmode="numeric" maxlength="4" placeholder="Kosongkan jika tetap"
+                   class="mt-1 w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 font-mono text-sm text-white focus:border-amber-400 focus:outline-none" />
+          </div>
+        </div>
+
+        <!-- BACKUP & RESTORE -->
+        <div class="flex flex-wrap items-center gap-2 border-t border-slate-700 pt-3">
+          <button type="button" onclick="exportBackup()" class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/20">
+            <i class="fa-solid fa-download"></i> Export Backup (.json)
+          </button>
+          <label class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20">
+            <i class="fa-solid fa-upload"></i> Import Backup (.json)
+            <input type="file" accept=".json" onchange="importBackup(event)" class="hidden" />
+          </label>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 border-t border-slate-700 bg-slate-900 px-5 py-3.5">
+        <button type="button" onclick="closeModal('adminModal')" class="rounded-xl border border-slate-600 px-4 py-2 text-xs font-bold text-slate-300 hover:bg-slate-800">Batal</button>
+        <button type="button" onclick="saveAdminSettings()" class="rounded-xl bg-amber-400 px-5 py-2 text-xs font-extrabold text-slate-950 hover:bg-amber-300">
           <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Perubahan
         </button>
       </div>
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-slate-800 border border-amber-400/50 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 no-print">
-    <i class="fa-solid fa-circle-check text-emerald-400"></i>
-    <span id="toastMsg">Berhasil disalin!</span>
+  <!-- AREA CETAK POSTER QR CODE (PUTIH BERSIH & HITAM TAJAM) -->
+  <div class="print-only print-box mx-auto max-w-2xl bg-white p-6 text-center text-black">
+    <div class="border-b-4 border-black pb-4">
+      <div class="text-xs font-bold uppercase tracking-[0.25em]">Layanan & Kepuasan Penumpang</div>
+      <h1 id="printTitle" class="mt-1 text-3xl font-black uppercase tracking-wide">MTRANS PALEMBANG</h1>
+      <p id="printTagline" class="mt-1 text-sm font-semibold">Agen Tiket Bus AKAP Premium</p>
+    </div>
+
+    <div class="my-6">
+      <h2 class="text-2xl font-extrabold">PUAS DENGAN PERJALANAN ANDA?</h2>
+      <p class="mt-1 text-base font-medium">Scan QR Code di bawah ini untuk memberikan ulasan Bintang 5 di Google Maps atau menghubungi CS WhatsApp Resmi kami.</p>
+    </div>
+
+    <div class="mx-auto inline-block rounded-2xl border-4 border-black p-5">
+      <div id="printQrContainer"></div>
+    </div>
+
+    <div class="mx-auto mt-6 max-w-md rounded-xl border-2 border-black p-4 text-left text-sm">
+      <div class="mb-2 text-center font-extrabold uppercase">Cara Mudah Beri Ulasan (30 Detik)</div>
+      <ol class="list-decimal space-y-1 pl-5 font-medium">
+        <li>Arahkan kamera HP Anda ke QR Code di atas.</li>
+        <li>Pilih jumlah bintang pengalaman perjalanan Anda.</li>
+        <li>Kirim ulasan singkat di Google Maps untuk mendukung kru kami.</li>
+      </ol>
+    </div>
+
+    <div class="mt-8 border-t-2 border-black pt-4 text-xs font-semibold">
+      <p id="printAddress"></p>
+      <p class="mt-1">WhatsApp / Telepon Resmi: <span id="printPhone" class="font-bold"></span> • Jam Buka: <span id="printHours"></span></p>
+    </div>
   </div>
 
   <script>
-    // ==========================================
-    // DATA TARIF RESMI MTRANS PALEMBANG KM 12
-    // ==========================================
-    const WA_ADMIN = "628211041040";
-    const PIN_ADMIN = "1234";
-    const STORAGE_KEY = "mtrans_km12_settings_v1";
+    const STORAGE_KEY = 'mtrans_plg_portal_v1';
+    const DEFAULT_DATA = {
+      pin: '1234',
+      name: 'MTRANS PALEMBANG',
+      rating: '4.5',
+      tagline: 'Armada Bus AKAP Premium • Pemesanan Tiket Cepat via WhatsApp Resmi',
+      phone: '08211041040',
+      hours: 'Setiap Hari, 07.00 – 22.00 WIB',
+      mapsUrl: 'https://share.google/74xCVCzNnP5SMCK0A',
+      address: '3MPM+PPG, Jl. Sultan Mahmud Badaruddin II, Sukodadi, Kec. Alang-Alang Lebar, Kota Palembang, Sumatera Selatan 30961',
+      fb: '',
+      ig: '',
+      tiktok: '',
+      bankLabel: '',
+      bankNumber: '',
+      photo: '',
+      qrUrl: ''
+    };
 
-    const TARIF_DATA = {
-      malang: {
-        label: "Palembang – Surabaya – Malang",
-        tujuan: [
-          "Merak - Jakarta",
-          "Cirebon",
-          "Tegal - Sragen",
-          "Ngawi - Caruban",
-          "Nganjuk - Surabaya",
-          "Malang"
-        ],
-        rows: [
-          { asal: "Srigunung - Palembang", harga: [650000, 700000, 800000, 850000, 950000, 950000] },
-          { asal: "Srigunung Sleeper", harga: [850000, 900000, 1000000, 1000000, 1100000, 1100000] },
-          { asal: "Palembang", harga: [550000, 600000, 700000, 750000, 830000, 830000] },
-          { asal: "Palembang Sleeper", harga: [750000, 800000, 900000, 950000, 1000000, 1000000] },
-          { asal: "Lampung", harga: [450000, 500000, 600000, 650000, 750000, 750000] },
-          { asal: "Lampung Sleeper", harga: [650000, 700000, 850000, 900000, 950000, 950000] }
-        ]
-      },
-      blitar: {
-        label: "Palembang – Kediri – Blitar – Malang",
-        tujuan: [
-          "Merak - Jakarta",
-          "Cirebon",
-          "Tegal - Sragen",
-          "Ngawi - Caruban",
-          "Nganjuk - Blitar",
-          "Malang"
-        ],
-        rows: [
-          { asal: "Palembang", harga: [550000, 600000, 700000, 750000, 800000, 830000] },
-          { asal: "Palembang Sleeper", harga: [750000, 800000, 900000, 950000, 1000000, 1000000] },
-          { asal: "Lampung", harga: [450000, 500000, 600000, 650000, 700000, 750000] },
-          { asal: "Lampung Sleeper", harga: [650000, 700000, 850000, 900000, 950000, 950000] }
-        ]
+    const REVIEW_TEMPLATES = [
+      'Armada bus AKAP premium, kursi nyaman dan bersih. Pesan tiket lewat WA sangat mudah!',
+      'Pelayanan agen MTrans Palembang ramah, keberangkatan tepat waktu, perjalanan aman dan nyaman.'
+    ];
+
+    let appData = loadData();
+    let selectedStar = 0;
+    let pendingPinAction = null;
+    let toastTimer = null;
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { ...DEFAULT_DATA };
+        return { ...DEFAULT_DATA, ...JSON.parse(raw) };
+      } catch (e) {
+        return { ...DEFAULT_DATA };
       }
-    };
-
-    let appSettings = {
-      promo: "Keberangkatan Setiap Hari Pukul 12.00 – 14.00 WIB dari Loket KM 12 Sukodadi. Tersedia Kelas Sleeper & Executive!",
-      jam: "12.00 – 14.00 WIB (Setiap Hari)",
-      bankLabel: "Konfirmasi via WA Admin (Atau isi di Panel Admin)",
-      rekNo: "",
-      reviewUrl: "https://www.google.com/maps/search/?api=1&query=MTRANS+PALEMBANG+3MPM%2BPPG+Sukodadi",
-      galeri: []
-    };
-
-    // ==========================================
-    // HELPER FORMAT & TOAST
-    // ==========================================
-    function formatRp(num) {
-      return "Rp " + Number(num).toLocaleString("id-ID");
     }
 
-    let toastTimer;
+    function persistData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    }
+
+    function formatWaNumber(rawPhone) {
+      const digits = (rawPhone || '').replace(/\D/g, '');
+      if (!digits) return '';
+      if (digits.startsWith('0')) return '62' + digits.slice(1);
+      if (digits.startsWith('62')) return digits;
+      return '62' + digits;
+    }
+
     function showToast(msg) {
-      const toast = document.getElementById("toast");
-      document.getElementById("toastMsg").innerText = msg;
-      toast.classList.add("show");
+      const el = document.getElementById('toast');
+      document.getElementById('toastText').textContent = msg;
+      el.classList.remove('hidden');
+      el.classList.add('flex');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+      toastTimer = setTimeout(() => {
+        el.classList.add('hidden');
+        el.classList.remove('flex');
+      }, 2400);
     }
 
-    function copyText(text, message) {
-      navigator.clipboard.writeText(text).then(() => showToast(message));
-    }
-
-    function copyRekening() {
-      if (appSettings.rekNo) {
-        copyText(appSettings.rekNo, "Nomor rekening berhasil disalin!");
+    function copyTextDirect(text, successMsg) {
+      if (!text) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast(successMsg)).catch(() => fallbackCopy(text, successMsg));
+      } else {
+        fallbackCopy(text, successMsg);
       }
     }
 
-    // ==========================================
-    // RENDER TABEL HARGA & FORM PEMESANAN
-    // ==========================================
-    function renderTabelHarga() {
-      const renderRows = (rows) => rows.map(r => {
-        const isSleeper = r.asal.toLowerCase().includes("sleeper");
-        return `
-          <tr class="hover:bg-slate-700/40 transition">
-            <td class="p-3 font-bold ${isSleeper ? 'text-amber-300' : 'text-white'} whitespace-nowrap">${r.asal}</td>
-            ${r.harga.map(h => `<td class="p-3 font-mono text-slate-200 whitespace-nowrap">${formatRp(h)}</td>`).join("")}
-          </tr>
+    function fallbackCopy(text, successMsg) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast(successMsg);
+    }
+
+    function copyTextById(id, msg) {
+      const text = document.getElementById(id).textContent.trim();
+      copyTextDirect(text, msg);
+    }
+
+    function renderUI() {
+      document.title = `${appData.name} — Portal Ulasan & Layanan Resmi`;
+      document.getElementById('dispName').textContent = appData.name;
+      document.getElementById('footerName').textContent = appData.name;
+      document.getElementById('dispRating').textContent = appData.rating;
+      document.getElementById('dispTagline').textContent = appData.tagline;
+      document.getElementById('dispHours').textContent = appData.hours;
+      document.getElementById('dispPhone').textContent = appData.phone;
+      document.getElementById('dispAddress').textContent = appData.address;
+      document.getElementById('yearNow').textContent = new Date().getFullYear();
+
+      const mapsLink = appData.mapsUrl || DEFAULT_DATA.mapsUrl;
+      document.getElementById('btnGoMaps').href = mapsLink;
+      document.getElementById('btnDirectMaps').href = mapsLink;
+      document.getElementById('btnRouteMaps').href = mapsLink;
+      document.getElementById('btnCallPhone').href = 'tel:' + appData.phone.replace(/\D/g, '');
+
+      // Avatar / Foto
+      const avatarBox = document.getElementById('avatarBox');
+      if (appData.photo) {
+        avatarBox.innerHTML = `<img src="${appData.photo}" alt="MTRANS" class="h-full w-full object-cover" />`;
+      } else {
+        avatarBox.innerHTML = `<i class="fa-solid fa-bus-simple text-4xl text-amber-400"></i>`;
+      }
+
+      // Social Links
+      const socBox = document.getElementById('socialLinksBox');
+      const socials = [
+        { label: 'Facebook', url: appData.fb, icon: 'fa-brands fa-facebook', cls: 'bg-blue-600/20 text-blue-300 border-blue-500/40' },
+        { label: 'Instagram', url: appData.ig, icon: 'fa-brands fa-instagram', cls: 'bg-pink-600/20 text-pink-300 border-pink-500/40' },
+        { label: 'TikTok', url: appData.tiktok, icon: 'fa-brands fa-tiktok', cls: 'bg-slate-700/60 text-slate-100 border-slate-500/50' }
+      ].filter(s => s.url && s.url.trim() !== '');
+
+      if (socials.length > 0) {
+        socBox.innerHTML = socials.map(s => `
+          <a href="${s.url}" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-bold hover:opacity-90 ${s.cls}">
+            <i class="${s.icon}"></i><span>${s.label}</span>
+          </a>
+        `).join('');
+      } else {
+        socBox.innerHTML = `
+          <a href="${mapsLink}" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 rounded-xl border border-amber-500/40 bg-amber-500/10 px-3.5 py-2 text-xs font-bold text-amber-300 hover:bg-amber-500/20">
+            <i class="fa-brands fa-google"></i><span>Profil Google Maps Resmi</span>
+          </a>
         `;
-      }).join("");
-
-      document.getElementById("tbodyMalang").innerHTML = renderRows(TARIF_DATA.malang.rows);
-      document.getElementById("tbodyBlitar").innerHTML = renderRows(TARIF_DATA.blitar.rows);
-    }
-
-    function updateFormOptions() {
-      const jalur = document.getElementById("pilihJalur").value;
-      const data = TARIF_DATA[jalur];
-
-      const selAsal = document.getElementById("pilihAsal");
-      selAsal.innerHTML = data.rows.map((r, idx) => `<option value="${idx}" ${r.asal === 'Palembang' ? 'selected' : ''}>${r.asal}</option>`).join("");
-
-      const selTujuan = document.getElementById("pilihTujuan");
-      selTujuan.innerHTML = data.tujuan.map((t, idx) => `<option value="${idx}">${t}</option>`).join("");
-
-      hitungEstimasi();
-    }
-
-    function hitungEstimasi() {
-      const jalur = document.getElementById("pilihJalur").value;
-      const idxAsal = parseInt(document.getElementById("pilihAsal").value || 0);
-      const idxTujuan = parseInt(document.getElementById("pilihTujuan").value || 0);
-      const qty = Math.max(1, parseInt(document.getElementById("jmlKursi").value || 1));
-
-      const hargaSatuan = TARIF_DATA[jalur].rows[idxAsal].harga[idxTujuan];
-      const total = hargaSatuan * qty;
-
-      document.getElementById("estimasiHarga").innerText = formatRp(total);
-      document.getElementById("detailHargaSatuan").innerText = `${qty} kursi × ${formatRp(hargaSatuan)}`;
-    }
-
-    function kirimKeWA(e) {
-      e.preventDefault();
-      const jalur = document.getElementById("pilihJalur").value;
-      const data = TARIF_DATA[jalur];
-      const idxAsal = parseInt(document.getElementById("pilihAsal").value);
-      const idxTujuan = parseInt(document.getElementById("pilihTujuan").value);
-      const qty = parseInt(document.getElementById("jmlKursi").value);
-      const nama = document.getElementById("namaPenumpang").value.trim();
-      const tgl = document.getElementById("tglBerangkat").value;
-      const kota = document.getElementById("kotaSpesifik").value.trim();
-
-      const asalLabel = data.rows[idxAsal].asal;
-      const tujuanLabel = data.tujuan[idxTujuan];
-      const hargaSatuan = data.rows[idxAsal].harga[idxTujuan];
-      const total = hargaSatuan * qty;
-
-      const pesan = `Halo Admin MTrans Palembang KM 12,%0ASaya ingin pesan tiket bus:%0A%0A` +
-        `• *Nama:* ${encodeURIComponent(nama)}%0A` +
-        `• *Jalur:* ${encodeURIComponent(data.label)}%0A` +
-        `• *Naik / Kelas:* ${encodeURIComponent(asalLabel)}%0A` +
-        `• *Tujuan:* ${encodeURIComponent(tujuanLabel)}${kota ? ' (' + encodeURIComponent(kota) + ')' : ''}%0A` +
-        `• *Tanggal:* ${encodeURIComponent(tgl)}%0A` +
-        `• *Jumlah Kursi:* ${qty} kursi%0A` +
-        `• *Estimasi Total:* ${encodeURIComponent(formatRp(total))}%0A%0A` +
-        `Mohon info ketersediaan kursi untuk keberangkatan jam 12.00 - 14.00 WIB. Terima kasih.`;
-
-      window.open(`https://wa.me/${WA_ADMIN}?text=${pesan}`, "_blank");
-    }
-
-    // ==========================================
-    // PANEL ADMIN, PIN, GALERI & BACKUP JSON
-    // ==========================================
-    function loadSettings() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try { appSettings = { ...appSettings, ...JSON.parse(saved) }; } catch (e) {}
       }
-      applySettingsToUI();
-    }
 
-    function applySettingsToUI() {
-      document.getElementById("promoTextDisplay").innerText = appSettings.promo;
-      document.getElementById("jamDisplay").innerText = appSettings.jam;
-      document.getElementById("bankLabelDisplay").innerText = appSettings.bankLabel;
-      document.getElementById("reviewLinkBtn").href = appSettings.reviewUrl || "#";
-
-      const rekBox = document.getElementById("rekBox");
-      if (appSettings.rekNo && appSettings.rekNo.trim() !== "") {
-        rekBox.classList.remove("hidden");
-        document.getElementById("rekNumberDisplay").innerText = appSettings.rekNo;
+      // Bank Info
+      if (appData.bankNumber && appData.bankNumber.trim() !== '') {
+        document.getElementById('dispBankLabel').textContent = appData.bankLabel || 'Rekening Resmi';
+        document.getElementById('dispBankNumber').textContent = appData.bankNumber.trim();
+        document.getElementById('bankFilledBox').classList.remove('hidden');
+        document.getElementById('bankEmptyBox').classList.add('hidden');
       } else {
-        rekBox.classList.add("hidden");
+        document.getElementById('bankFilledBox').classList.add('hidden');
+        document.getElementById('bankEmptyBox').classList.remove('hidden');
       }
 
-      // Render Galeri Publik
-      const galSection = document.getElementById("galeriSection");
-      const galGrid = document.getElementById("galeriGrid");
-      if (appSettings.galeri && appSettings.galeri.length > 0) {
-        galSection.classList.remove("hidden");
-        galGrid.innerHTML = appSettings.galeri.map((src, i) => `
-          <div class="rounded-xl overflow-hidden border border-slate-700 bg-slate-800 aspect-[4/3]">
-            <img src="${src}" alt="Armada MTrans KM 12 ${i+1}" class="w-full h-full object-cover hover:scale-105 transition duration-300" />
-          </div>
-        `).join("");
+      // Print Area Sync
+      document.getElementById('printTitle').textContent = appData.name;
+      document.getElementById('printTagline').textContent = appData.tagline;
+      document.getElementById('printAddress').textContent = appData.address;
+      document.getElementById('printPhone').textContent = appData.phone;
+      document.getElementById('printHours').textContent = appData.hours;
+    }
+
+    function selectStar(num) {
+      selectedStar = num;
+      const buttons = document.querySelectorAll('#starGroup .star-btn');
+      buttons.forEach((btn, idx) => {
+        if (idx < num) {
+          btn.classList.remove('text-slate-600');
+          btn.classList.add('text-amber-400');
+        } else {
+          btn.classList.add('text-slate-600');
+          btn.classList.remove('text-amber-400');
+        }
+      });
+
+      const labels = ['', 'Sangat Kurang (1/5)', 'Kurang Memuaskan (2/5)', 'Cukup Baik (3/5)', 'Puas & Nyaman (4/5)', 'Sangat Memuaskan! (5/5)'];
+      document.getElementById('starLabel').textContent = labels[num];
+
+      const pos = document.getElementById('panelPositive');
+      const fb = document.getElementById('panelFeedback');
+      const dir = document.getElementById('directMapsRow');
+
+      if (num >= 4) {
+        pos.classList.remove('hidden');
+        fb.classList.add('hidden');
+        dir.classList.add('hidden');
       } else {
-        galSection.classList.add("hidden");
+        fb.classList.remove('hidden');
+        pos.classList.add('hidden');
+        dir.classList.remove('hidden');
       }
     }
 
-    function openAdminGate() {
-      document.getElementById("pinInput").value = "";
-      document.getElementById("pinModal").classList.remove("hidden");
-      setTimeout(() => document.getElementById("pinInput").focus(), 100);
+    function copyTemplateReview(index) {
+      copyTextDirect(REVIEW_TEMPLATES[index], 'Teks ulasan disalin! Tinggal tempel di Google Maps.');
+    }
+
+    function openWaBooking() {
+      const wa = formatWaNumber(appData.phone);
+      const msg = encodeURIComponent(`Halo ${appData.name}, saya ingin menanyakan jadwal & pemesanan tiket bus.`);
+      window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
+    }
+
+    function sendFeedbackWa() {
+      const name = document.getElementById('fbName').value.trim() || 'Penumpang';
+      const note = document.getElementById('fbMessage').value.trim();
+      if (!note) {
+        showToast('Mohon tuliskan saran atau kendala terlebih dahulu.');
+        return;
+      }
+      const wa = formatWaNumber(appData.phone);
+      const text = encodeURIComponent(`Halo Pengelola ${appData.name},\nSaya ${name} (Rating: ${selectedStar}/5) ingin menyampaikan masukan:\n\n"${note}"\n\nTerima kasih.`);
+      window.open(`https://wa.me/${wa}?text=${text}`, '_blank');
+    }
+
+    // MODAL HELPERS
+    function openModal(id) {
+      const el = document.getElementById(id);
+      el.classList.remove('hidden');
+      el.classList.add('flex');
     }
 
     function closeModal(id) {
-      document.getElementById(id).classList.add("hidden");
+      const el = document.getElementById(id);
+      el.classList.add('hidden');
+      el.classList.remove('flex');
+    }
+
+    // PIN SECURITY
+    function requestPin(action) {
+      pendingPinAction = action;
+      document.getElementById('pinInput').value = '';
+      document.getElementById('pinError').classList.add('hidden');
+      openModal('pinModal');
+      setTimeout(() => document.getElementById('pinInput').focus(), 100);
     }
 
     function verifyPin() {
-      const val = document.getElementById("pinInput").value.trim();
-      if (val === PIN_ADMIN) {
-        closeModal("pinModal");
-        openAdminPanel();
-      } else {
-        showToast("PIN salah! Coba lagi.");
+      const entered = document.getElementById('pinInput').value.trim();
+      if (entered !== appData.pin) {
+        document.getElementById('pinError').classList.remove('hidden');
+        return;
+      }
+      closeModal('pinModal');
+      if (pendingPinAction === 'admin') {
+        populateAdminForm();
+        openModal('adminModal');
       }
     }
 
-    function openAdminPanel() {
-      document.getElementById("inPromo").value = appSettings.promo;
-      document.getElementById("inJam").value = appSettings.jam;
-      document.getElementById("inBankLabel").value = appSettings.bankLabel;
-      document.getElementById("inRekNo").value = appSettings.rekNo;
-      document.getElementById("inReviewUrl").value = appSettings.reviewUrl;
-      renderAdminGaleri();
-      document.getElementById("adminModal").classList.remove("hidden");
+    document.getElementById('pinInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') verifyPin();
+    });
+
+    function populateAdminForm() {
+      document.getElementById('inName').value = appData.name;
+      document.getElementById('inRating').value = appData.rating;
+      document.getElementById('inTagline').value = appData.tagline;
+      document.getElementById('inPhone').value = appData.phone;
+      document.getElementById('inHours').value = appData.hours;
+      document.getElementById('inMapsUrl').value = appData.mapsUrl;
+      document.getElementById('inAddress').value = appData.address;
+      document.getElementById('inFb').value = appData.fb;
+      document.getElementById('inIg').value = appData.ig;
+      document.getElementById('inTiktok').value = appData.tiktok;
+      document.getElementById('inBankLabel').value = appData.bankLabel;
+      document.getElementById('inBankNumber').value = appData.bankNumber;
+      document.getElementById('inNewPin').value = '';
     }
 
-    function renderAdminGaleri() {
-      const box = document.getElementById("adminGaleriList");
-      box.innerHTML = (appSettings.galeri || []).map((src, idx) => `
-        <div class="relative w-16 h-16 rounded-lg overflow-hidden border border-slate-600">
-          <img src="${src}" class="w-full h-full object-cover" />
-          <button onclick="hapusFoto(${idx})" class="absolute top-0.5 right-0.5 bg-red-600 text-white w-5 h-5 rounded-full text-[10px] flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-      `).join("");
-    }
-
-    function handleUploadFoto(e) {
-      const file = e.target.files[0];
+    function handlePhotoUpload(event) {
+      const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function(evt) {
+      reader.onload = (e) => {
         const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement("canvas");
-          const maxW = 650;
+        img.onload = () => {
+          const maxW = 300;
           const scale = Math.min(1, maxW / img.width);
-          canvas.width = img.width * scale;
-          canvas.height = img.height * scale;
-          const ctx = canvas.getContext("2d");
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          const compressed = canvas.toDataURL("image/jpeg", 0.78);
-          appSettings.galeri.push(compressed);
-          renderAdminGaleri();
-          showToast("Foto dikompresi & siap disimpan!");
+          appData.photo = canvas.toDataURL('image/jpeg', 0.8);
+          showToast('Foto terkompresi & siap disimpan!');
         };
-        img.src = evt.target.result;
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
-      e.target.value = "";
-    }
-
-    function hapusFoto(idx) {
-      appSettings.galeri.splice(idx, 1);
-      renderAdminGaleri();
     }
 
     function saveAdminSettings() {
-      appSettings.promo = document.getElementById("inPromo").value.trim();
-      appSettings.jam = document.getElementById("inJam").value.trim();
-      appSettings.bankLabel = document.getElementById("inBankLabel").value.trim();
-      appSettings.rekNo = document.getElementById("inRekNo").value.trim();
-      appSettings.reviewUrl = document.getElementById("inReviewUrl").value.trim();
+      appData.name = document.getElementById('inName').value.trim() || DEFAULT_DATA.name;
+      appData.rating = document.getElementById('inRating').value.trim() || '4.5';
+      appData.tagline = document.getElementById('inTagline').value.trim() || DEFAULT_DATA.tagline;
+      appData.phone = document.getElementById('inPhone').value.trim() || DEFAULT_DATA.phone;
+      appData.hours = document.getElementById('inHours').value.trim() || DEFAULT_DATA.hours;
+      appData.mapsUrl = document.getElementById('inMapsUrl').value.trim() || DEFAULT_DATA.mapsUrl;
+      appData.address = document.getElementById('inAddress').value.trim() || DEFAULT_DATA.address;
+      appData.fb = document.getElementById('inFb').value.trim();
+      appData.ig = document.getElementById('inIg').value.trim();
+      appData.tiktok = document.getElementById('inTiktok').value.trim();
+      appData.bankLabel = document.getElementById('inBankLabel').value.trim();
+      appData.bankNumber = document.getElementById('inBankNumber').value.trim();
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(appSettings));
-      applySettingsToUI();
-      closeModal("adminModal");
-      showToast("Pengaturan Loket berhasil disimpan!");
+      const newPin = document.getElementById('inNewPin').value.trim();
+      if (newPin) {
+        if (/^\d{4}$/.test(newPin)) {
+          appData.pin = newPin;
+        } else {
+          showToast('PIN harus tepat 4 digit angka!');
+          return;
+        }
+      }
+
+      persistData();
+      renderUI();
+      closeModal('adminModal');
+      showToast('Pengaturan berhasil disimpan!');
     }
 
+    // QR CODE & PRINT POSTER
+    function getEffectiveQrUrl() {
+      if (appData.qrUrl && appData.qrUrl.trim() !== '') return appData.qrUrl.trim();
+      if (window.location.protocol.startsWith('http')) return window.location.href.split('#')[0];
+      return appData.mapsUrl || DEFAULT_DATA.mapsUrl;
+    }
+
+    function generateQrInto(containerId, url, size) {
+      const box = document.getElementById(containerId);
+      box.innerHTML = '';
+      new QRCode(box, {
+        text: url,
+        width: size,
+        height: size,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    function openQrModal() {
+      const url = getEffectiveQrUrl();
+      document.getElementById('qrUrlInput').value = url;
+      document.getElementById('qrTargetUrlText').textContent = url;
+      generateQrInto('modalQrContainer', url, 200);
+      generateQrInto('printQrContainer', url, 240);
+      openModal('qrModal');
+    }
+
+    function refreshQrFromInput() {
+      const url = document.getElementById('qrUrlInput').value.trim();
+      if (!url) return;
+      appData.qrUrl = url;
+      persistData();
+      document.getElementById('qrTargetUrlText').textContent = url;
+      generateQrInto('modalQrContainer', url, 200);
+      generateQrInto('printQrContainer', url, 240);
+      showToast('QR Code diperbarui!');
+    }
+
+    function printPoster() {
+      const url = document.getElementById('qrUrlInput').value.trim() || getEffectiveQrUrl();
+      generateQrInto('printQrContainer', url, 240);
+      setTimeout(() => window.print(), 250);
+    }
+
+    // BACKUP JSON
     function exportBackup() {
-      const blob = new Blob([JSON.stringify(appSettings, null, 2)], { type: "application/json" });
+      const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
-      a.download = "backup-mtrans-km12.json";
+      a.download = `backup-mtrans-palembang-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast("Backup .json berhasil diunduh!");
+      showToast('File backup .json diunduh!');
     }
 
-    function importBackup(e) {
-      const file = e.target.files[0];
+    function importBackup(event) {
+      const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function(evt) {
+      reader.onload = (e) => {
         try {
-          const parsed = JSON.parse(evt.target.result);
-          appSettings = { ...appSettings, ...parsed };
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(appSettings));
-          applySettingsToUI();
-          openAdminPanel();
-          showToast("Data backup berhasil dipulihkan!");
+          const parsed = JSON.parse(e.target.result);
+          appData = { ...DEFAULT_DATA, ...parsed };
+          persistData();
+          renderUI();
+          populateAdminForm();
+          showToast('Backup berhasil dipulihkan!');
         } catch (err) {
-          showToast("File backup tidak valid!");
+          showToast('Format file backup tidak valid!');
         }
       };
       reader.readAsText(file);
-      e.target.value = "";
     }
 
-    // ==========================================
-    // INISIALISASI AWAL
-    // ==========================================
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("yearNow").innerText = new Date().getFullYear();
-      document.getElementById("printDate").innerText = new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
-      document.getElementById("tglBerangkat").valueAsDate = new Date();
-      renderTabelHarga();
-      updateFormOptions();
-      loadSettings();
-    });
+    renderUI();
   </script>
 </body>
 </html>
